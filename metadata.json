@@ -1,0 +1,6 @@
+{
+  "name": "SGBI · Gestión Bibliotecaria Inteligente",
+  "description": "Plataforma transaccional de gestión bibliotecaria con catálogo editorial, mostrador ACID de circulación, búsqueda semántica y generación de pruebas de lectura.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
