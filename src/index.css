@@ -1,20 +1,264 @@
 @import "tailwindcss";
 
 @theme {
-  --font-serif: "Fraunces", Georgia, Cambria, "Times New Roman", serif;
-  --font-sans: "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  /* Colors */
+  --color-monday-violet: #6161ff;
+  --color-ink: #333333;
+  --color-slate: #535768;
+  --color-iron: #808080;
+  --color-fog: #cacbcd;
+  --color-mist: #d0d4e4;
+  --color-pebble: #dddfeb;
+  --color-cloud: #f5f6f8;
+  --color-snow: #ffffff;
+  --color-shadow-dust: #e6e7ea;
+  --color-mint: #bcfe90;
+  --color-sky: #abf0ff;
+  --color-apricot: #ff8940;
+  --color-lavender: #eddff7;
+  --color-periwinkle: #e7ecff;
+  --color-cornflower: #93beff;
+  --color-aqua: #d1faff;
+  --color-cotton-candy: #e98dfe;
+  --color-ultra-violet: #9450fd;
+  --color-electric-cyan: #3ac9ff;
+  --color-forest: #2a5c4e;
+  --color-peony: #fcd0f8;
+  --color-periwinkle-wash: #dbdbff;
+  --color-prism: #8181ff;
+
+  /* Typography */
+  --font-poppins: 'Poppins', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-sans: 'Poppins', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  /* Typography — Scale */
+  --text-caption: 12px;
+  --leading-caption: 1.45;
+  --tracking-caption: -0.12px;
+  --text-body-sm: 14px;
+  --leading-body-sm: 1.5;
+  --text-body: 16px;
+  --leading-body: 1.5;
+  --tracking-body: -0.16px;
+  --text-subheading: 20px;
+  --leading-subheading: 1.4;
+  --tracking-subheading: -0.22px;
+  --text-heading-sm: 24px;
+  --leading-heading-sm: 1.3;
+  --tracking-heading-sm: -0.36px;
+  --text-heading: 36px;
+  --leading-heading: 1.2;
+  --tracking-heading: -0.54px;
+  --text-heading-lg: 48px;
+  --leading-heading-lg: 1.15;
+  --tracking-heading-lg: -0.96px;
+  --text-display: 64px;
+  --leading-display: 1.15;
+  --tracking-display: -2.56px;
+
+  /* Spacing */
+  --spacing-8: 8px;
+  --spacing-16: 16px;
+  --spacing-24: 24px;
+  --spacing-32: 32px;
+  --spacing-40: 40px;
+  --spacing-48: 48px;
+  --spacing-64: 64px;
+  --spacing-80: 80px;
+  --spacing-96: 96px;
+
+  /* Border Radius */
+  --radius-md: 6px;
+  --radius-xl: 12px;
+  --radius-2xl: 16px;
+  --radius-3xl: 24px;
+  --radius-3xl-2: 40px;
+  --radius-full: 100px;
+  --radius-full-2: 160px;
+
+  /* Shadows */
+  --shadow-xl: rgba(205, 208, 223, 0.4) 0px 2px 48px 0px;
+  --shadow-xl-2: rgba(0, 0, 0, 0.15) 0px 5px 45px 0px;
+  --shadow-xl-3: rgba(0, 0, 0, 0.15) 0px 4px 40px 0px;
+  --shadow-xl-4: rgba(0, 0, 0, 0.4) 0px 5px 55px 0px;
+  --shadow-subtle: rgb(0, 0, 0) 0px -2px 0px 0px inset;
+}
+
+:root {
+  /* Colors */
+  --color-monday-violet: #6161ff;
+  --color-ink: #333333;
+  --color-slate: #535768;
+  --color-iron: #808080;
+  --color-fog: #cacbcd;
+  --color-mist: #d0d4e4;
+  --color-pebble: #dddfeb;
+  --color-cloud: #f5f6f8;
+  --color-snow: #ffffff;
+  --color-shadow-dust: #e6e7ea;
+  --color-mint: #bcfe90;
+  --color-sky: #abf0ff;
+  --color-apricot: #ff8940;
+  --gradient-apricot: linear-gradient(90deg, rgb(254, 129, 228), rgb(254, 129, 228) 31%, rgb(253, 169, 0) 88%);
+  --color-lavender: #eddff7;
+  --color-periwinkle: #e7ecff;
+  --color-cornflower: #93beff;
+  --color-aqua: #d1faff;
+  --color-cotton-candy: #e98dfe;
+  --color-ultra-violet: #9450fd;
+  --color-electric-cyan: #3ac9ff;
+  --color-forest: #2a5c4e;
+  --color-peony: #fcd0f8;
+  --color-periwinkle-wash: #dbdbff;
+  --color-prism: #8181ff;
+  --gradient-prism: conic-gradient(from 270deg, rgb(129, 129, 255) 15%, rgb(51, 219, 219) 40%, rgb(51, 213, 142) 55%, rgb(255, 214, 51) 65%, rgb(252, 82, 125) 85%, rgb(129, 129, 255) 100%);
+
+  /* Typography — Font Families */
+  --font-poppins: 'Poppins', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+
+  /* Spacing */
+  --spacing-unit: 8px;
+  --page-max-width: 1200px;
+  --section-gap: 64px;
+  --card-padding: 24px;
+  --element-gap: 8px;
+
+  /* Border Radius */
+  --radius-nav: 6px;
+  --radius-cards: 24px;
+  --radius-badges: 6px;
+  --radius-images: 12px;
+  --radius-inputs: 6px;
+  --radius-buttons: 160px;
+
+  /* Shadows */
+  --shadow-xl: rgba(205, 208, 223, 0.4) 0px 2px 48px 0px;
+  --shadow-xl-2: rgba(0, 0, 0, 0.15) 0px 5px 45px 0px;
+  --shadow-xl-3: rgba(0, 0, 0, 0.15) 0px 4px 40px 0px;
+  --shadow-xl-4: rgba(0, 0, 0, 0.4) 0px 5px 55px 0px;
+  --shadow-subtle: rgb(0, 0, 0) 0px -2px 0px 0px inset;
+
+  /* Surfaces */
+  --surface-canvas: #f5f6f8;
+  --surface-card: #ffffff;
+  --surface-brand-panel: #6161ff;
+  --surface-tinted-accent: #bcfe90;
 }
 
 @layer base {
   html {
-    font-family: var(--font-sans);
+    font-family: var(--font-poppins);
     scroll-behavior: smooth;
+    background-color: var(--color-cloud);
+    color: var(--color-ink);
+  }
+
+  body {
+    font-family: var(--font-poppins);
+    background-color: #f5f6f8;
+    color: #333333;
   }
 
   .tabular-nums {
     font-variant-numeric: tabular-nums;
   }
+}
+
+/* Helper Utilities strictly matching DESIGN.md */
+.btn-pill {
+  border-radius: 160px;
+  font-family: var(--font-poppins);
+  font-weight: 500;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.btn-primary-pill {
+  border-radius: 160px;
+  background-color: #6161ff;
+  color: #ffffff;
+  font-family: var(--font-poppins);
+  font-weight: 500;
+  padding: 10px 24px;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+.btn-primary-pill:hover {
+  background-color: #5050ee;
+  box-shadow: 0px 4px 16px rgba(97, 97, 255, 0.25);
+}
+.btn-primary-pill:active {
+  transform: scale(0.98);
+}
+
+.btn-outline-pill {
+  border-radius: 160px;
+  background-color: transparent;
+  color: #333333;
+  border: 1px solid #535768;
+  font-family: var(--font-poppins);
+  font-weight: 500;
+  padding: 10px 20px;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+.btn-outline-pill:hover {
+  border-color: #333333;
+  background-color: #f5f6f8;
+}
+
+.card-monday {
+  background-color: #ffffff;
+  border: 1px solid #d0d4e4;
+  border-radius: 24px;
+  box-shadow: rgba(205, 208, 223, 0.4) 0px 2px 48px 0px;
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.2s ease;
+}
+.card-monday:hover {
+  box-shadow: rgba(0, 0, 0, 0.12) 0px 5px 45px 0px;
+  border-color: #cacbcd;
+}
+
+.badge-monday {
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.45;
+  letter-spacing: -0.12px;
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 8px;
+}
+
+.input-monday {
+  border-radius: 6px;
+  border: 1px solid #dddfeb;
+  background-color: #ffffff;
+  color: #333333;
+  padding: 8px 14px;
+  font-size: 14px;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  outline: none;
+}
+.input-monday:focus {
+  border-color: #6161ff;
+  box-shadow: 0 0 0 3px rgba(97, 97, 255, 0.15);
+}
+
+.gradient-hero-text {
+  background: linear-gradient(90deg, rgb(254, 129, 228) 0%, rgb(254, 129, 228) 31%, rgb(253, 169, 0) 88%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.prism-mark-circle {
+  background: conic-gradient(from 270deg, rgb(129, 129, 255) 15%, rgb(51, 219, 219) 40%, rgb(51, 213, 142) 55%, rgb(255, 214, 51) 65%, rgb(252, 82, 125) 85%, rgb(129, 129, 255) 100%);
 }
 
 @media print {

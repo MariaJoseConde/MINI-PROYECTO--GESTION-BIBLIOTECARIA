@@ -30,6 +30,15 @@ interface CatalogoViewProps {
   onNotify: (type: 'success' | 'error' | 'info', text: string) => void;
 }
 
+const PASTEL_PALETTES = [
+  { bg: 'bg-[#eddff7]', text: 'text-[#333333]', border: 'border-[#eddff7]', badge: 'bg-[#ffffff]/85 text-[#333333]' },
+  { bg: 'bg-[#abf0ff]', text: 'text-[#333333]', border: 'border-[#abf0ff]', badge: 'bg-[#ffffff]/85 text-[#333333]' },
+  { bg: 'bg-[#bcfe90]', text: 'text-[#333333]', border: 'border-[#bcfe90]', badge: 'bg-[#ffffff]/85 text-[#333333]' },
+  { bg: 'bg-[#e7ecff]', text: 'text-[#333333]', border: 'border-[#e7ecff]', badge: 'bg-[#ffffff]/85 text-[#333333]' },
+  { bg: 'bg-[#fcd0f8]', text: 'text-[#333333]', border: 'border-[#fcd0f8]', badge: 'bg-[#ffffff]/85 text-[#333333]' },
+  { bg: 'bg-[#d1faff]', text: 'text-[#333333]', border: 'border-[#d1faff]', badge: 'bg-[#ffffff]/85 text-[#333333]' },
+];
+
 export const CatalogoView: React.FC<CatalogoViewProps> = ({
   libros,
   categorias,
@@ -139,89 +148,97 @@ export const CatalogoView: React.FC<CatalogoViewProps> = ({
   );
 
   return (
-    <div className="space-y-8">
-      {/* Hero Visual Arquitectónico con Búsqueda Integrada */}
-      <section className="relative overflow-hidden rounded-xl bg-[#0F172A] text-white shadow-sm">
-        {!heroImgFailed && (
-          <img
-            src={LIBRARY_MEDIA.heroBiblioteca}
-            alt="Sala principal de lectura e investigación de la biblioteca"
-            referrerPolicy="no-referrer"
-            onError={() => setHeroImgFailed(true)}
-            className="absolute inset-0 w-full h-full object-cover object-center"
-          />
-        )}
+    <div className="space-y-10">
+      {/* Hero Visual Monday.com White Workshop Canvas con Búsqueda Integrada */}
+      <section className="relative overflow-hidden card-monday bg-[#ffffff] p-8 sm:p-10 lg:p-12">
+        {/* Soft pastel decorative gradient wash */}
         <div
-          className="absolute inset-0 bg-gradient-to-r from-[#0F172A]/92 via-[#0F172A]/78 to-[#0F172A]/45"
+          className="absolute -top-24 -right-24 w-96 h-96 rounded-full bg-[#abf0ff]/25 blur-3xl pointer-events-none"
+          aria-hidden="true"
+        />
+        <div
+          className="absolute -bottom-24 -left-24 w-96 h-96 rounded-full bg-[#eddff7]/35 blur-3xl pointer-events-none"
           aria-hidden="true"
         />
 
-        <div className="relative z-10 p-6 sm:p-9 lg:p-11 space-y-6">
+        <div className="relative z-10 space-y-8">
           <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
             <div className="max-w-2xl">
-              <p className="text-xs font-medium tracking-widest uppercase text-[#CBD5E1]">
-                Acervo Bibliográfico
-              </p>
-              <h1 className="mt-2 font-serif text-3xl sm:text-4xl lg:text-[2.65rem] font-semibold tracking-tight leading-[1.1] text-white text-balance">
-                Explora la colección con búsqueda inteligente
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-[6px] bg-[#e7ecff] text-[#6161ff] text-xs font-semibold uppercase tracking-wider mb-3">
+                <Sparkles className="w-3.5 h-3.5" />
+                <span>Acervo Bibliográfico Inteligente</span>
+              </div>
+              <h1 className="font-light text-3xl sm:text-4xl lg:text-[2.75rem] tracking-[-0.03em] leading-[1.15] text-[#333333] text-balance">
+                Explora la colección con{' '}
+                <span className="gradient-hero-text font-normal">inteligencia artificial</span>
               </h1>
-              <p className="mt-2.5 text-sm sm:text-base text-[#E2E8F0] leading-relaxed max-w-xl">
-                Descubre obras por tema, autor o pregunta natural y consulta su disponibilidad en sala al instante.
+              <p className="mt-3 text-base text-[#535768] leading-relaxed max-w-xl">
+                Descubre obras por temática o lenguaje natural y consulta la disponibilidad física en sala al instante.
               </p>
             </div>
 
-            <div className="flex items-center gap-6 shrink-0 text-sm border-t lg:border-t-0 pt-4 lg:pt-0 border-white/15">
-              <div>
-                <div className="text-xs text-[#CBD5E1]">Obras</div>
-                <div className="font-mono text-2xl font-semibold tabular-nums text-white">
-                  {libros.length}
+            {/* Metric counters monday pill style */}
+            <div className="flex items-center gap-3 sm:gap-4 shrink-0 flex-wrap">
+              <div className="flex items-center gap-3 px-4 py-2.5 rounded-2xl bg-[#f5f6f8] border border-[#dddfeb]">
+                <div className="w-2.5 h-2.5 rounded-full bg-[#6161ff]" />
+                <div>
+                  <div className="text-[11px] font-medium text-[#535768]">Obras</div>
+                  <div className="font-mono text-xl font-bold tabular-nums text-[#333333]">
+                    {libros.length}
+                  </div>
                 </div>
               </div>
-              <div className="h-9 w-px bg-white/20" />
-              <div>
-                <div className="text-xs text-[#CBD5E1]">Colecciones</div>
-                <div className="font-mono text-2xl font-semibold tabular-nums text-white">
-                  {categorias.length}
+
+              <div className="flex items-center gap-3 px-4 py-2.5 rounded-2xl bg-[#f5f6f8] border border-[#dddfeb]">
+                <div className="w-2.5 h-2.5 rounded-full bg-[#abf0ff]" />
+                <div>
+                  <div className="text-[11px] font-medium text-[#535768]">Colecciones</div>
+                  <div className="font-mono text-xl font-bold tabular-nums text-[#333333]">
+                    {categorias.length}
+                  </div>
                 </div>
               </div>
-              <div className="h-9 w-px bg-white/20" />
-              <div>
-                <div className="text-xs text-[#CBD5E1]">Disponibles</div>
-                <div className="font-mono text-2xl font-semibold tabular-nums text-[#86EFAC]">
-                  {disponiblesEnSala}
+
+              <div className="flex items-center gap-3 px-4 py-2.5 rounded-2xl bg-[#f5f6f8] border border-[#dddfeb]">
+                <div className="w-2.5 h-2.5 rounded-full bg-[#bcfe90]" />
+                <div>
+                  <div className="text-[11px] font-medium text-[#535768]">Disponibles</div>
+                  <div className="font-mono text-xl font-bold tabular-nums text-[#2a5c4e]">
+                    {disponiblesEnSala}
+                  </div>
                 </div>
               </div>
             </div>
           </div>
 
-          {/* Barra de Búsqueda Limpia */}
-          <form onSubmit={handleFormSubmit} className="pt-1">
-            <div className="flex flex-col md:flex-row gap-2.5 rounded-lg bg-white/95 backdrop-blur-md p-2 shadow-lg">
-              <div className="relative flex-1">
-                <Search className="w-4 h-4 text-[#78716C] absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+          {/* Monday AI Prompt Search Card */}
+          <form onSubmit={handleFormSubmit} className="pt-2">
+            <div className="flex flex-col md:flex-row gap-2.5 rounded-[160px] bg-[#ffffff] border border-[#dddfeb] p-2 shadow-sm focus-within:border-[#6161ff] focus-within:ring-3 focus-within:ring-[#6161ff]/15 transition-all">
+              <div className="relative flex-1 flex items-center">
+                <Search className="w-4 h-4 text-[#808080] absolute left-4 pointer-events-none" />
                 <input
                   type="text"
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
-                  placeholder="Busca por título, autor o temática (ej. distopías tecnológicas, cosmos, realismo mágico)..."
+                  placeholder="Busca por título, autor o temática conceptual (ej. distopías tecnológicas, cosmos, filosofía)..."
                   aria-label="Buscar libros por tema, título, autor o ISBN"
-                  className="w-full rounded-md bg-transparent pl-10 pr-4 py-2.5 text-sm text-[#1C1917] placeholder:text-[#78716C] focus:outline-none"
+                  className="w-full bg-transparent pl-11 pr-4 py-2.5 text-sm text-[#333333] placeholder:text-[#808080] focus:outline-none"
                 />
               </div>
 
-              <div className="flex items-center gap-2 shrink-0 flex-wrap px-1 pb-1 md:p-0">
+              <div className="flex items-center gap-2 shrink-0 flex-wrap px-2 pb-1 md:p-0">
                 <div
-                  className="inline-flex rounded-md border border-[#E7E2D8] bg-[#F3EFE7] p-0.5"
+                  className="inline-flex rounded-[160px] bg-[#f5f6f8] p-1 border border-[#dddfeb]"
                   role="group"
                   aria-label="Modo de búsqueda"
                 >
                   <button
                     type="button"
                     onClick={() => setUseIa(true)}
-                    className={`inline-flex items-center gap-1.5 rounded px-3 py-1.5 text-xs font-semibold transition-colors whitespace-nowrap shrink-0 cursor-pointer ${
+                    className={`inline-flex items-center gap-1.5 rounded-[160px] px-3.5 py-1.5 text-xs font-semibold transition-all whitespace-nowrap shrink-0 cursor-pointer ${
                       useIa
-                        ? 'bg-[#FFFFFF] text-[#1E3A8A] shadow-xs'
-                        : 'text-[#57534E] hover:text-[#1C1917]'
+                        ? 'bg-[#6161ff] text-white shadow-xs'
+                        : 'text-[#535768] hover:text-[#333333]'
                     }`}
                   >
                     <Sparkles className="w-3.5 h-3.5" />
@@ -230,10 +247,10 @@ export const CatalogoView: React.FC<CatalogoViewProps> = ({
                   <button
                     type="button"
                     onClick={() => setUseIa(false)}
-                    className={`rounded px-3 py-1.5 text-xs font-semibold transition-colors whitespace-nowrap shrink-0 cursor-pointer ${
+                    className={`rounded-[160px] px-3.5 py-1.5 text-xs font-semibold transition-all whitespace-nowrap shrink-0 cursor-pointer ${
                       !useIa
-                        ? 'bg-[#FFFFFF] text-[#1C1917] shadow-xs'
-                        : 'text-[#57534E] hover:text-[#1C1917]'
+                        ? 'bg-[#ffffff] text-[#333333] shadow-xs'
+                        : 'text-[#535768] hover:text-[#333333]'
                     }`}
                   >
                     Local
@@ -243,16 +260,17 @@ export const CatalogoView: React.FC<CatalogoViewProps> = ({
                 <button
                   type="submit"
                   disabled={searching}
-                  className="inline-flex items-center justify-center gap-2 rounded-md bg-[#1E3A8A] px-5 py-2.5 text-sm font-semibold text-white hover:bg-[#172554] disabled:opacity-60 transition-colors whitespace-nowrap shrink-0 cursor-pointer"
+                  className="btn-primary-pill text-xs py-2 px-5 cursor-pointer shadow-sm disabled:opacity-60"
                 >
                   {searching ? 'Buscando...' : 'Buscar'}
+                  <ArrowRight className="w-3.5 h-3.5" />
                 </button>
 
                 {(searchResult || selectedCategory !== 'Todas') && (
                   <button
                     type="button"
                     onClick={clearSearch}
-                    className="rounded-md border border-[#D6CEBE] bg-[#FFFFFF] px-3 py-2.5 text-xs font-medium text-[#57534E] hover:bg-[#F3EFE7] transition-colors whitespace-nowrap shrink-0 cursor-pointer"
+                    className="btn-outline-pill text-xs py-2 px-4 cursor-pointer"
                   >
                     Limpiar
                   </button>
@@ -262,12 +280,12 @@ export const CatalogoView: React.FC<CatalogoViewProps> = ({
           </form>
 
           {searchResult && (
-            <div className="flex flex-wrap items-center justify-between gap-2 text-xs text-[#E2E8F0]">
+            <div className="flex flex-wrap items-center justify-between gap-2 px-2 text-xs text-[#535768]">
               <div>
-                Mostrando <span className="font-mono tabular-nums font-semibold text-white">{displayedBooks.length}</span> resultados para{' '}
-                <span className="font-semibold text-white">“{searchResult.query}”</span>
+                Mostrando <span className="font-mono tabular-nums font-semibold text-[#333333]">{displayedBooks.length}</span> resultados para{' '}
+                <span className="font-semibold text-[#6161ff]">“{searchResult.query}”</span>
               </div>
-              <span className="font-mono tabular-nums text-[#CBD5E1]">
+              <span className="badge-monday bg-[#dbdbff] text-[#6161ff] font-mono tabular-nums">
                 {searchResult.mode === 'ia' ? 'Motor IA' : 'Catálogo Local'} · {searchResult.latencyMs} ms
               </span>
             </div>
@@ -275,16 +293,16 @@ export const CatalogoView: React.FC<CatalogoViewProps> = ({
         </div>
       </section>
 
-      {/* Salas y Colecciones: Una imagen dedicada para CADA categoría */}
+      {/* Salas y Colecciones: Monday Pastel Feature Cards */}
       {!searchResult && selectedCategory === 'Todas' && categorias.length > 0 && (
         <section aria-label="Salas y colecciones por categoría" className="space-y-4">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div className="flex items-baseline gap-3">
-              <h2 className="font-serif text-xl font-semibold text-[#1C1917]">
+              <h2 className="text-xl font-bold text-[#333333] tracking-tight">
                 Salas y colecciones
               </h2>
-              <span className="font-mono text-xs tabular-nums text-[#78716C]">
-                {categorias.length} categorías temáticas
+              <span className="badge-monday bg-[#dbdbff] text-[#6161ff] font-medium">
+                {categorias.length} colecciones
               </span>
             </div>
 
@@ -292,55 +310,45 @@ export const CatalogoView: React.FC<CatalogoViewProps> = ({
               <button
                 type="button"
                 onClick={onOpenSalas}
-                className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#1E3A8A] hover:underline underline-offset-4 whitespace-nowrap cursor-pointer"
+                className="btn-outline-pill text-xs py-1.5 px-4 cursor-pointer"
               >
                 <MapIcon className="w-3.5 h-3.5" />
-                Ver plano de salas y pasillos
+                Ver plano de salas
               </button>
             )}
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3.5">
-            {categorias.map((cat) => {
-              const imgUrl = resolveCategoryBannerArt(cat.nombre);
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+            {categorias.map((cat, idx) => {
               const count = cat.libros_count ?? 0;
+              const palette = PASTEL_PALETTES[idx % PASTEL_PALETTES.length];
 
               return (
                 <button
                   key={cat.id_categoria}
                   type="button"
                   onClick={() => onSelectCategory(cat.nombre)}
-                  className="group relative aspect-[16/9] w-full overflow-hidden rounded-xl bg-[#1E293B] text-left cursor-pointer"
+                  className={`group relative w-full overflow-hidden rounded-[24px] ${palette.bg} border ${palette.border} p-5 text-left cursor-pointer transition-all duration-200 hover:-translate-y-1 hover:shadow-[0px_5px_30px_rgba(0,0,0,0.08)] flex flex-col justify-between min-h-[170px]`}
                 >
-                  <img
-                    src={imgUrl}
-                    alt={`Sala ${cat.nombre}`}
-                    referrerPolicy="no-referrer"
-                    className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-105"
-                  />
-                  <div
-                    className="absolute inset-0 bg-gradient-to-t from-black/88 via-black/35 to-black/10"
-                    aria-hidden="true"
-                  />
-                  <div className="relative z-10 h-full p-4 flex flex-col justify-between text-white">
-                    <div className="flex items-center justify-between gap-2 text-[11px] font-mono text-white/85">
-                      <span className="truncate">{cat.ubicacion_sala}</span>
-                      <span className="tabular-nums shrink-0">
-                        {count} {count === 1 ? 'obra' : 'obras'}
-                      </span>
-                    </div>
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="text-[11px] font-semibold text-[#535768] tracking-wider uppercase">
+                      {cat.ubicacion_sala.split('·')[0]?.trim()}
+                    </span>
+                    <span className={`badge-monday ${palette.badge} font-mono text-[11px] tabular-nums`}>
+                      {count} {count === 1 ? 'obra' : 'obras'}
+                    </span>
+                  </div>
 
-                    <div>
-                      <div className="flex items-center justify-between gap-2">
-                        <h3 className="font-serif text-base font-semibold leading-snug line-clamp-1">
-                          {cat.nombre}
-                        </h3>
-                        <ArrowRight className="w-3.5 h-3.5 shrink-0 opacity-80 transition-transform group-hover:translate-x-1" />
-                      </div>
-                      <p className="mt-1 text-[11px] text-white/80 line-clamp-1">
-                        {cat.enfoque_lector}
-                      </p>
+                  <div className="mt-4">
+                    <div className="flex items-center justify-between gap-2">
+                      <h3 className="text-base font-semibold leading-snug text-[#333333] line-clamp-1 group-hover:text-[#6161ff] transition-colors">
+                        {cat.nombre}
+                      </h3>
+                      <ArrowRight className="w-4 h-4 text-[#535768] shrink-0 opacity-80 transition-transform group-hover:translate-x-1 group-hover:text-[#6161ff]" />
                     </div>
+                    <p className="mt-1 text-xs text-[#535768] line-clamp-2 leading-relaxed">
+                      {cat.descripcion}
+                    </p>
                   </div>
                 </button>
               );
@@ -349,16 +357,16 @@ export const CatalogoView: React.FC<CatalogoViewProps> = ({
         </section>
       )}
 
-      {/* Dossier Visual de Categoría Activa (al filtrar desde barra lateral o salas) */}
+      {/* Dossier Visual de Categoría Activa */}
       {activeCategoryMeta && (
         <motion.section
           key={activeCategoryMeta.id_categoria}
           initial={{ opacity: 0, y: 4 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.16 }}
-          className="overflow-hidden rounded-xl border border-[#E7E2D8] bg-[#FFFFFF] grid grid-cols-1 md:grid-cols-[260px_1fr]"
+          className="overflow-hidden card-monday bg-[#ffffff] grid grid-cols-1 md:grid-cols-[260px_1fr]"
         >
-          <div className="relative aspect-[4/3] md:aspect-auto md:h-full bg-[#1E293B]">
+          <div className="relative aspect-[4/3] md:aspect-auto md:h-full bg-[#eddff7] overflow-hidden">
             <img
               src={resolveCategoryBannerArt(activeCategoryMeta.nombre)}
               alt={`Colección ${activeCategoryMeta.nombre}`}
@@ -367,18 +375,18 @@ export const CatalogoView: React.FC<CatalogoViewProps> = ({
             />
           </div>
 
-          <div className="p-6 flex flex-col justify-between gap-4">
+          <div className="p-6 sm:p-8 flex flex-col justify-between gap-4">
             <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
               <div className="space-y-1.5">
-                <div className="flex flex-wrap items-center gap-2 text-xs font-mono text-[#78716C]">
-                  <span>CDU {activeCategoryMeta.codigo_archivo}</span>
+                <div className="flex flex-wrap items-center gap-2 text-xs font-mono text-[#535768]">
+                  <span className="badge-monday bg-[#dbdbff] text-[#6161ff] font-semibold">CDU {activeCategoryMeta.codigo_archivo}</span>
                   <span aria-hidden="true">·</span>
                   <span>{activeCategoryMeta.ubicacion_sala}</span>
                 </div>
-                <h2 className="font-serif text-2xl font-semibold text-[#1C1917]">
+                <h2 className="text-2xl font-bold text-[#333333] tracking-tight">
                   {activeCategoryMeta.nombre}
                 </h2>
-                <p className="text-sm text-[#44403C] leading-relaxed max-w-2xl">
+                <p className="text-sm text-[#535768] leading-relaxed max-w-2xl">
                   {activeCategoryMeta.descripcion}
                 </p>
               </div>
@@ -386,19 +394,19 @@ export const CatalogoView: React.FC<CatalogoViewProps> = ({
               <button
                 type="button"
                 onClick={() => onSelectCategory('Todas')}
-                className="text-xs font-semibold text-[#1E3A8A] hover:underline underline-offset-4 whitespace-nowrap shrink-0 self-start cursor-pointer"
+                className="btn-outline-pill text-xs py-1.5 px-3.5 whitespace-nowrap shrink-0 self-start cursor-pointer"
               >
                 Ver todo el catálogo
               </button>
             </div>
 
-            <div className="flex flex-wrap items-center gap-x-6 gap-y-2 pt-3 border-t border-[#F3EFE7] text-xs text-[#57534E]">
+            <div className="flex flex-wrap items-center gap-x-6 gap-y-2 pt-4 border-t border-[#f5f6f8] text-xs text-[#535768]">
               <span>
-                <strong className="font-medium text-[#1C1917]">Público:</strong>{' '}
+                <strong className="font-semibold text-[#333333]">Público:</strong>{' '}
                 {activeCategoryMeta.publico_recomendado}
               </span>
               <span>
-                <strong className="font-medium text-[#1C1917]">Enfoque:</strong>{' '}
+                <strong className="font-semibold text-[#333333]">Enfoque:</strong>{' '}
                 {activeCategoryMeta.enfoque_lector}
               </span>
             </div>
@@ -409,30 +417,30 @@ export const CatalogoView: React.FC<CatalogoViewProps> = ({
       {/* Cabecera de la Grilla de Libros con Filtros y Ordenamiento */}
       <div
         id="catalogo-obras"
-        className="scroll-mt-20 flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-2 border-t border-[#E7E2D8]"
+        className="scroll-mt-24 flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-4 border-t border-[#d0d4e4]"
       >
         <div className="flex items-baseline gap-3">
-          <h2 className="font-serif text-xl font-semibold text-[#1C1917]">
+          <h2 className="text-xl font-bold text-[#333333] tracking-tight">
             {activeCategoryMeta ? `Obras en ${activeCategoryMeta.nombre}` : 'Catálogo de obras'}
           </h2>
-          <span className="font-mono text-xs tabular-nums text-[#78716C]">
+          <span className="badge-monday bg-[#e7ecff] text-[#6161ff] font-mono tabular-nums">
             {displayedBooks.length} {displayedBooks.length === 1 ? 'título' : 'títulos'}
           </span>
         </div>
 
-        <div className="flex flex-wrap items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2.5">
           <div
-            className="inline-flex rounded-md border border-[#E7E2D8] bg-[#FFFFFF] p-0.5"
+            className="inline-flex rounded-[160px] border border-[#dddfeb] bg-[#ffffff] p-1 shadow-2xs"
             role="group"
             aria-label="Filtrar por disponibilidad"
           >
             <button
               type="button"
               onClick={() => setAvailabilityFilter('all')}
-              className={`rounded px-2.5 py-1 text-xs font-medium transition-colors whitespace-nowrap cursor-pointer ${
+              className={`rounded-[160px] px-3.5 py-1 text-xs font-medium transition-all whitespace-nowrap cursor-pointer ${
                 availabilityFilter === 'all'
-                  ? 'bg-[#1E3A8A] text-white'
-                  : 'text-[#57534E] hover:text-[#1C1917]'
+                  ? 'bg-[#6161ff] text-white shadow-xs font-semibold'
+                  : 'text-[#535768] hover:text-[#333333]'
               }`}
             >
               Todos
@@ -440,10 +448,10 @@ export const CatalogoView: React.FC<CatalogoViewProps> = ({
             <button
               type="button"
               onClick={() => setAvailabilityFilter('available')}
-              className={`rounded px-2.5 py-1 text-xs font-medium transition-colors whitespace-nowrap cursor-pointer ${
+              className={`rounded-[160px] px-3.5 py-1 text-xs font-medium transition-all whitespace-nowrap cursor-pointer ${
                 availabilityFilter === 'available'
-                  ? 'bg-[#1E3A8A] text-white'
-                  : 'text-[#57534E] hover:text-[#1C1917]'
+                  ? 'bg-[#6161ff] text-white shadow-xs font-semibold'
+                  : 'text-[#535768] hover:text-[#333333]'
               }`}
             >
               Solo disponibles
@@ -454,7 +462,7 @@ export const CatalogoView: React.FC<CatalogoViewProps> = ({
             aria-label="Ordenar catálogo"
             value={sortBy}
             onChange={(e) => setSortBy(e.target.value as CatalogSortBy)}
-            className="rounded-md border border-[#E7E2D8] bg-[#FFFFFF] px-2.5 py-1.5 text-xs font-medium text-[#1C1917] focus:border-[#1E3A8A] focus:outline-none cursor-pointer"
+            className="rounded-[6px] border border-[#dddfeb] bg-[#ffffff] px-3 py-1.5 text-xs font-medium text-[#333333] focus:border-[#6161ff] focus:outline-none cursor-pointer shadow-2xs"
           >
             <option value="recent">Orden: Recientes</option>
             <option value="title">Orden: Título (A–Z)</option>
@@ -469,13 +477,13 @@ export const CatalogoView: React.FC<CatalogoViewProps> = ({
           {[1, 2, 3, 4, 5, 6].map((n) => (
             <div
               key={n}
-              className="rounded-xl border border-[#E7E2D8] bg-[#FFFFFF] overflow-hidden animate-pulse"
+              className="card-monday overflow-hidden animate-pulse"
             >
-              <div className="aspect-[4/3] bg-[#EBE6DF]" />
-              <div className="p-5 space-y-3">
-                <div className="h-5 bg-[#EBE6DF] rounded w-3/4" />
-                <div className="h-3 bg-[#F3EFE7] rounded w-full" />
-                <div className="h-3 bg-[#F3EFE7] rounded w-2/3" />
+              <div className="aspect-[4/3] bg-[#dddfeb]/50" />
+              <div className="p-6 space-y-3">
+                <div className="h-5 bg-[#dddfeb]/60 rounded-md w-3/4" />
+                <div className="h-3 bg-[#f5f6f8] rounded-md w-full" />
+                <div className="h-3 bg-[#f5f6f8] rounded-md w-2/3" />
               </div>
             </div>
           ))}
@@ -484,25 +492,25 @@ export const CatalogoView: React.FC<CatalogoViewProps> = ({
 
       {/* Estado Vacío */}
       {!loadingInitial && !searching && displayedBooks.length === 0 && (
-        <div className="rounded-xl border border-[#E7E2D8] bg-[#FFFFFF] py-16 px-6 text-center">
-          <BookOpen className="w-10 h-10 text-[#A8A29E] mx-auto mb-3" />
-          <h3 className="font-serif text-lg font-semibold text-[#1C1917]">
+        <div className="card-monday py-16 px-6 text-center">
+          <BookOpen className="w-10 h-10 text-[#808080] mx-auto mb-3" />
+          <h3 className="text-lg font-bold text-[#333333]">
             No se encontraron obras afines
           </h3>
-          <p className="mt-1.5 text-sm text-[#57534E] max-w-md mx-auto">
-            Prueba con términos generales o restablece el filtro para explorar todo el catálogo.
+          <p className="mt-1.5 text-sm text-[#535768] max-w-md mx-auto">
+            Prueba con términos conceptuales o restablece el filtro para explorar todo el acervo.
           </p>
           <button
             type="button"
             onClick={clearSearch}
-            className="mt-5 inline-flex items-center rounded-md border border-[#D6CEBE] bg-[#FBF9F5] px-4 py-2 text-xs font-semibold text-[#1C1917] hover:bg-[#F3EFE7] transition-colors cursor-pointer"
+            className="mt-5 btn-primary-pill text-xs py-2 px-5 cursor-pointer"
           >
             Ver todo el catálogo
           </button>
         </div>
       )}
 
-      {/* Grilla Visual de Libros */}
+      {/* Grilla Visual de Libros (Monday Board Mockup Cards) */}
       {!loadingInitial && !searching && displayedBooks.length > 0 && (
         <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
           {displayedBooks.map((libro, idx) => {
@@ -516,17 +524,17 @@ export const CatalogoView: React.FC<CatalogoViewProps> = ({
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.18, delay: Math.min(idx * 0.025, 0.15) }}
                 onClick={() => onSelectLibro(libro)}
-                className="group rounded-xl border border-[#E7E2D8] bg-[#FFFFFF] flex flex-col justify-between overflow-hidden transition-all hover:border-[#C7BFA9] hover:shadow-md cursor-pointer"
+                className="group card-monday flex flex-col justify-between overflow-hidden cursor-pointer"
               >
                 <div>
                   <BookCover libro={libro} size="card" />
 
                   <div className="p-5 space-y-2">
-                    <h3 className="font-serif text-xl font-semibold leading-snug text-[#1C1917] line-clamp-2 group-hover:text-[#1E3A8A] transition-colors">
+                    <h3 className="text-lg font-bold leading-snug text-[#333333] line-clamp-2 group-hover:text-[#6161ff] transition-colors">
                       {libro.titulo}
                     </h3>
 
-                    <p className="text-xs text-[#57534E] leading-relaxed line-clamp-2">
+                    <p className="text-xs text-[#535768] leading-relaxed line-clamp-2">
                       {libro.sinopsis
                         ? libro.sinopsis
                         : 'Edición histórica disponible para consulta en sala y ficha técnica.'}
@@ -534,31 +542,27 @@ export const CatalogoView: React.FC<CatalogoViewProps> = ({
                   </div>
                 </div>
 
-                <div className="px-5 py-3.5 border-t border-[#F3EFE7] flex items-center justify-between gap-3">
+                <div className="px-5 py-3.5 border-t border-[#f5f6f8] flex items-center justify-between gap-3">
                   <div className="flex items-center gap-1.5 text-xs font-medium min-w-0">
                     {isOut ? (
-                      <>
-                        <XCircle className="w-3.5 h-3.5 text-[#B91C1C] shrink-0" />
-                        <span className="text-[#B91C1C] truncate">Agotado</span>
-                      </>
+                      <span className="badge-monday bg-[#fcd0f8] text-[#991B1B]">
+                        <XCircle className="w-3.5 h-3.5 mr-1 shrink-0" />
+                        Agotado
+                      </span>
                     ) : isLow ? (
-                      <>
-                        <Clock className="w-3.5 h-3.5 text-[#B45309] shrink-0" />
-                        <span className="text-[#B45309] tabular-nums truncate">
-                          Última copia ({libro.copias_disp}/{libro.copias_totales})
-                        </span>
-                      </>
+                      <span className="badge-monday bg-[#ff8940]/20 text-[#333333]">
+                        <Clock className="w-3.5 h-3.5 mr-1 text-[#ff8940] shrink-0" />
+                        Última copia ({libro.copias_disp}/{libro.copias_totales})
+                      </span>
                     ) : (
-                      <>
-                        <CheckCircle2 className="w-3.5 h-3.5 text-[#15803D] shrink-0" />
-                        <span className="text-[#15803D] tabular-nums truncate">
-                          Disponible ({libro.copias_disp}/{libro.copias_totales})
-                        </span>
-                      </>
+                      <span className="badge-monday bg-[#bcfe90] text-[#2a5c4e]">
+                        <CheckCircle2 className="w-3.5 h-3.5 mr-1 shrink-0" />
+                        Disponible ({libro.copias_disp}/{libro.copias_totales})
+                      </span>
                     )}
                   </div>
 
-                  <span className="inline-flex items-center gap-1 text-xs font-semibold text-[#1E3A8A] group-hover:translate-x-0.5 transition-transform whitespace-nowrap shrink-0">
+                  <span className="inline-flex items-center gap-1 text-xs font-semibold text-[#6161ff] group-hover:translate-x-1 transition-transform whitespace-nowrap shrink-0">
                     Ver ficha
                     <ArrowRight className="w-3.5 h-3.5" />
                   </span>

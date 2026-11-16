@@ -398,18 +398,22 @@ export const AdminView: React.FC<AdminViewProps> = ({
   }
 
   return (
-    <div className="space-y-6">
-      <div className="flex flex-col xl:flex-row xl:items-end justify-between gap-4 border-b border-[#E7E2D8] pb-5">
+    <div className="space-y-8">
+      <div className="card-monday bg-[#ffffff] p-8 flex flex-col xl:flex-row xl:items-end justify-between gap-6">
         <div>
-          <p className="text-xs font-medium tracking-widest uppercase text-[#78716C]">
-            Consola Administrativa
-          </p>
-          <h1 className="mt-1 font-serif text-3xl font-semibold text-[#1C1917]">
-            Inventario, Categorías, Usuarios y Auditoría
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-[6px] bg-[#e7ecff] text-[#6161ff] text-xs font-semibold uppercase tracking-wider mb-2.5">
+            <ShieldCheck className="w-3.5 h-3.5" />
+            <span>Consola de Administración</span>
+          </div>
+          <h1 className="text-3xl sm:text-4xl font-light tracking-[-0.03em] text-[#333333] text-balance">
+            Gestión de <span className="gradient-hero-text font-normal">inventario, roles y sistema</span>
           </h1>
+          <p className="mt-2 text-sm text-[#535768]">
+            Administración centralizada de títulos, clasificaciones CDU, permisos RBAC, infraestructura y auditoría transaccional.
+          </p>
         </div>
 
-        <div className="inline-flex flex-wrap rounded-md border border-[#D6CEBE] bg-[#F3EFE7] p-0.5 self-start">
+        <div className="inline-flex flex-wrap rounded-[160px] border border-[#dddfeb] bg-[#f5f6f8] p-1 shadow-2xs self-start">
           {(
             [
               ['inventario', 'Catálogo'],
@@ -426,10 +430,10 @@ export const AdminView: React.FC<AdminViewProps> = ({
                 setTab(key);
                 if (key === 'infraestructura') loadInfraMetrics();
               }}
-              className={`px-3.5 py-1.5 text-xs font-semibold rounded transition-colors whitespace-nowrap cursor-pointer ${
+              className={`px-3.5 py-1.5 text-xs font-medium rounded-[160px] transition-all whitespace-nowrap cursor-pointer ${
                 tab === key
-                  ? 'bg-[#FFFFFF] text-[#1C1917] shadow-xs'
-                  : 'text-[#57534E] hover:text-[#1C1917]'
+                  ? 'bg-[#6161ff] text-white shadow-xs font-semibold'
+                  : 'text-[#535768] hover:text-[#333333]'
               }`}
             >
               {label}
@@ -440,20 +444,20 @@ export const AdminView: React.FC<AdminViewProps> = ({
 
       {/* TAB 1: INVENTARIO CRUD */}
       {tab === 'inventario' && (
-        <section className="rounded-lg border border-[#E7E2D8] bg-[#FFFFFF] overflow-hidden">
-          <div className="px-6 py-4 border-b border-[#E7E2D8] bg-[#FBF9F5] flex flex-wrap items-center justify-between gap-3">
+        <section className="card-monday bg-[#ffffff] overflow-hidden">
+          <div className="px-6 py-4 border-b border-[#d0d4e4] bg-[#f5f6f8] flex flex-wrap items-center justify-between gap-3">
             <div>
-              <h2 className="font-serif text-lg font-semibold text-[#1C1917]">
+              <h2 className="text-lg font-bold text-[#333333] tracking-tight">
                 Libros y Autores ({libros.length})
               </h2>
-              <p className="text-xs text-[#57534E]">
+              <p className="text-xs text-[#535768]">
                 Unicidad de ISBN y validación CHECK de existencias en SQLite transaccional.
               </p>
             </div>
             <button
               type="button"
               onClick={openNewBookModal}
-              className="inline-flex items-center gap-1.5 rounded-md bg-[#1E3A8A] px-4 py-2 text-xs font-semibold text-white hover:bg-[#172554] transition-colors"
+              className="btn-primary-pill text-xs py-2 px-4.5 cursor-pointer shadow-xs"
             >
               <Plus className="w-3.5 h-3.5" />
               Registrar Libro
@@ -463,7 +467,7 @@ export const AdminView: React.FC<AdminViewProps> = ({
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse text-xs">
               <thead>
-                <tr className="border-b border-[#E7E2D8] text-[11px] font-semibold uppercase tracking-wider text-[#57534E]">
+                <tr className="border-b border-[#d0d4e4] bg-[#f5f6f8] text-[11px] font-semibold uppercase tracking-wider text-[#535768]">
                   <th className="py-3 px-5">ISBN</th>
                   <th className="py-3 px-5">Título y Autores</th>
                   <th className="py-3 px-5">Categoría</th>
@@ -471,31 +475,32 @@ export const AdminView: React.FC<AdminViewProps> = ({
                   <th className="py-3 px-5 text-right">Acciones</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[#F3EFE7]">
+              <tbody className="divide-y divide-[#f5f6f8]">
                 {libros.map((l) => (
-                  <tr key={l.id_libro} className="hover:bg-[#FBF9F5]">
-                    <td className="py-3 px-5 font-mono tabular-nums text-[#57534E] whitespace-nowrap">
+                  <tr key={l.id_libro} className="hover:bg-[#f5f6f8]/80 transition-colors">
+                    <td className="py-3.5 px-5 font-mono tabular-nums text-[#535768] whitespace-nowrap font-medium">
                       {l.isbn}
                     </td>
-                    <td className="py-3 px-5">
-                      <div className="font-semibold text-[#1C1917]">{l.titulo}</div>
-                      <div className="text-[#57534E]">
+                    <td className="py-3.5 px-5">
+                      <div className="font-semibold text-[#333333] text-sm">{l.titulo}</div>
+                      <div className="text-[#535768] text-xs">
                         {l.autores.map((a) => a.nombre).join(', ')}
                       </div>
                     </td>
-                    <td className="py-3 px-5 text-[#57534E]">{l.categoria}</td>
-                    <td className="py-3 px-5 text-right font-mono tabular-nums font-semibold">
-                      <span className={l.copias_disp === 0 ? 'text-[#B91C1C]' : 'text-[#15803D]'}>
-                        {l.copias_disp}
-                      </span>
-                      <span className="text-[#78716C]"> / {l.copias_totales}</span>
+                    <td className="py-3.5 px-5">
+                      <span className="badge-monday bg-[#e7ecff] text-[#6161ff] font-medium">{l.categoria}</span>
                     </td>
-                    <td className="py-3 px-5 text-right">
+                    <td className="py-3.5 px-5 text-right font-mono tabular-nums font-semibold">
+                      <span className={`badge-monday ${l.copias_disp === 0 ? 'bg-[#fcd0f8] text-[#991B1B]' : 'bg-[#bcfe90] text-[#2a5c4e]'}`}>
+                        {l.copias_disp} / {l.copias_totales}
+                      </span>
+                    </td>
+                    <td className="py-3.5 px-5 text-right">
                       <div className="inline-flex items-center gap-2">
                         <button
                           type="button"
                           onClick={() => openEditBookModal(l)}
-                          className="inline-flex items-center gap-1 rounded border border-[#D6CEBE] px-2.5 py-1 text-xs font-medium text-[#1C1917] hover:bg-[#F3EFE7]"
+                          className="btn-outline-pill text-xs py-1 px-3 cursor-pointer"
                         >
                           <Edit3 className="w-3 h-3" />
                           Editar
@@ -503,7 +508,7 @@ export const AdminView: React.FC<AdminViewProps> = ({
                         <button
                           type="button"
                           onClick={() => handleDeleteBook(l)}
-                          className="inline-flex items-center gap-1 rounded border border-[#B91C1C]/30 px-2.5 py-1 text-xs font-medium text-[#B91C1C] hover:bg-[#FEF2F2]"
+                          className="btn-outline-pill text-xs py-1 px-3 text-[#991B1B] border-[#fcd0f8] hover:bg-[#fcd0f8]/40 cursor-pointer"
                         >
                           <Trash2 className="w-3 h-3" />
                           Eliminar
@@ -520,20 +525,20 @@ export const AdminView: React.FC<AdminViewProps> = ({
 
       {/* TAB 2: CATEGORÍAS Y DESCRIPCIONES */}
       {tab === 'categorias' && (
-        <section className="rounded-lg border border-[#E7E2D8] bg-[#FFFFFF] overflow-hidden">
-          <div className="px-6 py-4 border-b border-[#E7E2D8] bg-[#FBF9F5] flex flex-wrap items-center justify-between gap-3">
+        <section className="card-monday bg-[#ffffff] overflow-hidden">
+          <div className="px-6 py-4 border-b border-[#d0d4e4] bg-[#f5f6f8] flex flex-wrap items-center justify-between gap-3">
             <div>
-              <h2 className="font-serif text-lg font-semibold text-[#1C1917]">
+              <h2 className="text-lg font-bold text-[#333333] tracking-tight">
                 Categorías y Descripciones ({categorias.length})
               </h2>
-              <p className="text-xs text-[#57534E]">
+              <p className="text-xs text-[#535768]">
                 Administre las colecciones temáticas, códigos de clasificación CDU y su descripción curatorial.
               </p>
             </div>
             <button
               type="button"
               onClick={openNewCatModal}
-              className="inline-flex items-center gap-1.5 rounded-md bg-[#1E3A8A] px-4 py-2 text-xs font-semibold text-white hover:bg-[#172554] transition-colors"
+              className="btn-primary-pill text-xs py-2 px-4.5 cursor-pointer shadow-xs"
             >
               <FolderPlus className="w-3.5 h-3.5" />
               Nueva Categoría
@@ -543,7 +548,7 @@ export const AdminView: React.FC<AdminViewProps> = ({
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse text-xs">
               <thead>
-                <tr className="border-b border-[#E7E2D8] text-[11px] font-semibold uppercase tracking-wider text-[#57534E]">
+                <tr className="border-b border-[#d0d4e4] bg-[#f5f6f8] text-[11px] font-semibold uppercase tracking-wider text-[#535768]">
                   <th className="py-3 px-5">CDU</th>
                   <th className="py-3 px-5">Categoría</th>
                   <th className="py-3 px-5">Descripción</th>
@@ -551,24 +556,24 @@ export const AdminView: React.FC<AdminViewProps> = ({
                   <th className="py-3 px-5 text-right">Acción</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[#F3EFE7]">
+              <tbody className="divide-y divide-[#f5f6f8]">
                 {categorias.map((c) => (
-                  <tr key={c.id_categoria} className="hover:bg-[#FBF9F5]">
-                    <td className="py-3 px-5 font-mono tabular-nums text-[#57534E] whitespace-nowrap">
-                      {c.codigo_archivo}
+                  <tr key={c.id_categoria} className="hover:bg-[#f5f6f8]/80 transition-colors">
+                    <td className="py-3.5 px-5 font-mono tabular-nums text-[#535768] whitespace-nowrap">
+                      <span className="badge-monday bg-[#dbdbff] text-[#6161ff] font-bold">CDU {c.codigo_archivo}</span>
                     </td>
-                    <td className="py-3 px-5 font-semibold text-[#1C1917] whitespace-nowrap">
+                    <td className="py-3.5 px-5 font-bold text-[#333333] whitespace-nowrap">
                       {c.nombre}
                     </td>
-                    <td className="py-3 px-5 text-[#57534E] max-w-md">{c.descripcion}</td>
-                    <td className="py-3 px-5 text-right font-mono tabular-nums font-semibold text-[#1C1917]">
+                    <td className="py-3.5 px-5 text-[#535768] max-w-md">{c.descripcion}</td>
+                    <td className="py-3.5 px-5 text-right font-mono tabular-nums font-bold text-[#333333]">
                       {c.libros_count ?? 0}
                     </td>
-                    <td className="py-3 px-5 text-right">
+                    <td className="py-3.5 px-5 text-right">
                       <button
                         type="button"
                         onClick={() => openEditCatModal(c)}
-                        className="inline-flex items-center gap-1 rounded border border-[#D6CEBE] px-2.5 py-1 text-xs font-medium text-[#1C1917] hover:bg-[#F3EFE7]"
+                        className="btn-outline-pill text-xs py-1 px-3 cursor-pointer"
                       >
                         <Edit3 className="w-3 h-3" />
                         Editar
@@ -584,20 +589,20 @@ export const AdminView: React.FC<AdminViewProps> = ({
 
       {/* TAB 3: USUARIOS Y SANCIONES */}
       {tab === 'usuarios' && (
-        <section className="rounded-lg border border-[#E7E2D8] bg-[#FFFFFF] overflow-hidden">
-          <div className="px-6 py-4 border-b border-[#E7E2D8] bg-[#FBF9F5] flex flex-wrap items-center justify-between gap-3">
+        <section className="card-monday bg-[#ffffff] overflow-hidden">
+          <div className="px-6 py-4 border-b border-[#d0d4e4] bg-[#f5f6f8] flex flex-wrap items-center justify-between gap-3">
             <div>
-              <h2 className="font-serif text-lg font-semibold text-[#1C1917]">
+              <h2 className="text-lg font-bold text-[#333333] tracking-tight">
                 Directorio de Usuarios RBAC ({usuarios.length})
               </h2>
-              <p className="text-xs text-[#57534E]">
+              <p className="text-xs text-[#535768]">
                 Gestione perfiles y habilite lectores rehabilitados tras devolución de mora.
               </p>
             </div>
             <button
               type="button"
               onClick={() => setUserModalOpen(true)}
-              className="inline-flex items-center gap-1.5 rounded-md bg-[#1E3A8A] px-4 py-2 text-xs font-semibold text-white hover:bg-[#172554] transition-colors"
+              className="btn-primary-pill text-xs py-2 px-4.5 cursor-pointer shadow-xs"
             >
               <UserPlus className="w-3.5 h-3.5" />
               Registrar Usuario
@@ -607,7 +612,7 @@ export const AdminView: React.FC<AdminViewProps> = ({
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse text-xs">
               <thead>
-                <tr className="border-b border-[#E7E2D8] text-[11px] font-semibold uppercase tracking-wider text-[#57534E]">
+                <tr className="border-b border-[#d0d4e4] bg-[#f5f6f8] text-[11px] font-semibold uppercase tracking-wider text-[#535768]">
                   <th className="py-3 px-5">Documento</th>
                   <th className="py-3 px-5">Nombre completo</th>
                   <th className="py-3 px-5">Correo</th>
@@ -616,30 +621,32 @@ export const AdminView: React.FC<AdminViewProps> = ({
                   <th className="py-3 px-5 text-right">Acción</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[#F3EFE7]">
+              <tbody className="divide-y divide-[#f5f6f8]">
                 {usuarios.map((u) => (
-                  <tr key={u.id_usuario} className="hover:bg-[#FBF9F5]">
-                    <td className="py-3 px-5 font-mono tabular-nums text-[#57534E]">
+                  <tr key={u.id_usuario} className="hover:bg-[#f5f6f8]/80 transition-colors">
+                    <td className="py-3.5 px-5 font-mono tabular-nums text-[#535768]">
                       {u.numero_documento}
                     </td>
-                    <td className="py-3 px-5 font-semibold text-[#1C1917]">{u.nombre_completo}</td>
-                    <td className="py-3 px-5 font-mono text-[#57534E]">{u.email}</td>
-                    <td className="py-3 px-5 font-mono font-medium text-[#1C1917]">{u.rol}</td>
-                    <td className="py-3 px-5 font-semibold">
+                    <td className="py-3.5 px-5 font-bold text-[#333333]">{u.nombre_completo}</td>
+                    <td className="py-3.5 px-5 font-mono text-[#535768]">{u.email}</td>
+                    <td className="py-3.5 px-5">
+                      <span className="badge-monday bg-[#dbdbff] text-[#6161ff] font-bold">{u.rol}</span>
+                    </td>
+                    <td className="py-3.5 px-5 font-semibold">
                       {u.estado === 'SANCIONADO' ? (
-                        <span className="text-[#B91C1C]">SANCIONADO</span>
+                        <span className="badge-monday bg-[#fcd0f8] text-[#991B1B]">SANCIONADO</span>
                       ) : (
-                        <span className="text-[#15803D]">ACTIVO</span>
+                        <span className="badge-monday bg-[#bcfe90] text-[#2a5c4e]">ACTIVO</span>
                       )}
                     </td>
-                    <td className="py-3 px-5 text-right">
+                    <td className="py-3.5 px-5 text-right">
                       <button
                         type="button"
                         onClick={() => handleToggleUserStatus(u)}
-                        className={`inline-flex items-center gap-1.5 rounded border px-3 py-1 text-xs font-semibold transition-colors ${
+                        className={`btn-outline-pill text-xs py-1 px-3 cursor-pointer ${
                           u.estado === 'SANCIONADO'
-                            ? 'border-[#15803D]/35 text-[#15803D] hover:bg-[#F0FDF4]'
-                            : 'border-[#B91C1C]/35 text-[#B91C1C] hover:bg-[#FEF2F2]'
+                            ? 'text-[#2a5c4e] border-[#bcfe90] hover:bg-[#bcfe90]/30'
+                            : 'text-[#991B1B] border-[#fcd0f8] hover:bg-[#fcd0f8]/30'
                         }`}
                       >
                         {u.estado === 'SANCIONADO' ? (
@@ -685,39 +692,39 @@ export const AdminView: React.FC<AdminViewProps> = ({
       {/* MODAL CREAR / EDITAR LIBRO */}
       {bookModalOpen && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 overflow-y-auto"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-xs p-4 overflow-y-auto"
           role="dialog"
           aria-modal="true"
         >
-          <div className="w-full max-w-2xl rounded-lg border border-[#E7E2D8] bg-[#FFFFFF] shadow-xl overflow-hidden my-auto">
-            <div className="flex items-center justify-between border-b border-[#E7E2D8] bg-[#FBF9F5] px-6 py-4">
-              <h3 className="font-serif text-lg font-semibold text-[#1C1917]">
+          <div className="w-full max-w-2xl rounded-[24px] border border-[#d0d4e4] bg-[#ffffff] shadow-[0px_5px_45px_rgba(0,0,0,0.25)] overflow-hidden my-auto">
+            <div className="flex items-center justify-between border-b border-[#d0d4e4] bg-[#ffffff] px-6 py-4">
+              <h3 className="text-lg font-bold text-[#333333]">
                 {editingBook ? `Editar Libro: ${editingBook.titulo}` : 'Registrar Nuevo Libro'}
               </h3>
               <button
                 type="button"
                 onClick={() => setBookModalOpen(false)}
-                className="p-1 rounded text-[#57534E] hover:bg-[#EBE6DF]"
+                className="p-1.5 rounded-full text-[#535768] hover:bg-[#f5f6f8] cursor-pointer"
               >
                 <X className="w-4 h-4" />
               </button>
             </div>
 
-            <form onSubmit={handleSaveBook} className="p-6 space-y-4 max-h-[80vh] overflow-y-auto">
+            <form onSubmit={handleSaveBook} className="p-6 sm:p-8 space-y-4 max-h-[80vh] overflow-y-auto">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-semibold text-[#44403C] mb-1">ISBN *</label>
+                  <label className="block text-xs font-semibold text-[#535768] mb-1">ISBN *</label>
                   <input
                     type="text"
                     required
                     value={isbn}
                     onChange={(e) => setIsbn(e.target.value)}
                     placeholder="978-..."
-                    className="w-full rounded-md border border-[#D6CEBE] px-3 py-2 text-sm font-mono"
+                    className="w-full input-monday font-mono"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-[#44403C] mb-1">
+                  <label className="block text-xs font-semibold text-[#535768] mb-1">
                     Año de publicación
                   </label>
                   <input
@@ -725,14 +732,14 @@ export const AdminView: React.FC<AdminViewProps> = ({
                     value={anio}
                     onChange={(e) => setAnio(e.target.value)}
                     placeholder="1984"
-                    className="w-full rounded-md border border-[#D6CEBE] px-3 py-2 text-sm font-mono"
+                    className="w-full input-monday font-mono"
                   />
                 </div>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-semibold text-[#44403C] mb-1">
+                  <label className="block text-xs font-semibold text-[#535768] mb-1">
                     Título de la obra *
                   </label>
                   <input
@@ -740,17 +747,17 @@ export const AdminView: React.FC<AdminViewProps> = ({
                     required
                     value={titulo}
                     onChange={(e) => setTitulo(e.target.value)}
-                    className="w-full rounded-md border border-[#D6CEBE] px-3 py-2 text-sm"
+                    className="w-full input-monday"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-[#44403C] mb-1">
+                  <label className="block text-xs font-semibold text-[#535768] mb-1">
                     Categoría *
                   </label>
                   <select
                     value={categoria}
                     onChange={(e) => setCategoria(e.target.value)}
-                    className="w-full rounded-md border border-[#D6CEBE] px-3 py-2 text-sm bg-white"
+                    className="w-full input-monday bg-white cursor-pointer"
                   >
                     {categorias.map((c) => (
                       <option key={c.id_categoria} value={c.nombre}>
@@ -763,7 +770,7 @@ export const AdminView: React.FC<AdminViewProps> = ({
 
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div>
-                  <label className="block text-xs font-semibold text-[#44403C] mb-1">
+                  <label className="block text-xs font-semibold text-[#535768] mb-1">
                     Editorial / Edición
                   </label>
                   <input
@@ -771,11 +778,11 @@ export const AdminView: React.FC<AdminViewProps> = ({
                     value={editorial}
                     onChange={(e) => setEditorial(e.target.value)}
                     placeholder="Alianza Editorial"
-                    className="w-full rounded-md border border-[#D6CEBE] px-3 py-2 text-sm"
+                    className="w-full input-monday"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-[#44403C] mb-1">
+                  <label className="block text-xs font-semibold text-[#535768] mb-1">
                     Idioma
                   </label>
                   <input
@@ -783,11 +790,11 @@ export const AdminView: React.FC<AdminViewProps> = ({
                     value={idioma}
                     onChange={(e) => setIdioma(e.target.value)}
                     placeholder="Español"
-                    className="w-full rounded-md border border-[#D6CEBE] px-3 py-2 text-sm"
+                    className="w-full input-monday"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-[#44403C] mb-1">
+                  <label className="block text-xs font-semibold text-[#535768] mb-1">
                     Páginas
                   </label>
                   <input
@@ -796,14 +803,14 @@ export const AdminView: React.FC<AdminViewProps> = ({
                     value={paginas}
                     onChange={(e) => setPaginas(e.target.value)}
                     placeholder="320"
-                    className="w-full rounded-md border border-[#D6CEBE] px-3 py-2 text-sm font-mono"
+                    className="w-full input-monday font-mono"
                   />
                 </div>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-semibold text-[#44403C] mb-1">
+                  <label className="block text-xs font-semibold text-[#535768] mb-1">
                     Ubicación física (Estante)
                   </label>
                   <input
@@ -811,11 +818,11 @@ export const AdminView: React.FC<AdminViewProps> = ({
                     value={ubicacionEstante}
                     onChange={(e) => setUbicacionEstante(e.target.value)}
                     placeholder="Sala A · Estante 01 · Nivel 2"
-                    className="w-full rounded-md border border-[#D6CEBE] px-3 py-2 text-sm font-mono"
+                    className="w-full input-monday font-mono"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-[#44403C] mb-1">
+                  <label className="block text-xs font-semibold text-[#535768] mb-1">
                     Temas clave (separados por coma)
                   </label>
                   <input
@@ -823,14 +830,14 @@ export const AdminView: React.FC<AdminViewProps> = ({
                     value={temasClave}
                     onChange={(e) => setTemasClave(e.target.value)}
                     placeholder="Vigilancia, Memoria, Libertad"
-                    className="w-full rounded-md border border-[#D6CEBE] px-3 py-2 text-sm"
+                    className="w-full input-monday"
                   />
                 </div>
               </div>
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-semibold text-[#44403C] mb-1">
+                  <label className="block text-xs font-semibold text-[#535768] mb-1">
                     Copias totales *
                   </label>
                   <input
@@ -839,11 +846,11 @@ export const AdminView: React.FC<AdminViewProps> = ({
                     required
                     value={copiasTotales}
                     onChange={(e) => setCopiasTotales(Number(e.target.value))}
-                    className="w-full rounded-md border border-[#D6CEBE] px-3 py-2 text-sm font-mono"
+                    className="w-full input-monday font-mono"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-[#44403C] mb-1">
+                  <label className="block text-xs font-semibold text-[#535768] mb-1">
                     Copias disponibles *
                   </label>
                   <input
@@ -853,52 +860,52 @@ export const AdminView: React.FC<AdminViewProps> = ({
                     required
                     value={copiasDisp}
                     onChange={(e) => setCopiasDisp(Number(e.target.value))}
-                    className="w-full rounded-md border border-[#D6CEBE] px-3 py-2 text-sm font-mono"
+                    className="w-full input-monday font-mono"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-[#44403C] mb-1.5">
+                <label className="block text-xs font-semibold text-[#535768] mb-1.5">
                   Autores asociados *
                 </label>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 max-h-32 overflow-y-auto rounded-md border border-[#E7E2D8] p-2.5 bg-[#FBF9F5]">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 max-h-32 overflow-y-auto rounded-[12px] border border-[#d0d4e4] p-3 bg-[#f5f6f8]">
                   {autores.map((a) => (
                     <label
                       key={a.id_autor}
-                      className="flex items-center gap-2 text-xs text-[#1C1917] cursor-pointer"
+                      className="flex items-center gap-2 text-xs text-[#333333] cursor-pointer"
                     >
                       <input
                         type="checkbox"
                         checked={selectedAutores.includes(a.id_autor)}
                         onChange={() => toggleAutorSelection(a.id_autor)}
-                        className="rounded border-[#D6CEBE]"
+                        className="rounded text-[#6161ff] focus:ring-[#6161ff]"
                       />
                       <span className="truncate">{a.nombre}</span>
                     </label>
                   ))}
                 </div>
 
-                <div className="mt-2 flex flex-wrap items-center gap-2">
+                <div className="mt-2.5 flex flex-wrap items-center gap-2">
                   <input
                     type="text"
                     value={newAutorNombre}
                     onChange={(e) => setNewAutorNombre(e.target.value)}
                     placeholder="Nuevo autor..."
-                    className="flex-1 min-w-[140px] rounded border border-[#D6CEBE] px-2.5 py-1.5 text-xs"
+                    className="flex-1 min-w-[140px] input-monday py-1.5 text-xs"
                   />
                   <input
                     type="text"
                     value={newAutorNac}
                     onChange={(e) => setNewAutorNac(e.target.value)}
                     placeholder="Nacionalidad"
-                    className="w-32 rounded border border-[#D6CEBE] px-2.5 py-1.5 text-xs"
+                    className="w-32 input-monday py-1.5 text-xs"
                   />
                   <button
                     type="button"
                     disabled={addingAutor || !newAutorNombre.trim()}
                     onClick={handleQuickAddAutor}
-                    className="rounded border border-[#D6CEBE] bg-[#F3EFE7] px-3 py-1.5 text-xs font-semibold text-[#1C1917] hover:bg-[#EBE6DF] disabled:opacity-50"
+                    className="btn-outline-pill text-xs py-1.5 px-3 disabled:opacity-50 cursor-pointer"
                   >
                     + Añadir autor
                   </button>
@@ -906,7 +913,7 @@ export const AdminView: React.FC<AdminViewProps> = ({
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-[#44403C] mb-1">
+                <label className="block text-xs font-semibold text-[#535768] mb-1">
                   Sinopsis descriptiva (habilita búsqueda IA y pruebas de lectura)
                 </label>
                 <textarea
@@ -914,22 +921,22 @@ export const AdminView: React.FC<AdminViewProps> = ({
                   value={sinopsis}
                   onChange={(e) => setSinopsis(e.target.value)}
                   placeholder="Resumen temático y argumentos centrales de la obra..."
-                  className="w-full rounded-md border border-[#D6CEBE] px-3 py-2 text-sm"
+                  className="w-full input-monday"
                 />
               </div>
 
-              <div className="pt-3 border-t border-[#E7E2D8] flex justify-end gap-2.5">
+              <div className="pt-4 border-t border-[#d0d4e4] flex justify-end gap-2.5">
                 <button
                   type="button"
                   onClick={() => setBookModalOpen(false)}
-                  className="rounded-md border border-[#D6CEBE] px-4 py-2 text-xs font-semibold text-[#57534E] hover:bg-[#F3EFE7]"
+                  className="btn-outline-pill text-xs py-2 px-4 cursor-pointer"
                 >
                   Cancelar
                 </button>
                 <button
                   type="submit"
                   disabled={savingBook}
-                  className="rounded-md bg-[#1E3A8A] px-4 py-2 text-xs font-semibold text-white hover:bg-[#172554] disabled:opacity-60"
+                  className="btn-primary-pill text-xs py-2 px-5 disabled:opacity-60 cursor-pointer shadow-xs"
                 >
                   {savingBook ? 'Guardando...' : 'Guardar Libro'}
                 </button>
@@ -942,27 +949,27 @@ export const AdminView: React.FC<AdminViewProps> = ({
       {/* MODAL CREAR / EDITAR CATEGORÍA */}
       {catModalOpen && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-xs p-4"
           role="dialog"
           aria-modal="true"
         >
-          <div className="w-full max-w-md rounded-lg border border-[#E7E2D8] bg-[#FFFFFF] shadow-xl overflow-hidden">
-            <div className="flex items-center justify-between border-b border-[#E7E2D8] bg-[#FBF9F5] px-6 py-4">
-              <h3 className="font-serif text-lg font-semibold text-[#1C1917]">
+          <div className="w-full max-w-md rounded-[24px] border border-[#d0d4e4] bg-[#ffffff] shadow-[0px_5px_45px_rgba(0,0,0,0.25)] overflow-hidden">
+            <div className="flex items-center justify-between border-b border-[#d0d4e4] bg-[#ffffff] px-6 py-4">
+              <h3 className="text-lg font-bold text-[#333333]">
                 {editingCat ? `Editar Categoría: ${editingCat.nombre}` : 'Nueva Categoría'}
               </h3>
               <button
                 type="button"
                 onClick={() => setCatModalOpen(false)}
-                className="p-1 rounded text-[#57534E] hover:bg-[#EBE6DF]"
+                className="p-1.5 rounded-full text-[#535768] hover:bg-[#f5f6f8] cursor-pointer"
               >
                 <X className="w-4 h-4" />
               </button>
             </div>
-            <form onSubmit={handleSaveCategoria} className="p-6 space-y-3.5">
+            <form onSubmit={handleSaveCategoria} className="p-6 space-y-4">
               <div className="grid grid-cols-3 gap-3">
                 <div className="col-span-2">
-                  <label className="block text-xs font-semibold text-[#44403C] mb-1">
+                  <label className="block text-xs font-semibold text-[#535768] mb-1">
                     Nombre de categoría *
                   </label>
                   <input
@@ -971,11 +978,11 @@ export const AdminView: React.FC<AdminViewProps> = ({
                     value={catNombre}
                     onChange={(e) => setCatNombre(e.target.value)}
                     placeholder="Ensayo Contemporáneo"
-                    className="w-full rounded-md border border-[#D6CEBE] px-3 py-2 text-sm"
+                    className="w-full input-monday"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-[#44403C] mb-1">
+                  <label className="block text-xs font-semibold text-[#535768] mb-1">
                     Código CDU
                   </label>
                   <input
@@ -983,12 +990,12 @@ export const AdminView: React.FC<AdminViewProps> = ({
                     value={catCodigo}
                     onChange={(e) => setCatCodigo(e.target.value)}
                     placeholder="804"
-                    className="w-full rounded-md border border-[#D6CEBE] px-3 py-2 text-sm font-mono"
+                    className="w-full input-monday font-mono"
                   />
                 </div>
               </div>
               <div>
-                <label className="block text-xs font-semibold text-[#44403C] mb-1">
+                <label className="block text-xs font-semibold text-[#535768] mb-1">
                   Descripción curatorial *
                 </label>
                 <textarea
@@ -997,56 +1004,56 @@ export const AdminView: React.FC<AdminViewProps> = ({
                   value={catDescripcion}
                   onChange={(e) => setCatDescripcion(e.target.value)}
                   placeholder="Descripción temática de los volúmenes agrupados en esta colección..."
-                  className="w-full rounded-md border border-[#D6CEBE] px-3 py-2 text-sm"
+                  className="w-full input-monday"
                 />
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-semibold text-[#44403C] mb-1">
+                  <label className="block text-xs font-semibold text-[#535768] mb-1">
                     Ubicación en sala
                   </label>
                   <input
                     type="text"
                     value={catSala}
                     onChange={(e) => setCatSala(e.target.value)}
-                    className="w-full rounded-md border border-[#D6CEBE] px-3 py-2 text-sm font-mono"
+                    className="w-full input-monday font-mono"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-[#44403C] mb-1">
+                  <label className="block text-xs font-semibold text-[#535768] mb-1">
                     Público recomendado
                   </label>
                   <input
                     type="text"
                     value={catPublico}
                     onChange={(e) => setCatPublico(e.target.value)}
-                    className="w-full rounded-md border border-[#D6CEBE] px-3 py-2 text-sm"
+                    className="w-full input-monday"
                   />
                 </div>
               </div>
               <div>
-                <label className="block text-xs font-semibold text-[#44403C] mb-1">
+                <label className="block text-xs font-semibold text-[#535768] mb-1">
                   Enfoque de lectura
                 </label>
                 <input
                   type="text"
                   value={catEnfoque}
                   onChange={(e) => setCatEnfoque(e.target.value)}
-                  className="w-full rounded-md border border-[#D6CEBE] px-3 py-2 text-sm"
+                  className="w-full input-monday"
                 />
               </div>
-              <div className="pt-3 border-t border-[#E7E2D8] flex justify-end gap-2">
+              <div className="pt-4 border-t border-[#d0d4e4] flex justify-end gap-2.5">
                 <button
                   type="button"
                   onClick={() => setCatModalOpen(false)}
-                  className="rounded-md border border-[#D6CEBE] px-4 py-2 text-xs font-semibold text-[#57534E]"
+                  className="btn-outline-pill text-xs py-2 px-4 cursor-pointer"
                 >
                   Cancelar
                 </button>
                 <button
                   type="submit"
                   disabled={savingCat}
-                  className="rounded-md bg-[#1E3A8A] px-4 py-2 text-xs font-semibold text-white hover:bg-[#172554]"
+                  className="btn-primary-pill text-xs py-2 px-5 cursor-pointer shadow-xs"
                 >
                   {savingCat ? 'Guardando...' : 'Guardar Categoría'}
                 </button>
@@ -1059,26 +1066,26 @@ export const AdminView: React.FC<AdminViewProps> = ({
       {/* MODAL CREAR USUARIO */}
       {userModalOpen && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-xs p-4"
           role="dialog"
           aria-modal="true"
         >
-          <div className="w-full max-w-md rounded-lg border border-[#E7E2D8] bg-[#FFFFFF] shadow-xl overflow-hidden">
-            <div className="flex items-center justify-between border-b border-[#E7E2D8] bg-[#FBF9F5] px-6 py-4">
-              <h3 className="font-serif text-lg font-semibold text-[#1C1917]">
+          <div className="w-full max-w-md rounded-[24px] border border-[#d0d4e4] bg-[#ffffff] shadow-[0px_5px_45px_rgba(0,0,0,0.25)] overflow-hidden">
+            <div className="flex items-center justify-between border-b border-[#d0d4e4] bg-[#ffffff] px-6 py-4">
+              <h3 className="text-lg font-bold text-[#333333]">
                 Registrar Nuevo Usuario
               </h3>
               <button
                 type="button"
                 onClick={() => setUserModalOpen(false)}
-                className="p-1 rounded text-[#57534E] hover:bg-[#EBE6DF]"
+                className="p-1.5 rounded-full text-[#535768] hover:bg-[#f5f6f8] cursor-pointer"
               >
                 <X className="w-4 h-4" />
               </button>
             </div>
-            <form onSubmit={handleCreateUser} className="p-6 space-y-3.5">
+            <form onSubmit={handleCreateUser} className="p-6 space-y-4">
               <div>
-                <label className="block text-xs font-semibold text-[#44403C] mb-1">
+                <label className="block text-xs font-semibold text-[#535768] mb-1">
                   Número de documento *
                 </label>
                 <input
@@ -1086,11 +1093,11 @@ export const AdminView: React.FC<AdminViewProps> = ({
                   required
                   value={newDoc}
                   onChange={(e) => setNewDoc(e.target.value)}
-                  className="w-full rounded-md border border-[#D6CEBE] px-3 py-2 text-sm font-mono"
+                  className="w-full input-monday font-mono"
                 />
               </div>
               <div>
-                <label className="block text-xs font-semibold text-[#44403C] mb-1">
+                <label className="block text-xs font-semibold text-[#535768] mb-1">
                   Nombre completo *
                 </label>
                 <input
@@ -1098,11 +1105,11 @@ export const AdminView: React.FC<AdminViewProps> = ({
                   required
                   value={newName}
                   onChange={(e) => setNewName(e.target.value)}
-                  className="w-full rounded-md border border-[#D6CEBE] px-3 py-2 text-sm"
+                  className="w-full input-monday"
                 />
               </div>
               <div>
-                <label className="block text-xs font-semibold text-[#44403C] mb-1">
+                <label className="block text-xs font-semibold text-[#535768] mb-1">
                   Correo electrónico *
                 </label>
                 <input
@@ -1110,16 +1117,16 @@ export const AdminView: React.FC<AdminViewProps> = ({
                   required
                   value={newEmail}
                   onChange={(e) => setNewEmail(e.target.value)}
-                  className="w-full rounded-md border border-[#D6CEBE] px-3 py-2 text-sm"
+                  className="w-full input-monday"
                 />
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-semibold text-[#44403C] mb-1">Rol *</label>
+                  <label className="block text-xs font-semibold text-[#535768] mb-1">Rol *</label>
                   <select
                     value={newRol}
                     onChange={(e) => setNewRol(e.target.value as UserRole)}
-                    className="w-full rounded-md border border-[#D6CEBE] px-3 py-2 text-sm bg-white"
+                    className="w-full input-monday bg-white cursor-pointer"
                   >
                     <option value="LECTOR">LECTOR</option>
                     <option value="DOCENTE">DOCENTE</option>
@@ -1127,7 +1134,7 @@ export const AdminView: React.FC<AdminViewProps> = ({
                   </select>
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-[#44403C] mb-1">
+                  <label className="block text-xs font-semibold text-[#535768] mb-1">
                     Contraseña inicial *
                   </label>
                   <input
@@ -1135,22 +1142,22 @@ export const AdminView: React.FC<AdminViewProps> = ({
                     required
                     value={newPass}
                     onChange={(e) => setNewPass(e.target.value)}
-                    className="w-full rounded-md border border-[#D6CEBE] px-3 py-2 text-sm font-mono"
+                    className="w-full input-monday font-mono"
                   />
                 </div>
               </div>
-              <div className="pt-3 border-t border-[#E7E2D8] flex justify-end gap-2">
+              <div className="pt-4 border-t border-[#d0d4e4] flex justify-end gap-2.5">
                 <button
                   type="button"
                   onClick={() => setUserModalOpen(false)}
-                  className="rounded-md border border-[#D6CEBE] px-4 py-2 text-xs font-semibold text-[#57534E]"
+                  className="btn-outline-pill text-xs py-2 px-4 cursor-pointer"
                 >
                   Cancelar
                 </button>
                 <button
                   type="submit"
                   disabled={savingUser}
-                  className="rounded-md bg-[#1E3A8A] px-4 py-2 text-xs font-semibold text-white hover:bg-[#172554]"
+                  className="btn-primary-pill text-xs py-2 px-5 cursor-pointer shadow-xs"
                 >
                   {savingUser ? 'Guardando...' : 'Crear Usuario'}
                 </button>

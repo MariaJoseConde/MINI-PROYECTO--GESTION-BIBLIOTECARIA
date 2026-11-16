@@ -10,24 +10,32 @@ interface LoginModalProps {
 
 const DEMO_ACCOUNTS = [
   {
-    label: 'Bibliotecario (ADMIN)',
+    label: 'Bibliotecario',
+    role: 'ADMIN',
     email: 'admin@sgbi.edu',
     desc: 'Mostrador, inventario CRUD, usuarios y auditoría',
+    badgeBg: 'bg-[#dbdbff] text-[#6161ff]',
   },
   {
-    label: 'Docente (DOCENTE)',
+    label: 'Docente',
+    role: 'DOCENTE',
     email: 'docente@sgbi.edu',
     desc: 'Generar pruebas de lectura con IA y claves docentes',
+    badgeBg: 'bg-[#eddff7] text-[#6161ff]',
   },
   {
-    label: 'Lectora Activa (LECTOR)',
+    label: 'Lectora Activa',
+    role: 'LECTOR',
     email: 'lector@sgbi.edu',
     desc: 'Consulta de catálogo e historial personal de préstamos',
+    badgeBg: 'bg-[#bcfe90] text-[#1c1917]',
   },
   {
-    label: 'Lector Sancionado (MORA)',
+    label: 'Lector Sancionado',
+    role: 'MORA',
     email: 'mateo.mora@sgbi.edu',
     desc: 'Perfil bloqueado en mostrador para probar mora activa',
+    badgeBg: 'bg-[#fcd0f8] text-[#991b1b]',
   },
 ];
 
@@ -71,23 +79,28 @@ export const LoginModal: React.FC<LoginModalProps> = ({ open, onClose, onSuccess
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/45 p-4"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-xs p-4"
       role="dialog"
       aria-modal="true"
       aria-labelledby="login-modal-title"
     >
-      <div className="w-full max-w-lg rounded-lg border border-[#E7E2D8] bg-[#FFFFFF] shadow-xl overflow-hidden">
-        <div className="flex items-center justify-between border-b border-[#E7E2D8] px-6 py-4 bg-[#FBF9F5]">
-          <div className="flex items-center gap-2.5">
-            <Lock className="w-4 h-4 text-[#1E3A8A]" />
-            <h2 id="login-modal-title" className="font-serif text-lg font-semibold text-[#1C1917]">
-              Acceso al Sistema Bibliotecario
-            </h2>
+      <div className="w-full max-w-lg rounded-[24px] border border-[#d0d4e4] bg-[#ffffff] shadow-[0px_5px_45px_rgba(0,0,0,0.15)] overflow-hidden">
+        <div className="flex items-center justify-between border-b border-[#d0d4e4] px-6 py-4.5 bg-[#ffffff]">
+          <div className="flex items-center gap-3">
+            <div className="prism-mark-circle w-7 h-7 flex items-center justify-center shrink-0">
+              <Lock className="w-3.5 h-3.5 text-white" />
+            </div>
+            <div>
+              <h2 id="login-modal-title" className="text-base font-semibold text-[#333333] tracking-tight">
+                Acceso al Sistema Bibliotecario
+              </h2>
+              <p className="text-[11px] text-[#535768]">Ingresa con tus credenciales institucionales</p>
+            </div>
           </div>
           <button
             type="button"
             onClick={onClose}
-            className="p-1.5 rounded-md text-[#57534E] hover:bg-[#F3EFE7] transition-colors"
+            className="w-8 h-8 rounded-full flex items-center justify-center text-[#535768] hover:bg-[#e7ecff] hover:text-[#333333] transition-colors cursor-pointer"
             aria-label="Cerrar ventana"
           >
             <X className="w-4 h-4" />
@@ -96,13 +109,13 @@ export const LoginModal: React.FC<LoginModalProps> = ({ open, onClose, onSuccess
 
         <form onSubmit={handleSubmit} className="p-6 space-y-4">
           {error && (
-            <div className="rounded-md border border-[#B91C1C]/30 bg-[#FEF2F2] px-3.5 py-2.5 text-sm text-[#991B1B]">
+            <div className="rounded-[6px] border border-[#ff8940]/40 bg-[#fff5f0] px-3.5 py-2.5 text-xs font-medium text-[#c2410c]">
               {error}
             </div>
           )}
 
           <div>
-            <label htmlFor="login-email" className="block text-xs font-semibold text-[#44403C] mb-1.5">
+            <label htmlFor="login-email" className="block text-xs font-semibold text-[#333333] mb-1.5">
               Correo institucional
             </label>
             <input
@@ -112,12 +125,12 @@ export const LoginModal: React.FC<LoginModalProps> = ({ open, onClose, onSuccess
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="usuario@sgbi.edu"
-              className="w-full rounded-md border border-[#D6CEBE] bg-[#FFFFFF] px-3.5 py-2.5 text-sm text-[#1C1917] placeholder:text-[#A8A29E] focus:border-[#1E3A8A] focus:outline-none focus:ring-2 focus:ring-[#1E3A8A]/15"
+              className="input-monday"
             />
           </div>
 
           <div>
-            <label htmlFor="login-pass" className="block text-xs font-semibold text-[#44403C] mb-1.5">
+            <label htmlFor="login-pass" className="block text-xs font-semibold text-[#333333] mb-1.5">
               Contraseña
             </label>
             <input
@@ -127,34 +140,41 @@ export const LoginModal: React.FC<LoginModalProps> = ({ open, onClose, onSuccess
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="••••••••"
-              className="w-full rounded-md border border-[#D6CEBE] bg-[#FFFFFF] px-3.5 py-2.5 text-sm text-[#1C1917] placeholder:text-[#A8A29E] focus:border-[#1E3A8A] focus:outline-none focus:ring-2 focus:ring-[#1E3A8A]/15"
+              className="input-monday"
             />
           </div>
 
           <button
             type="submit"
             disabled={loading}
-            className="w-full inline-flex items-center justify-center gap-2 rounded-md bg-[#1E3A8A] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[#172554] disabled:opacity-60 transition-colors"
+            className="btn-primary-pill w-full justify-center py-2.5 text-sm cursor-pointer shadow-sm disabled:opacity-60"
           >
             <LogIn className="w-4 h-4" />
             {loading ? 'Verificando credenciales...' : 'Iniciar Sesión'}
           </button>
 
-          <div className="pt-4 border-t border-[#E7E2D8]">
-            <p className="text-xs font-semibold text-[#57534E] mb-2.5">
-              Cuentas de prueba por rol (contraseña: <span className="font-mono">sgbi2026</span>)
-            </p>
+          <div className="pt-4 border-t border-[#d0d4e4]">
+            <div className="flex items-center justify-between mb-2.5">
+              <p className="text-xs font-semibold text-[#333333]">
+                Cuentas demo por rol <span className="font-normal text-[#535768]">(contraseña: <code className="font-mono text-[#6161ff]">sgbi2026</code>)</span>
+              </p>
+            </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
               {DEMO_ACCOUNTS.map((acc) => (
                 <button
                   key={acc.email}
                   type="button"
                   onClick={() => fillDemo(acc.email)}
-                  className="text-left rounded-md border border-[#E7E2D8] bg-[#FBF9F5] p-2.5 hover:border-[#1E3A8A]/50 hover:bg-[#F3EFE7] transition-colors"
+                  className="text-left rounded-[12px] border border-[#d0d4e4] bg-[#ffffff] p-2.5 hover:border-[#6161ff] hover:bg-[#e7ecff]/40 transition-colors group cursor-pointer"
                 >
-                  <div className="text-xs font-semibold text-[#1C1917]">{acc.label}</div>
-                  <div className="text-[11px] font-mono text-[#1E3A8A] mt-0.5 truncate">{acc.email}</div>
-                  <div className="text-[11px] text-[#57534E] mt-0.5 line-clamp-1">{acc.desc}</div>
+                  <div className="flex items-center justify-between gap-1">
+                    <span className="text-xs font-semibold text-[#333333] group-hover:text-[#6161ff] transition-colors">{acc.label}</span>
+                    <span className={`badge-monday text-[9px] font-semibold ${acc.badgeBg}`}>
+                      {acc.role}
+                    </span>
+                  </div>
+                  <div className="text-[11px] font-mono text-[#6161ff] mt-0.5 truncate">{acc.email}</div>
+                  <div className="text-[10px] text-[#535768] mt-0.5 line-clamp-1">{acc.desc}</div>
                 </button>
               ))}
             </div>

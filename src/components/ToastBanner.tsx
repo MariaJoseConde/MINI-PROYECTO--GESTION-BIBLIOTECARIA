@@ -21,34 +21,45 @@ export const ToastBanner: React.FC<ToastBannerProps> = ({ toasts, onDismiss }) =
       aria-live="polite"
     >
       {toasts.map((toast) => {
-        const tone =
+        const iconConfig =
           toast.type === 'success'
-            ? 'bg-[#FFFFFF] border-[#15803D]/35 text-[#14532D]'
+            ? {
+                Icon: CheckCircle2,
+                badgeBg: 'bg-[#bcfe90] text-[#1c1917]',
+                borderColor: 'border-[#bcfe90]',
+              }
             : toast.type === 'error'
-              ? 'bg-[#FFFFFF] border-[#B91C1C]/35 text-[#7F1D1D]'
-              : 'bg-[#FFFFFF] border-[#1E3A8A]/35 text-[#1E3A8A]';
+              ? {
+                  Icon: AlertCircle,
+                  badgeBg: 'bg-[#fcd0f8] text-[#991b1b]',
+                  borderColor: 'border-[#fcd0f8]',
+                }
+              : {
+                  Icon: Info,
+                  badgeBg: 'bg-[#e7ecff] text-[#6161ff]',
+                  borderColor: 'border-[#dbdbff]',
+                };
 
-        const Icon =
-          toast.type === 'success'
-            ? CheckCircle2
-            : toast.type === 'error'
-              ? AlertCircle
-              : Info;
+        const { Icon, badgeBg } = iconConfig;
 
         return (
           <div
             key={toast.id}
-            className={`pointer-events-auto flex items-start gap-3 rounded-lg border px-4 py-3 shadow-md transition-all ${tone}`}
+            className="pointer-events-auto flex items-start gap-3 rounded-[14px] border border-[#d0d4e4] bg-[#ffffff] px-4 py-3 shadow-[0px_4px_24px_rgba(0,0,0,0.08)] transition-all animate-in fade-in slide-in-from-bottom-2 duration-200"
           >
-            <Icon className="w-4 h-4 mt-0.5 shrink-0" />
-            <p className="text-sm font-medium leading-snug flex-1">{toast.text}</p>
+            <div className={`w-6 h-6 rounded-full flex items-center justify-center shrink-0 ${badgeBg}`}>
+              <Icon className="w-3.5 h-3.5" />
+            </div>
+            <p className="text-xs sm:text-sm font-medium text-[#333333] leading-snug flex-1 pt-0.5">
+              {toast.text}
+            </p>
             <button
               type="button"
               onClick={() => onDismiss(toast.id)}
-              className="p-1 -mr-1 rounded hover:bg-black/5 transition-colors"
+              className="w-6 h-6 rounded-full flex items-center justify-center text-[#808080] hover:bg-[#e7ecff] hover:text-[#333333] transition-colors cursor-pointer shrink-0"
               aria-label="Cerrar notificación"
             >
-              <X className="w-4 h-4" />
+              <X className="w-3.5 h-3.5" />
             </button>
           </div>
         );

@@ -236,15 +236,16 @@ export const MostradorView: React.FC<MostradorViewProps> = ({
   return (
     <div className="space-y-8">
       {/* Encabezado de Mostrador */}
-      <div className="no-print flex flex-col sm:flex-row sm:items-end justify-between gap-4 border-b border-[#E7E2D8] pb-5">
+      <div className="no-print card-monday bg-[#ffffff] p-8 flex flex-col sm:flex-row sm:items-end justify-between gap-6">
         <div>
-          <p className="text-xs font-medium tracking-widest uppercase text-[#78716C]">
-            Circulación Transaccional ACID
-          </p>
-          <h1 className="mt-1 font-serif text-3xl font-semibold text-[#1C1917]">
-            Mostrador de Préstamos y Devoluciones
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-[6px] bg-[#e7ecff] text-[#6161ff] text-xs font-semibold uppercase tracking-wider mb-2.5">
+            <ArrowRightLeft className="w-3.5 h-3.5" />
+            <span>Circulación Transaccional</span>
+          </div>
+          <h1 className="text-3xl sm:text-4xl font-light tracking-[-0.03em] text-[#333333] text-balance">
+            Mostrador de <span className="gradient-hero-text font-normal">préstamos y devoluciones</span>
           </h1>
-          <p className="mt-1 text-sm text-[#57534E]">
+          <p className="mt-2 text-sm text-[#535768]">
             Operaciones atómicas con verificación de solvencia del lector, descuento de inventario y cálculo automático de 8 días hábiles.
           </p>
         </div>
@@ -255,7 +256,7 @@ export const MostradorView: React.FC<MostradorViewProps> = ({
             loadOperationalData();
             onRefreshCatalog();
           }}
-          className="inline-flex items-center gap-2 rounded-md border border-[#D6CEBE] bg-[#FFFFFF] px-3.5 py-2 text-xs font-semibold text-[#1C1917] hover:bg-[#F3EFE7] transition-colors self-start sm:self-auto"
+          className="btn-outline-pill text-xs py-2 px-4 cursor-pointer shrink-0"
         >
           <RotateCcw className="w-3.5 h-3.5" />
           Actualizar mostrador
@@ -263,17 +264,17 @@ export const MostradorView: React.FC<MostradorViewProps> = ({
       </div>
 
       {/* Formulario de Nuevo Préstamo */}
-      <section className="no-print rounded-lg border border-[#E7E2D8] bg-[#FFFFFF] p-6 space-y-6">
-        <div className="flex items-center justify-between gap-4">
-          <h2 className="font-serif text-xl font-semibold text-[#1C1917]">
+      <section className="no-print card-monday bg-[#ffffff] p-6 sm:p-8 space-y-6">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-[#d0d4e4]">
+          <h2 className="text-xl font-bold text-[#333333] tracking-tight">
             Registrar Salida de Ejemplar
           </h2>
           {fechaPreview && (
-            <div className="flex items-center gap-2 text-xs text-[#57534E] font-mono tabular-nums">
-              <Calendar className="w-3.5 h-3.5 text-[#1E3A8A]" />
+            <div className="badge-monday bg-[#dbdbff] text-[#6161ff] font-mono text-xs py-1 px-3">
+              <Calendar className="w-3.5 h-3.5 mr-1.5" />
               <span>
-                Salida: {fechaPreview.fecha_prestamo} → Límite (+8 días hábiles):{' '}
-                <strong className="text-[#1C1917]">{fechaPreview.fecha_limite}</strong>
+                Salida: {fechaPreview.fecha_prestamo} → Límite (+8 días):{' '}
+                <strong className="text-[#333333]">{fechaPreview.fecha_limite}</strong>
               </span>
             </div>
           )}
@@ -284,12 +285,12 @@ export const MostradorView: React.FC<MostradorViewProps> = ({
           <div className="space-y-3">
             <label
               htmlFor="mostrador-lector-input"
-              className="block text-xs font-semibold uppercase tracking-wider text-[#57534E]"
+              className="block text-xs font-semibold uppercase tracking-wider text-[#535768]"
             >
               1. Identificación del lector (Documento o nombre)
             </label>
             <div className="relative">
-              <Search className="w-4 h-4 text-[#78716C] absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+              <Search className="w-4 h-4 text-[#808080] absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
               <input
                 ref={readerInputRef}
                 id="mostrador-lector-input"
@@ -297,17 +298,17 @@ export const MostradorView: React.FC<MostradorViewProps> = ({
                 value={docQuery}
                 onChange={(e) => setDocQuery(e.target.value)}
                 placeholder="Ingrese número de documento (ej. 30303030 o 40404040)..."
-                className={`w-full rounded-md border pl-9 pr-3 py-2 text-sm bg-[#FBF9F5] focus:bg-[#FFFFFF] focus:outline-none focus:ring-2 ${
+                className={`w-full input-monday pl-10 pr-3 py-2 text-sm ${
                   selectedUser && userHasMora
-                    ? 'border-[#B91C1C] focus:border-[#B91C1C] focus:ring-[#B91C1C]/15'
-                    : 'border-[#D6CEBE] focus:border-[#1E3A8A] focus:ring-[#1E3A8A]/15'
+                    ? 'border-[#991B1B] focus:border-[#991B1B] focus:ring-[#991B1B]/15'
+                    : ''
                 }`}
               />
             </div>
 
-            <div className="max-h-48 overflow-y-auto rounded-md border border-[#E7E2D8] divide-y divide-[#F3EFE7]">
+            <div className="max-h-52 overflow-y-auto rounded-[12px] border border-[#d0d4e4] divide-y divide-[#f5f6f8] bg-[#ffffff]">
               {matchingUsers.length === 0 ? (
-                <div className="p-3 text-xs text-[#78716C]">
+                <div className="p-4 text-xs text-[#808080]">
                   No hay lectores coincidentes con ese documento.
                 </div>
               ) : (
@@ -319,35 +320,35 @@ export const MostradorView: React.FC<MostradorViewProps> = ({
                       key={u.id_usuario}
                       type="button"
                       onClick={() => setSelectedUser(u)}
-                      className={`w-full text-left px-3.5 py-2.5 flex items-center justify-between gap-3 transition-colors ${
+                      className={`w-full text-left px-4 py-3 flex items-center justify-between gap-3 transition-colors cursor-pointer ${
                         isSelected
                           ? isSanctioned
-                            ? 'bg-[#FEF2F2]'
-                            : 'bg-[#EFF6FF]'
-                          : 'hover:bg-[#FBF9F5]'
+                            ? 'bg-[#fcd0f8]/40'
+                            : 'bg-[#e7ecff]'
+                          : 'hover:bg-[#f5f6f8]'
                       }`}
                     >
                       <div className="min-w-0">
-                        <div className="text-sm font-medium text-[#1C1917] truncate">
+                        <div className="text-sm font-semibold text-[#333333] truncate">
                           {u.nombre_completo}
                         </div>
-                        <div className="text-xs font-mono text-[#57534E] tabular-nums">
+                        <div className="text-xs font-mono text-[#535768] tabular-nums">
                           Doc: {u.numero_documento} · {u.rol}
                         </div>
                       </div>
                       <span
-                        className={`text-xs font-semibold shrink-0 flex items-center gap-1 ${
-                          isSanctioned ? 'text-[#B91C1C]' : 'text-[#15803D]'
+                        className={`badge-monday shrink-0 ${
+                          isSanctioned ? 'bg-[#fcd0f8] text-[#991B1B]' : 'bg-[#bcfe90] text-[#2a5c4e]'
                         }`}
                       >
                         {isSanctioned ? (
                           <>
-                            <XCircle className="w-3.5 h-3.5" />
+                            <XCircle className="w-3.5 h-3.5 mr-1" />
                             SANCIONADO
                           </>
                         ) : (
                           <>
-                            <UserCheck className="w-3.5 h-3.5" />
+                            <UserCheck className="w-3.5 h-3.5 mr-1" />
                             ACTIVO
                           </>
                         )}
@@ -359,12 +360,12 @@ export const MostradorView: React.FC<MostradorViewProps> = ({
             </div>
 
             {selectedUser && userHasMora && (
-              <div className="rounded-md border border-[#B91C1C]/40 bg-[#FEF2F2] p-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div className="rounded-[12px] border border-[#fcd0f8] bg-[#fcd0f8]/30 p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                 <div className="flex items-start gap-2.5 text-xs text-[#991B1B]">
                   <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5" />
                   <div>
                     <p className="font-semibold">Usuario sancionado o con mora activa</p>
-                    <p className="mt-0.5">
+                    <p className="mt-0.5 text-[#535768]">
                       El préstamo está bloqueado hasta que devuelva sus ejemplares vencidos.
                     </p>
                   </div>
@@ -372,9 +373,9 @@ export const MostradorView: React.FC<MostradorViewProps> = ({
                 <button
                   type="button"
                   onClick={() => inspectMoraUserLoans(selectedUser.numero_documento)}
-                  className="text-xs font-semibold text-[#991B1B] underline underline-offset-4 shrink-0"
+                  className="btn-outline-pill text-xs py-1 px-3.5 text-[#991B1B] border-[#991B1B] hover:bg-[#fcd0f8] shrink-0"
                 >
-                  Ver préstamos en mora de este usuario
+                  Ver préstamos en mora
                 </button>
               </div>
             )}
@@ -384,25 +385,25 @@ export const MostradorView: React.FC<MostradorViewProps> = ({
           <div className="space-y-3">
             <label
               htmlFor="mostrador-libro-input"
-              className="block text-xs font-semibold uppercase tracking-wider text-[#57534E]"
+              className="block text-xs font-semibold uppercase tracking-wider text-[#535768]"
             >
               2. Selección de ejemplar (Título o ISBN)
             </label>
             <div className="relative">
-              <Search className="w-4 h-4 text-[#78716C] absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+              <Search className="w-4 h-4 text-[#808080] absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
               <input
                 id="mostrador-libro-input"
                 type="text"
                 value={bookQuery}
                 onChange={(e) => setBookQuery(e.target.value)}
                 placeholder="Buscar o escanear ISBN del volumen..."
-                className="w-full rounded-md border border-[#D6CEBE] bg-[#FBF9F5] pl-9 pr-3 py-2 text-sm focus:bg-[#FFFFFF] focus:border-[#1E3A8A] focus:outline-none focus:ring-2 focus:ring-[#1E3A8A]/15"
+                className="w-full input-monday pl-10 pr-3 py-2 text-sm"
               />
             </div>
 
-            <div className="max-h-48 overflow-y-auto rounded-md border border-[#E7E2D8] divide-y divide-[#F3EFE7]">
+            <div className="max-h-52 overflow-y-auto rounded-[12px] border border-[#d0d4e4] divide-y divide-[#f5f6f8] bg-[#ffffff]">
               {matchingBooks.length === 0 ? (
-                <div className="p-3 text-xs text-[#78716C]">
+                <div className="p-4 text-xs text-[#808080]">
                   No hay libros que coincidan con ese ISBN o título.
                 </div>
               ) : (
@@ -415,29 +416,29 @@ export const MostradorView: React.FC<MostradorViewProps> = ({
                       type="button"
                       disabled={outOfStock}
                       onClick={() => setSelectedBook(b)}
-                      className={`w-full text-left px-3.5 py-2.5 flex items-center justify-between gap-3 transition-colors ${
+                      className={`w-full text-left px-4 py-3 flex items-center justify-between gap-3 transition-colors cursor-pointer ${
                         outOfStock
-                          ? 'bg-[#FBF9F5] opacity-60 cursor-not-allowed'
+                          ? 'bg-[#f5f6f8] opacity-50 cursor-not-allowed'
                           : isSelected
-                            ? 'bg-[#EFF6FF]'
-                            : 'hover:bg-[#FBF9F5]'
+                            ? 'bg-[#e7ecff]'
+                            : 'hover:bg-[#f5f6f8]'
                       }`}
                     >
                       <div className="min-w-0">
-                        <div className="text-sm font-medium text-[#1C1917] truncate">
+                        <div className="text-sm font-semibold text-[#333333] truncate">
                           {b.titulo}
                         </div>
-                        <div className="text-xs font-mono text-[#57534E] tabular-nums truncate">
+                        <div className="text-xs font-mono text-[#535768] tabular-nums truncate">
                           ISBN {b.isbn}
                         </div>
                       </div>
                       <span
-                        className={`text-xs font-semibold tabular-nums shrink-0 ${
+                        className={`badge-monday font-mono text-xs tabular-nums shrink-0 ${
                           outOfStock
-                            ? 'text-[#78716C]'
+                            ? 'bg-[#e6e7ea] text-[#808080]'
                             : b.copias_disp === 1
-                              ? 'text-[#B45309]'
-                              : 'text-[#15803D]'
+                              ? 'bg-[#ff8940]/20 text-[#333333]'
+                              : 'bg-[#bcfe90] text-[#2a5c4e]'
                         }`}
                       >
                         {outOfStock
@@ -453,18 +454,18 @@ export const MostradorView: React.FC<MostradorViewProps> = ({
         </div>
 
         {/* Barra de confirmación */}
-        <div className="pt-4 border-t border-[#E7E2D8] flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div className="text-xs text-[#57534E]">
+        <div className="pt-4 border-t border-[#d0d4e4] flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="text-xs text-[#535768]">
             {!selectedUser && !selectedBook ? (
               <span>Seleccione un lector activo y un libro con existencias para iniciar la operación.</span>
             ) : (
               <span>
                 Operación:{' '}
-                <strong className="text-[#1C1917]">
+                <strong className="text-[#333333]">
                   {selectedUser ? selectedUser.nombre_completo : 'Lector pendiente'}
                 </strong>{' '}
                 →{' '}
-                <strong className="text-[#1C1917]">
+                <strong className="text-[#333333]">
                   {selectedBook ? selectedBook.titulo : 'Ejemplar pendiente'}
                 </strong>
               </span>
@@ -475,7 +476,7 @@ export const MostradorView: React.FC<MostradorViewProps> = ({
             type="button"
             disabled={!canConfirmLoan}
             onClick={handleConfirmLoan}
-            className="inline-flex items-center justify-center gap-2 rounded-md bg-[#1E3A8A] px-5 py-2.5 text-sm font-semibold text-white hover:bg-[#172554] disabled:bg-[#A8A29E] disabled:cursor-not-allowed transition-colors whitespace-nowrap shrink-0"
+            className="btn-primary-pill text-xs py-2.5 px-6 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer shadow-sm"
           >
             <ArrowRightLeft className="w-4 h-4" />
             {submittingLoan ? 'Procesando transacción...' : 'Confirmar Préstamo'}
@@ -483,23 +484,23 @@ export const MostradorView: React.FC<MostradorViewProps> = ({
         </div>
       </section>
 
-      {/* Tabla de Devoluciones y Circulación */}
+      {/* Tabla de Devoluciones y Circulación (Monday Board Rows) */}
       <section
         id="tabla-circulacion"
-        className="no-print rounded-lg border border-[#E7E2D8] bg-[#FFFFFF] overflow-hidden"
+        className="no-print card-monday bg-[#ffffff] overflow-hidden"
       >
-        <div className="p-5 border-b border-[#E7E2D8] flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div className="p-6 border-b border-[#d0d4e4] flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
-            <h2 className="font-serif text-xl font-semibold text-[#1C1917]">
+            <h2 className="text-xl font-bold text-[#333333] tracking-tight">
               Control de Devoluciones y Morosidad
             </h2>
-            <p className="text-xs text-[#57534E] mt-0.5">
+            <p className="text-xs text-[#535768] mt-0.5">
               Reintegre ejemplares al inventario verificando automáticamente la fecha límite de entrega.
             </p>
           </div>
 
           <div className="flex flex-wrap items-center gap-3">
-            <div className="inline-flex rounded-md border border-[#D6CEBE] bg-[#F3EFE7] p-0.5">
+            <div className="inline-flex rounded-[160px] border border-[#dddfeb] bg-[#f5f6f8] p-1 shadow-2xs">
               {(
                 [
                   ['pendientes', 'Pendientes / Mora'],
@@ -511,10 +512,10 @@ export const MostradorView: React.FC<MostradorViewProps> = ({
                   key={key}
                   type="button"
                   onClick={() => setLoanFilter(key)}
-                  className={`px-3 py-1.5 text-xs font-semibold rounded transition-colors whitespace-nowrap ${
+                  className={`px-3.5 py-1.5 text-xs font-medium rounded-[160px] transition-all cursor-pointer whitespace-nowrap ${
                     loanFilter === key
-                      ? 'bg-[#FFFFFF] text-[#1C1917] shadow-xs'
-                      : 'text-[#57534E] hover:text-[#1C1917]'
+                      ? 'bg-[#6161ff] text-white shadow-xs font-semibold'
+                      : 'text-[#535768] hover:text-[#333333]'
                   }`}
                 >
                   {label}
@@ -523,29 +524,29 @@ export const MostradorView: React.FC<MostradorViewProps> = ({
             </div>
 
             <div className="relative">
-              <Search className="w-3.5 h-3.5 text-[#78716C] absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+              <Search className="w-3.5 h-3.5 text-[#808080] absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
               <input
                 type="text"
                 value={tableSearch}
                 onChange={(e) => setTableSearch(e.target.value)}
                 placeholder="Filtrar folio, documento o libro..."
-                className="rounded-md border border-[#D6CEBE] bg-[#FBF9F5] pl-8 pr-3 py-1.5 text-xs focus:bg-[#FFFFFF] focus:border-[#1E3A8A] focus:outline-none"
+                className="input-monday pl-8 pr-3 py-1.5 text-xs shadow-2xs"
               />
             </div>
           </div>
         </div>
 
         {loadingPrestamos ? (
-          <div className="p-8 text-center text-sm text-[#78716C]">
+          <div className="p-8 text-center text-sm text-[#808080]">
             Cargando registros de circulación...
           </div>
         ) : filteredPrestamos.length === 0 ? (
           <div className="p-12 text-center">
-            <CheckCircle2 className="w-8 h-8 text-[#15803D] mx-auto mb-2.5" />
-            <p className="text-sm font-semibold text-[#1C1917]">
+            <CheckCircle2 className="w-8 h-8 text-[#2a5c4e] mx-auto mb-2.5" />
+            <p className="text-sm font-semibold text-[#333333]">
               No hay préstamos en esta vista
             </p>
-            <p className="text-xs text-[#57534E] mt-1">
+            <p className="text-xs text-[#535768] mt-1">
               {loanFilter === 'pendientes'
                 ? 'No hay préstamos activos pendientes de entrega con los filtros actuales.'
                 : 'Ajuste los criterios de búsqueda para consultar otros registros.'}
@@ -555,17 +556,17 @@ export const MostradorView: React.FC<MostradorViewProps> = ({
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse">
               <thead>
-                <tr className="border-b border-[#E7E2D8] bg-[#FBF9F5] text-[11px] font-semibold uppercase tracking-wider text-[#57534E]">
-                  <th className="py-3 px-4">Folio</th>
-                  <th className="py-3 px-4">Lector</th>
-                  <th className="py-3 px-4">Ejemplar</th>
-                  <th className="py-3 px-4">Salida</th>
-                  <th className="py-3 px-4">Fecha Límite</th>
-                  <th className="py-3 px-4">Estado</th>
-                  <th className="py-3 px-4 text-right">Acción</th>
+                <tr className="border-b border-[#d0d4e4] bg-[#f5f6f8] text-[11px] font-semibold uppercase tracking-wider text-[#535768]">
+                  <th className="py-3 px-5">Folio</th>
+                  <th className="py-3 px-5">Lector</th>
+                  <th className="py-3 px-5">Ejemplar</th>
+                  <th className="py-3 px-5">Salida</th>
+                  <th className="py-3 px-5">Fecha Límite</th>
+                  <th className="py-3 px-5">Estado</th>
+                  <th className="py-3 px-5 text-right">Acción</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[#F3EFE7] text-xs">
+              <tbody className="divide-y divide-[#f5f6f8] text-xs">
                 {filteredPrestamos.map((p) => {
                   const isClosed = p.fecha_entrega !== null;
                   const isMora = p.estado === 'MORA';
@@ -574,51 +575,53 @@ export const MostradorView: React.FC<MostradorViewProps> = ({
                   return (
                     <tr
                       key={p.id_prestamo}
-                      className={`hover:bg-[#FBF9F5] transition-colors ${
+                      className={`hover:bg-[#f5f6f8]/80 transition-colors ${
                         isReturning ? 'opacity-60 animate-pulse' : ''
                       }`}
                     >
-                      <td className="py-3 px-4 font-mono font-semibold tabular-nums text-[#1C1917]">
+                      <td className="py-3.5 px-5 font-mono font-bold tabular-nums text-[#6161ff]">
                         #{p.id_prestamo}
                       </td>
-                      <td className="py-3 px-4">
-                        <div className="font-medium text-[#1C1917]">{p.usuario_nombre}</div>
-                        <div className="font-mono text-[11px] text-[#78716C] tabular-nums">
+                      <td className="py-3.5 px-5">
+                        <div className="font-semibold text-[#333333]">{p.usuario_nombre}</div>
+                        <div className="font-mono text-[11px] text-[#535768] tabular-nums">
                           Doc. {p.usuario_documento}
                         </div>
                       </td>
-                      <td className="py-3 px-4">
-                        <div className="font-medium text-[#1C1917]">{p.libro_titulo}</div>
-                        <div className="font-mono text-[11px] text-[#78716C] tabular-nums">
+                      <td className="py-3.5 px-5">
+                        <div className="font-semibold text-[#333333]">{p.libro_titulo}</div>
+                        <div className="font-mono text-[11px] text-[#535768] tabular-nums">
                           {p.libro_isbn}
                         </div>
                       </td>
-                      <td className="py-3 px-4 font-mono tabular-nums text-[#57534E]">
+                      <td className="py-3.5 px-5 font-mono tabular-nums text-[#535768]">
                         {p.fecha_prestamo}
                       </td>
-                      <td className="py-3 px-4 font-mono tabular-nums text-[#1C1917] font-medium">
+                      <td className="py-3.5 px-5 font-mono tabular-nums text-[#333333] font-semibold">
                         {p.fecha_limite}
                       </td>
-                      <td className="py-3 px-4">
+                      <td className="py-3.5 px-5">
                         {isMora ? (
-                          <span className="font-semibold text-[#B91C1C]">
-                            {isClosed ? `MORA (Entregado ${p.fecha_entrega})` : 'MORA ACTIVA'}
+                          <span className="badge-monday bg-[#fcd0f8] text-[#991B1B] font-semibold">
+                            {isClosed ? `MORA (${p.fecha_entrega})` : 'MORA ACTIVA'}
                           </span>
                         ) : p.estado === 'DEVUELTO' ? (
-                          <span className="font-medium text-[#57534E]">
+                          <span className="badge-monday bg-[#bcfe90] text-[#2a5c4e] font-semibold">
                             DEVUELTO ({p.fecha_entrega})
                           </span>
                         ) : (
-                          <span className="font-semibold text-[#15803D]">ACTIVO</span>
+                          <span className="badge-monday bg-[#dbdbff] text-[#6161ff] font-semibold">
+                            ACTIVO
+                          </span>
                         )}
                       </td>
-                      <td className="py-3 px-4 text-right">
+                      <td className="py-3.5 px-5 text-right">
                         {!isClosed ? (
                           <button
                             type="button"
                             disabled={isReturning}
                             onClick={() => handleReturnLoan(p)}
-                            className="inline-flex items-center gap-1.5 rounded border border-[#D6CEBE] bg-[#FFFFFF] px-3 py-1.5 text-xs font-semibold text-[#1C1917] hover:bg-[#1E3A8A] hover:text-white hover:border-[#1E3A8A] disabled:opacity-50 transition-colors whitespace-nowrap"
+                            className="btn-outline-pill text-xs py-1.5 px-3.5 whitespace-nowrap cursor-pointer hover:bg-[#6161ff] hover:text-white hover:border-[#6161ff]"
                           >
                             {isReturning ? 'Procesando...' : 'Registrar Devolución'}
                           </button>
@@ -626,7 +629,7 @@ export const MostradorView: React.FC<MostradorViewProps> = ({
                           <button
                             type="button"
                             onClick={() => setTicketPrestamo(p)}
-                            className="text-xs font-medium text-[#1E3A8A] hover:underline underline-offset-4 whitespace-nowrap"
+                            className="btn-pill text-xs text-[#6161ff] hover:underline cursor-pointer"
                           >
                             Ver ticket
                           </button>
@@ -644,21 +647,23 @@ export const MostradorView: React.FC<MostradorViewProps> = ({
       {/* Modal & Ticket Imprimible de Comprobante de Préstamo */}
       {ticketPrestamo && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-xs p-4"
           role="dialog"
           aria-modal="true"
           aria-labelledby="ticket-title"
         >
-          <div className="w-full max-w-md rounded-lg border border-[#E7E2D8] bg-[#FFFFFF] shadow-xl overflow-hidden">
-            <div className="no-print flex items-center justify-between border-b border-[#E7E2D8] bg-[#FBF9F5] px-5 py-3.5">
-              <div className="flex items-center gap-2 text-sm font-semibold text-[#15803D]">
-                <CheckCircle2 className="w-4 h-4" />
-                <span>Comprobante de Circulación</span>
+          <div className="w-full max-w-md rounded-[24px] border border-[#d0d4e4] bg-[#ffffff] shadow-[0px_5px_45px_rgba(0,0,0,0.25)] overflow-hidden">
+            <div className="no-print flex items-center justify-between border-b border-[#d0d4e4] bg-[#ffffff] px-6 py-4">
+              <div className="flex items-center gap-2">
+                <span className="badge-monday bg-[#bcfe90] text-[#2a5c4e] font-semibold text-xs">
+                  <CheckCircle2 className="w-3.5 h-3.5 mr-1" />
+                  Comprobante Oficial
+                </span>
               </div>
               <button
                 type="button"
                 onClick={() => setTicketPrestamo(null)}
-                className="p-1 rounded text-[#57534E] hover:bg-[#EBE6DF]"
+                className="p-1.5 rounded-full text-[#535768] hover:bg-[#f5f6f8] cursor-pointer"
                 aria-label="Cerrar comprobante"
               >
                 <X className="w-4 h-4" />
@@ -666,68 +671,69 @@ export const MostradorView: React.FC<MostradorViewProps> = ({
             </div>
 
             {/* Contenido Ticket Imprimible (@media print) */}
-            <div className="p-6 font-mono text-xs space-y-4 text-[#1C1917]">
-              <div className="text-center border-b border-dashed border-[#A8A29E] pb-3">
-                <h3 id="ticket-title" className="font-serif text-base font-bold">
+            <div className="p-6 font-mono text-xs space-y-4 text-[#333333]">
+              <div className="text-center border-b border-dashed border-[#d0d4e4] pb-4">
+                <div className="w-7 h-7 rounded-full prism-mark-circle mx-auto mb-2" />
+                <h3 id="ticket-title" className="text-base font-bold text-[#333333]">
                   SGBI · BIBLIOTECA CENTRAL
                 </h3>
-                <p className="text-[11px] text-[#57534E] mt-0.5">
-                  COMPROBANTE OFICIAL DE PRÉSTAMO
+                <p className="text-[11px] text-[#535768] mt-0.5">
+                  COMPROBANTE OFICIAL DE CIRCULACIÓN
                 </p>
-                <p className="mt-1 font-bold text-sm">FOLIO #{ticketPrestamo.id_prestamo}</p>
+                <p className="mt-1 font-bold text-sm text-[#6161ff]">FOLIO #{ticketPrestamo.id_prestamo}</p>
               </div>
 
               <dl className="space-y-2">
                 <div className="flex justify-between gap-2">
-                  <dt className="text-[#57534E]">Lector:</dt>
-                  <dd className="text-right font-semibold">{ticketPrestamo.usuario_nombre}</dd>
+                  <dt className="text-[#535768]">Lector:</dt>
+                  <dd className="text-right font-semibold text-[#333333]">{ticketPrestamo.usuario_nombre}</dd>
                 </div>
                 <div className="flex justify-between gap-2">
-                  <dt className="text-[#57534E]">Documento:</dt>
+                  <dt className="text-[#535768]">Documento:</dt>
                   <dd className="text-right tabular-nums">{ticketPrestamo.usuario_documento}</dd>
                 </div>
-                <div className="flex justify-between gap-2 border-t border-dashed border-[#E7E2D8] pt-2">
-                  <dt className="text-[#57534E]">Obra:</dt>
-                  <dd className="text-right font-semibold">{ticketPrestamo.libro_titulo}</dd>
+                <div className="flex justify-between gap-2 border-t border-dashed border-[#d0d4e4] pt-2">
+                  <dt className="text-[#535768]">Obra:</dt>
+                  <dd className="text-right font-semibold text-[#333333]">{ticketPrestamo.libro_titulo}</dd>
                 </div>
                 <div className="flex justify-between gap-2">
-                  <dt className="text-[#57534E]">ISBN:</dt>
+                  <dt className="text-[#535768]">ISBN:</dt>
                   <dd className="text-right tabular-nums">{ticketPrestamo.libro_isbn}</dd>
                 </div>
-                <div className="flex justify-between gap-2 border-t border-dashed border-[#E7E2D8] pt-2">
-                  <dt className="text-[#57534E]">Fecha salida:</dt>
+                <div className="flex justify-between gap-2 border-t border-dashed border-[#d0d4e4] pt-2">
+                  <dt className="text-[#535768]">Fecha salida:</dt>
                   <dd className="text-right tabular-nums">{ticketPrestamo.fecha_prestamo}</dd>
                 </div>
                 <div className="flex justify-between gap-2">
-                  <dt className="text-[#57534E]">Fecha límite (+8d háb.):</dt>
-                  <dd className="text-right font-bold tabular-nums">{ticketPrestamo.fecha_limite}</dd>
+                  <dt className="text-[#535768]">Fecha límite (+8d háb.):</dt>
+                  <dd className="text-right font-bold text-[#6161ff] tabular-nums">{ticketPrestamo.fecha_limite}</dd>
                 </div>
                 <div className="flex justify-between gap-2">
-                  <dt className="text-[#57534E]">Estado:</dt>
-                  <dd className="text-right font-semibold">{ticketPrestamo.estado}</dd>
+                  <dt className="text-[#535768]">Estado:</dt>
+                  <dd className="text-right font-semibold text-[#333333]">{ticketPrestamo.estado}</dd>
                 </div>
               </dl>
 
-              <p className="text-[10px] text-center text-[#57534E] border-t border-dashed border-[#A8A29E] pt-3">
+              <p className="text-[10px] text-center text-[#535768] border-t border-dashed border-[#d0d4e4] pt-3">
                 La entrega posterior a la fecha límite genera suspensión automática de préstamos.
               </p>
             </div>
 
-            <div className="no-print flex items-center justify-end gap-2.5 border-t border-[#E7E2D8] bg-[#FBF9F5] px-5 py-3.5">
+            <div className="no-print flex items-center justify-end gap-2.5 border-t border-[#d0d4e4] bg-[#f5f6f8] px-6 py-4">
               <button
                 type="button"
                 onClick={() => window.print()}
-                className="inline-flex items-center gap-1.5 rounded-md border border-[#D6CEBE] bg-[#FFFFFF] px-3.5 py-2 text-xs font-semibold text-[#1C1917] hover:bg-[#F3EFE7] transition-colors"
+                className="btn-outline-pill text-xs py-2 px-4 cursor-pointer"
               >
                 <Printer className="w-3.5 h-3.5" />
-                Imprimir Comprobante
+                Imprimir
               </button>
               <button
                 type="button"
                 onClick={resetLoanForm}
-                className="rounded-md bg-[#1E3A8A] px-3.5 py-2 text-xs font-semibold text-white hover:bg-[#172554] transition-colors"
+                className="btn-primary-pill text-xs py-2 px-5 cursor-pointer shadow-xs"
               >
-                Registrar Otro Préstamo
+                Registrar Otro
               </button>
             </div>
           </div>

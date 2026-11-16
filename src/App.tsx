@@ -265,20 +265,23 @@ export default function App() {
   const currentBreadcrumb = ROUTE_LABELS[route];
 
   const renderSidebarContent = () => (
-    <div className="flex flex-col h-full">
-      {/* Brand Wordmark */}
-      <div className="px-5 h-14 flex items-center justify-between border-b border-[#E7E2D8] shrink-0">
+    <div className="flex flex-col h-full bg-[#ffffff]">
+      {/* Brand Wordmark with Monday.com Conic Prism Mark */}
+      <div className="px-5 h-16 flex items-center justify-between border-b border-[#d0d4e4] shrink-0">
         <button
           type="button"
           onClick={goToMainScreen}
-          className="font-serif text-xl font-semibold tracking-tight text-[#1C1917] whitespace-nowrap cursor-pointer"
+          className="flex items-center gap-2.5 font-sans text-lg font-bold tracking-tight text-[#333333] whitespace-nowrap cursor-pointer group"
         >
-          SGBI · Acervo
+          <div className="w-7 h-7 rounded-full prism-mark-circle shrink-0 shadow-sm flex items-center justify-center p-0.5 transition-transform duration-300 group-hover:rotate-45">
+            <div className="w-full h-full rounded-full bg-[#ffffff]/30 backdrop-blur-[1px]" />
+          </div>
+          <span className="font-bold text-[#333333]">SGBI <span className="text-[#6161ff] font-medium">· Acervo</span></span>
         </button>
         <button
           type="button"
           onClick={() => setMobileMenuOpen(false)}
-          className="lg:hidden p-1.5 rounded text-[#57534E] hover:bg-[#F3EFE7]"
+          className="lg:hidden p-1.5 rounded-full text-[#535768] hover:bg-[#f5f6f8]"
           aria-label="Cerrar menú lateral"
         >
           <X className="w-4 h-4" />
@@ -286,19 +289,19 @@ export default function App() {
       </div>
 
       {/* Navegación Lateral Estructurada en 3 Secciones */}
-      <div className="flex-1 overflow-y-auto px-3 py-4 space-y-5">
+      <div className="flex-1 overflow-y-auto px-3 py-4 space-y-6">
         {/* Sección 1: Explorar */}
-        <nav aria-label="Explorar biblioteca" className="space-y-1">
-          <div className="px-2.5 pb-1 text-[11px] font-semibold uppercase tracking-wider text-[#78716C]">
+        <nav aria-label="Explorar biblioteca" className="space-y-1.5">
+          <div className="px-3 pb-1 text-[11px] font-semibold uppercase tracking-wider text-[#535768]">
             Explorar
           </div>
           <button
             type="button"
             onClick={goToMainScreen}
-            className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-md text-sm font-medium transition-colors whitespace-nowrap cursor-pointer ${
+            className={`w-full flex items-center gap-2.5 px-3.5 py-2.5 rounded-[160px] text-sm font-medium transition-all whitespace-nowrap cursor-pointer ${
               route === 'catalogo' && selectedCategory === 'Todas'
-                ? 'bg-[#1E3A8A] text-white font-semibold'
-                : 'text-[#44403C] hover:bg-[#F3EFE7] hover:text-[#1C1917]'
+                ? 'bg-[#6161ff] text-white shadow-sm font-semibold'
+                : 'text-[#535768] hover:bg-[#e7ecff] hover:text-[#333333]'
             }`}
           >
             <Home className="w-4 h-4 shrink-0" />
@@ -316,10 +319,10 @@ export default function App() {
                 key={item.id}
                 type="button"
                 onClick={() => navigateToRoute(item.id)}
-                className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-md text-sm font-medium transition-colors whitespace-nowrap cursor-pointer ${
+                className={`w-full flex items-center gap-2.5 px-3.5 py-2.5 rounded-[160px] text-sm font-medium transition-all whitespace-nowrap cursor-pointer ${
                   active
-                    ? 'bg-[#1E3A8A] text-white font-semibold'
-                    : 'text-[#44403C] hover:bg-[#F3EFE7] hover:text-[#1C1917]'
+                    ? 'bg-[#6161ff] text-white shadow-sm font-semibold'
+                    : 'text-[#535768] hover:bg-[#e7ecff] hover:text-[#333333]'
                 }`}
               >
                 <Icon className="w-4 h-4 shrink-0" />
@@ -331,8 +334,8 @@ export default function App() {
 
         {/* Sección 2: Operación y Cuenta (RBAC) */}
         {visibleAccountItems.length > 0 && (
-          <nav aria-label="Operación y cuenta" className="pt-4 border-t border-[#E7E2D8] space-y-1">
-            <div className="px-2.5 pb-1 text-[11px] font-semibold uppercase tracking-wider text-[#78716C]">
+          <nav aria-label="Operación y cuenta" className="pt-4 border-t border-[#d0d4e4] space-y-1.5">
+            <div className="px-3 pb-1 text-[11px] font-semibold uppercase tracking-wider text-[#535768]">
               Operación y Cuenta
             </div>
             {visibleAccountItems.map((item) => {
@@ -343,10 +346,10 @@ export default function App() {
                   key={item.id}
                   type="button"
                   onClick={() => navigateToRoute(item.id)}
-                  className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-md text-sm font-medium transition-colors whitespace-nowrap cursor-pointer ${
+                  className={`w-full flex items-center gap-2.5 px-3.5 py-2.5 rounded-[160px] text-sm font-medium transition-all whitespace-nowrap cursor-pointer ${
                     active
-                      ? 'bg-[#1E3A8A] text-white font-semibold'
-                      : 'text-[#44403C] hover:bg-[#F3EFE7] hover:text-[#1C1917]'
+                      ? 'bg-[#6161ff] text-white shadow-sm font-semibold'
+                      : 'text-[#535768] hover:bg-[#e7ecff] hover:text-[#333333]'
                   }`}
                 >
                   <Icon className="w-4 h-4 shrink-0" />
@@ -358,31 +361,31 @@ export default function App() {
         )}
 
         {/* Sección 3: Colecciones por Categoría */}
-        <div className="pt-4 border-t border-[#E7E2D8] space-y-1">
-          <div className="px-2.5 pb-1.5 flex items-center justify-between">
-            <span className="text-[11px] font-semibold uppercase tracking-wider text-[#78716C]">
+        <div className="pt-4 border-t border-[#d0d4e4] space-y-1">
+          <div className="px-3 pb-1.5 flex items-center justify-between">
+            <span className="text-[11px] font-semibold uppercase tracking-wider text-[#535768]">
               Colecciones
             </span>
             <button
               type="button"
               onClick={() => navigateToRoute('categorias')}
-              className="text-[11px] font-medium text-[#1E3A8A] hover:underline underline-offset-2 cursor-pointer"
+              className="text-[11px] font-medium text-[#6161ff] hover:underline underline-offset-2 cursor-pointer"
             >
-              Ver descripciones
+              Ver todas
             </button>
           </div>
 
           <button
             type="button"
             onClick={() => handleJumpToCategory('Todas')}
-            className={`w-full flex items-center justify-between gap-2 px-3 py-1.5 rounded-md text-xs transition-colors cursor-pointer ${
+            className={`w-full flex items-center justify-between gap-2 px-3 py-1.5 rounded-[6px] text-xs transition-colors cursor-pointer ${
               route === 'catalogo' && selectedCategory === 'Todas'
-                ? 'bg-[#F3EFE7] text-[#1C1917] font-semibold'
-                : 'text-[#57534E] hover:bg-[#F3EFE7]/70 hover:text-[#1C1917]'
+                ? 'bg-[#e7ecff] text-[#6161ff] font-semibold'
+                : 'text-[#535768] hover:bg-[#f5f6f8] hover:text-[#333333]'
             }`}
           >
             <span className="truncate">Todas las colecciones</span>
-            <span className="font-mono text-[11px] tabular-nums text-[#78716C]">
+            <span className="font-mono text-[11px] tabular-nums text-[#808080]">
               {libros.length}
             </span>
           </button>
@@ -395,14 +398,14 @@ export default function App() {
                 type="button"
                 onClick={() => handleJumpToCategory(cat.nombre)}
                 title={cat.descripcion}
-                className={`w-full flex items-center justify-between gap-2 px-3 py-1.5 rounded-md text-xs transition-colors cursor-pointer ${
+                className={`w-full flex items-center justify-between gap-2 px-3 py-1.5 rounded-[6px] text-xs transition-colors cursor-pointer ${
                   isActiveCat
-                    ? 'bg-[#F3EFE7] text-[#1E3A8A] font-semibold'
-                    : 'text-[#57534E] hover:bg-[#F3EFE7]/70 hover:text-[#1C1917]'
+                    ? 'bg-[#e7ecff] text-[#6161ff] font-semibold'
+                    : 'text-[#535768] hover:bg-[#f5f6f8] hover:text-[#333333]'
                 }`}
               >
                 <span className="truncate">{cat.nombre}</span>
-                <span className="font-mono text-[11px] tabular-nums text-[#78716C] shrink-0">
+                <span className="font-mono text-[11px] tabular-nums text-[#808080] shrink-0">
                   {cat.libros_count ?? 0}
                 </span>
               </button>
@@ -412,21 +415,27 @@ export default function App() {
       </div>
 
       {/* Pie de barra lateral: Cuenta y Sesión */}
-      <div className="p-3.5 border-t border-[#E7E2D8] bg-[#FBF9F5] shrink-0">
+      <div className="p-4 border-t border-[#d0d4e4] bg-[#ffffff] shrink-0">
         {user ? (
-          <div className="space-y-2.5">
-            <div className="px-1">
-              <div className="text-xs font-semibold text-[#1C1917] truncate">
-                {user.nombre_completo}
+          <div className="space-y-3">
+            <div className="px-1 flex items-center gap-2.5">
+              <div className="w-8 h-8 rounded-full bg-[#eddff7] text-[#6161ff] font-bold text-xs flex items-center justify-center shrink-0 border border-[#6161ff]/20">
+                {user.nombre_completo.charAt(0).toUpperCase()}
               </div>
-              <div className="text-[11px] font-mono text-[#57534E] truncate">
-                {user.rol} · {user.estado}
+              <div className="min-w-0">
+                <div className="text-xs font-semibold text-[#333333] truncate">
+                  {user.nombre_completo}
+                </div>
+                <div className="text-[11px] text-[#535768] truncate">
+                  <span className="badge-monday bg-[#dbdbff] text-[#6161ff] text-[10px] py-0 px-1.5 mr-1 font-semibold">{user.rol}</span>
+                  {user.estado}
+                </div>
               </div>
             </div>
             <button
               type="button"
               onClick={handleLogout}
-              className="w-full inline-flex items-center justify-center gap-1.5 rounded-md border border-[#D6CEBE] bg-[#FFFFFF] px-3 py-2 text-xs font-semibold text-[#1C1917] hover:bg-[#F3EFE7] transition-colors cursor-pointer"
+              className="w-full btn-outline-pill py-2 text-xs font-medium cursor-pointer"
             >
               <LogOut className="w-3.5 h-3.5" />
               Cerrar Sesión
@@ -439,7 +448,7 @@ export default function App() {
               setMobileMenuOpen(false);
               setLoginOpen(true);
             }}
-            className="w-full inline-flex items-center justify-center gap-1.5 rounded-md bg-[#1E3A8A] px-3 py-2 text-xs font-semibold text-white hover:bg-[#172554] transition-colors cursor-pointer"
+            className="w-full btn-primary-pill py-2.5 text-xs font-medium shadow-sm cursor-pointer"
           >
             <LogIn className="w-3.5 h-3.5" />
             Iniciar Sesión
@@ -451,9 +460,9 @@ export default function App() {
 
   return (
     <MotionConfig reducedMotion="user">
-      <div className="min-h-screen flex bg-[#FBF9F5] text-[#1C1917]">
+      <div className="min-h-screen flex bg-[#f5f6f8] text-[#333333] font-sans">
         {/* Barra Lateral Izquierda (Escritorio) */}
-        <aside className="no-print hidden lg:flex lg:flex-col lg:w-68 lg:shrink-0 border-r border-[#E7E2D8] bg-[#FFFFFF] sticky top-0 h-screen">
+        <aside className="no-print hidden lg:flex lg:flex-col lg:w-68 lg:shrink-0 border-r border-[#d0d4e4] bg-[#ffffff] sticky top-0 h-screen shadow-sm">
           {renderSidebarContent()}
         </aside>
 
@@ -467,14 +476,14 @@ export default function App() {
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.16 }}
                 onClick={() => setMobileMenuOpen(false)}
-                className="fixed inset-0 bg-black/40"
+                className="fixed inset-0 bg-black/40 backdrop-blur-xs"
               />
               <motion.aside
                 initial={{ x: '-100%' }}
                 animate={{ x: 0 }}
                 exit={{ x: '-100%' }}
                 transition={{ duration: 0.18, ease: [0.16, 1, 0.3, 1] }}
-                className="relative w-72 max-w-[85vw] bg-[#FFFFFF] border-r border-[#E7E2D8] h-full z-10"
+                className="relative w-72 max-w-[85vw] bg-[#ffffff] border-r border-[#d0d4e4] h-full z-10 shadow-2xl"
               >
                 {renderSidebarContent()}
               </motion.aside>
@@ -484,28 +493,28 @@ export default function App() {
 
         {/* Área Principal */}
         <div className="flex-1 flex flex-col min-w-0">
-          {/* Top Bar contextual minimalista */}
-          <header className="no-print sticky top-0 z-30 h-14 border-b border-[#E7E2D8] bg-[#FBF9F5]/95 backdrop-blur-sm px-4 sm:px-6 lg:px-8 flex items-center justify-between gap-4">
+          {/* Top Bar contextual monday style */}
+          <header className="no-print sticky top-0 z-30 h-16 border-b border-[#d0d4e4] bg-[#ffffff]/90 backdrop-blur-md px-4 sm:px-6 lg:px-8 flex items-center justify-between gap-4 shadow-xs">
             <div className="flex items-center gap-3 min-w-0">
               <button
                 type="button"
                 onClick={() => setMobileMenuOpen(true)}
-                className="lg:hidden p-2 -ml-1 rounded-md border border-[#D6CEBE] bg-[#FFFFFF] text-[#1C1917]"
+                className="lg:hidden p-2 rounded-full border border-[#d0d4e4] bg-[#ffffff] text-[#333333] hover:bg-[#f5f6f8]"
                 aria-label="Abrir navegación lateral"
               >
                 <Menu className="w-4 h-4" />
               </button>
 
-              <div className="flex items-center gap-1.5 text-xs text-[#78716C] truncate">
-                <span>{currentBreadcrumb.section}</span>
-                <ChevronRight className="w-3.5 h-3.5 shrink-0" />
-                <span className="font-semibold text-[#1C1917] truncate">
+              <div className="flex items-center gap-2 text-xs text-[#535768] truncate">
+                <span className="font-medium text-[#535768]">{currentBreadcrumb.section}</span>
+                <ChevronRight className="w-3.5 h-3.5 shrink-0 text-[#808080]" />
+                <span className="font-semibold text-[#333333] truncate">
                   {currentBreadcrumb.label}
                 </span>
                 {route === 'catalogo' && selectedCategory !== 'Todas' && (
                   <>
-                    <ChevronRight className="w-3.5 h-3.5 shrink-0" />
-                    <span className="text-[#1E3A8A] font-medium truncate">
+                    <ChevronRight className="w-3.5 h-3.5 shrink-0 text-[#808080]" />
+                    <span className="badge-monday bg-[#dbdbff] text-[#6161ff] font-semibold truncate">
                       {selectedCategory}
                     </span>
                   </>
@@ -513,12 +522,12 @@ export default function App() {
               </div>
             </div>
 
-            <div className="shrink-0">
+            <div className="shrink-0 flex items-center gap-2.5">
               {user ? (
                 <button
                   type="button"
                   onClick={handleLogout}
-                  className="inline-flex items-center gap-1.5 rounded-md border border-[#D6CEBE] bg-[#FFFFFF] px-3.5 py-1.5 text-xs font-semibold text-[#1C1917] hover:bg-[#F3EFE7] transition-colors whitespace-nowrap cursor-pointer"
+                  className="btn-outline-pill text-xs py-1.5 px-4 cursor-pointer"
                 >
                   <LogOut className="w-3.5 h-3.5" />
                   Salir
@@ -527,7 +536,7 @@ export default function App() {
                 <button
                   type="button"
                   onClick={() => setLoginOpen(true)}
-                  className="inline-flex items-center gap-1.5 rounded-md bg-[#1E3A8A] px-3.5 py-1.5 text-xs font-semibold text-white hover:bg-[#172554] transition-colors whitespace-nowrap cursor-pointer"
+                  className="btn-primary-pill text-xs py-2 px-5 cursor-pointer shadow-sm"
                 >
                   Iniciar Sesión
                 </button>
@@ -536,7 +545,7 @@ export default function App() {
           </header>
 
           {/* Contenido de la Ruta Activa protegido con ErrorBoundary */}
-          <main className="flex-1 max-w-6xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-7">
+          <main className="flex-1 max-w-[1200px] w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
             <ErrorBoundary onReset={goToMainScreen}>
               <AnimatePresence mode="wait">
                 <motion.div
@@ -604,31 +613,34 @@ export default function App() {
             </ErrorBoundary>
           </main>
 
-          {/* Pie de página sobrio */}
-          <footer className="no-print border-t border-[#E7E2D8] bg-[#FFFFFF] py-5 px-4 sm:px-6 lg:px-8 mt-auto">
-            <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-[#78716C]">
-              <span>
-                SGBI · Sistema de Gestión Bibliotecaria Inteligente
-              </span>
-              <div className="flex items-center gap-4">
+          {/* Pie de página monday style */}
+          <footer className="no-print border-t border-[#d0d4e4] bg-[#ffffff] py-6 px-4 sm:px-6 lg:px-8 mt-auto">
+            <div className="max-w-[1200px] mx-auto flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-[#535768]">
+              <div className="flex items-center gap-2">
+                <div className="w-4 h-4 rounded-full prism-mark-circle shrink-0" />
+                <span>
+                  SGBI · Sistema de Gestión Bibliotecaria Inteligente
+                </span>
+              </div>
+              <div className="flex items-center gap-5">
                 <button
                   type="button"
                   onClick={() => navigateToRoute('catalogo')}
-                  className="hover:text-[#1C1917] transition-colors cursor-pointer"
+                  className="hover:text-[#6161ff] transition-colors cursor-pointer"
                 >
                   Catálogo
                 </button>
                 <button
                   type="button"
                   onClick={() => navigateToRoute('categorias')}
-                  className="hover:text-[#1C1917] transition-colors cursor-pointer"
+                  className="hover:text-[#6161ff] transition-colors cursor-pointer"
                 >
                   Categorías
                 </button>
                 <button
                   type="button"
                   onClick={() => navigateToRoute('salas')}
-                  className="hover:text-[#1C1917] transition-colors cursor-pointer"
+                  className="hover:text-[#6161ff] transition-colors cursor-pointer"
                 >
                   Salas y Pasillos
                 </button>

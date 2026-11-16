@@ -9,12 +9,12 @@ interface BookCoverProps {
 }
 
 const EDITION_PALETTES = [
-  { bg: 'bg-[#1E293B]', accent: 'border-[#94A3B8]/40', text: 'text-[#F8FAFC]', sub: 'text-[#CBD5E1]' },
-  { bg: 'bg-[#1E3A8A]', accent: 'border-[#93C5FD]/35', text: 'text-[#F8FAFC]', sub: 'text-[#DBEAFE]' },
-  { bg: 'bg-[#3F2E26]', accent: 'border-[#D6CEBE]/40', text: 'text-[#FBF9F5]', sub: 'text-[#E7E2D8]' },
-  { bg: 'bg-[#14532D]', accent: 'border-[#86EFAC]/30', text: 'text-[#F7FEE7]', sub: 'text-[#DCFCE7]' },
-  { bg: 'bg-[#581C1C]', accent: 'border-[#FCA5A5]/30', text: 'text-[#FEF2F2]', sub: 'text-[#FEE2E2]' },
-  { bg: 'bg-[#292524]', accent: 'border-[#A8A29E]/35', text: 'text-[#FAFAF9]', sub: 'text-[#D6D3D1]' },
+  { bg: 'bg-[#6161ff]', accent: 'border-[#dbdbff]/40', text: 'text-[#ffffff]', sub: 'text-[#e7ecff]' },
+  { bg: 'bg-[#2b2d42]', accent: 'border-[#abf0ff]/40', text: 'text-[#ffffff]', sub: 'text-[#abf0ff]' },
+  { bg: 'bg-[#1e1b4b]', accent: 'border-[#eddff7]/40', text: 'text-[#ffffff]', sub: 'text-[#eddff7]' },
+  { bg: 'bg-[#0f3d3e]', accent: 'border-[#bcfe90]/40', text: 'text-[#ffffff]', sub: 'text-[#bcfe90]' },
+  { bg: 'bg-[#4a0e4e]', accent: 'border-[#fcd0f8]/40', text: 'text-[#ffffff]', sub: 'text-[#fcd0f8]' },
+  { bg: 'bg-[#1a2332]', accent: 'border-[#d0d4e4]/40', text: 'text-[#ffffff]', sub: 'text-[#d0d4e4]' },
 ];
 
 export const BookCover: React.FC<BookCoverProps> = ({ libro, size = 'md' }) => {
@@ -26,7 +26,7 @@ export const BookCover: React.FC<BookCoverProps> = ({ libro, size = 'md' }) => {
   if (size === 'sm') {
     return (
       <div
-        className={`w-14 h-20 relative flex flex-col justify-end rounded-sm border border-black/15 shrink-0 select-none overflow-hidden ${palette.bg}`}
+        className={`w-14 h-20 relative flex flex-col justify-end rounded-[6px] border border-[#d0d4e4] shrink-0 select-none overflow-hidden ${palette.bg}`}
         aria-hidden="true"
       >
         {!imgFailed ? (
@@ -39,7 +39,7 @@ export const BookCover: React.FC<BookCoverProps> = ({ libro, size = 'md' }) => {
           />
         ) : (
           <div className="p-2 flex flex-col justify-between h-full">
-            <span className={`font-serif text-[10px] leading-tight font-semibold line-clamp-2 ${palette.text}`}>
+            <span className={`text-[10px] leading-tight font-semibold line-clamp-2 ${palette.text}`}>
               {libro.titulo}
             </span>
           </div>
@@ -51,7 +51,7 @@ export const BookCover: React.FC<BookCoverProps> = ({ libro, size = 'md' }) => {
   if (size === 'card') {
     return (
       <div
-        className={`relative w-full aspect-[4/3] overflow-hidden rounded-t-lg select-none ${palette.bg}`}
+        className={`relative w-full aspect-[4/3] overflow-hidden rounded-t-[23px] select-none ${palette.bg}`}
       >
         {!imgFailed ? (
           <img
@@ -64,7 +64,7 @@ export const BookCover: React.FC<BookCoverProps> = ({ libro, size = 'md' }) => {
         ) : (
           <div className="w-full h-full flex flex-col items-center justify-center p-6 text-center">
             <BookOpen className={`w-8 h-8 mb-2 opacity-60 ${palette.text}`} />
-            <span className={`font-serif text-base font-semibold line-clamp-2 ${palette.text}`}>
+            <span className={`text-base font-semibold line-clamp-2 ${palette.text}`}>
               {libro.titulo}
             </span>
           </div>
@@ -81,7 +81,7 @@ export const BookCover: React.FC<BookCoverProps> = ({ libro, size = 'md' }) => {
             <p className="text-[11px] font-medium tracking-wide text-white/85 truncate">
               {libro.categoria}
             </p>
-            <p className="font-serif text-sm font-medium text-white truncate">
+            <p className="text-sm font-medium text-white truncate">
               {primaryAuthor}
             </p>
           </div>
@@ -100,7 +100,7 @@ export const BookCover: React.FC<BookCoverProps> = ({ libro, size = 'md' }) => {
 
   return (
     <div
-      className={`${sizeClasses} ${palette.bg} relative flex flex-col justify-between rounded-md border border-black/15 select-none overflow-hidden shadow-sm`}
+      className={`${sizeClasses} ${palette.bg} relative flex flex-col justify-between rounded-xl border border-[#d0d4e4] select-none overflow-hidden shadow-sm`}
     >
       {!imgFailed ? (
         <img
@@ -132,7 +132,7 @@ export const BookCover: React.FC<BookCoverProps> = ({ libro, size = 'md' }) => {
 
       <div className="relative z-10 p-5 mt-auto">
         <h4
-          className={`font-serif font-semibold leading-snug tracking-tight text-white ${
+          className={`font-semibold leading-snug tracking-tight text-white ${
             size === 'lg' ? 'text-2xl' : 'text-lg'
           } line-clamp-3`}
         >

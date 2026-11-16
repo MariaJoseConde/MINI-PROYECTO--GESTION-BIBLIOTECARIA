@@ -179,47 +179,48 @@ export const SalasView: React.FC<SalasViewProps> = ({
   }, [salasAgrupadas, selectedSala, filterText]);
 
   return (
-    <div className="space-y-7">
+    <div className="space-y-8">
       {/* Cabecera */}
-      <div className="border-b border-[#E7E2D8] pb-5 flex flex-col lg:flex-row lg:items-end justify-between gap-4">
+      <div className="card-monday bg-[#ffffff] p-8 flex flex-col lg:flex-row lg:items-end justify-between gap-6">
         <div className="max-w-2xl">
-          <p className="text-xs font-medium tracking-widest uppercase text-[#78716C]">
-            Orientación Espacial y Señalización
-          </p>
-          <h1 className="mt-1 font-serif text-3xl font-semibold text-[#1C1917] text-balance">
-            Organización de salas, pasillos y estanterías
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-[6px] bg-[#e7ecff] text-[#6161ff] text-xs font-semibold uppercase tracking-wider mb-2.5">
+            <Compass className="w-3.5 h-3.5" />
+            <span>Orientación Espacial</span>
+          </div>
+          <h1 className="text-3xl sm:text-4xl font-light tracking-[-0.03em] text-[#333333] text-balance">
+            Organización de salas, <span className="gradient-hero-text font-normal">pasillos y estanterías</span>
           </h1>
-          <p className="mt-2 text-sm text-[#57534E] leading-relaxed">
+          <p className="mt-2.5 text-sm text-[#535768] leading-relaxed">
             Ubica físicamente cada colección dentro del edificio, explora la distribución de pasillos y consulta en qué estante se encuentra cada obra.
           </p>
         </div>
 
         <div className="relative w-full lg:w-80 shrink-0">
-          <Search className="w-4 h-4 text-[#78716C] absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+          <Search className="w-4 h-4 text-[#808080] absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
           <input
             type="text"
             value={filterText}
             onChange={(e) => setFilterText(e.target.value)}
             placeholder="Buscar sala, pasillo, estante o libro..."
             aria-label="Localizar sala, pasillo o estante"
-            className="w-full rounded-lg border border-[#D6CEBE] bg-[#FFFFFF] pl-10 pr-4 py-2.5 text-sm text-[#1C1917] placeholder:text-[#78716C] focus:border-[#1E3A8A] focus:outline-none focus:ring-2 focus:ring-[#1E3A8A]/15"
+            className="w-full input-monday pl-10 pr-4 py-2 text-sm shadow-2xs"
           />
         </div>
       </div>
 
       {/* Plano Arquitectónico Interactivo */}
-      <section className="rounded-xl border border-[#E7E2D8] bg-[#FFFFFF] overflow-hidden">
-        <div className="px-6 py-4 border-b border-[#E7E2D8] bg-[#FBF9F5] flex flex-wrap items-center justify-between gap-3">
-          <div className="flex items-center gap-2 text-xs font-semibold text-[#1C1917]">
-            <Compass className="w-4 h-4 text-[#1E3A8A]" />
+      <section className="card-monday bg-[#ffffff] overflow-hidden">
+        <div className="px-6 py-4 border-b border-[#d0d4e4] bg-[#f5f6f8] flex flex-wrap items-center justify-between gap-3">
+          <div className="flex items-center gap-2 text-xs font-semibold text-[#333333]">
+            <Compass className="w-4 h-4 text-[#6161ff]" />
             <span>Plano arquitectónico del edificio bibliotecario</span>
           </div>
-          <span className="text-xs text-[#78716C]">
+          <span className="text-xs text-[#535768]">
             Haz clic en una sala del plano o en los filtros inferiores para aislar sus pasillos
           </span>
         </div>
 
-        <div className="relative aspect-[16/9] max-h-[460px] w-full bg-[#EBE6DF] overflow-hidden">
+        <div className="relative aspect-[16/9] max-h-[460px] w-full bg-[#f5f6f8] overflow-hidden">
           {!planImgFailed ? (
             <img
               src={LIBRARY_MEDIA.planoSalas}
@@ -229,7 +230,7 @@ export const SalasView: React.FC<SalasViewProps> = ({
               className="w-full h-full object-cover object-center"
             />
           ) : (
-            <div className="w-full h-full flex items-center justify-center text-sm text-[#57534E]">
+            <div className="w-full h-full flex items-center justify-center text-sm text-[#535768]">
               Vista esquemática de salas disponible en el directorio inferior
             </div>
           )}
@@ -246,13 +247,13 @@ export const SalasView: React.FC<SalasViewProps> = ({
                     setSelectedSala((prev) => (prev === s.sala ? 'Todas' : s.sala))
                   }
                   style={{ top: s.meta.pinPosition.top, left: s.meta.pinPosition.left }}
-                  className={`absolute -translate-x-1/2 -translate-y-1/2 inline-flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-xs font-semibold shadow-md transition-all cursor-pointer whitespace-nowrap ${
+                  className={`absolute -translate-x-1/2 -translate-y-1/2 inline-flex items-center gap-1.5 rounded-[160px] px-3 py-1.5 text-xs font-semibold shadow-md transition-all cursor-pointer whitespace-nowrap ${
                     isSelected
-                      ? 'bg-[#1E3A8A] text-white ring-2 ring-white scale-105'
-                      : 'bg-[#1C1917]/90 text-white hover:bg-[#1E3A8A] hover:scale-105'
+                      ? 'bg-[#6161ff] text-white ring-2 ring-white scale-105'
+                      : 'bg-[#333333]/90 text-white hover:bg-[#6161ff] hover:scale-105'
                   }`}
                 >
-                  <MapPin className="w-3 h-3 shrink-0" />
+                  <MapPin className="w-3.5 h-3.5 shrink-0" />
                   <span>{s.sala}</span>
                   <span className="font-mono text-[10px] opacity-80 tabular-nums">
                     ({s.pasillos.length})
@@ -263,15 +264,15 @@ export const SalasView: React.FC<SalasViewProps> = ({
           </div>
         </div>
 
-        {/* Selector rápido de Salas */}
-        <div className="px-5 py-3.5 border-t border-[#E7E2D8] bg-[#FBF9F5] flex flex-wrap items-center gap-2">
+        {/* Selector rápido de Salas (Pills) */}
+        <div className="px-6 py-4 border-t border-[#d0d4e4] bg-[#ffffff] flex flex-wrap items-center gap-2">
           <button
             type="button"
             onClick={() => setSelectedSala('Todas')}
-            className={`px-3 py-1.5 rounded-md text-xs font-semibold transition-colors cursor-pointer whitespace-nowrap ${
+            className={`px-3.5 py-1.5 rounded-[160px] text-xs font-medium transition-all cursor-pointer whitespace-nowrap ${
               selectedSala === 'Todas'
-                ? 'bg-[#1E3A8A] text-white'
-                : 'bg-[#FFFFFF] border border-[#D6CEBE] text-[#44403C] hover:bg-[#F3EFE7]'
+                ? 'bg-[#6161ff] text-white shadow-xs font-semibold'
+                : 'bg-[#f5f6f8] text-[#535768] hover:text-[#333333] hover:bg-[#e7ecff]'
             }`}
           >
             Todas las salas ({salasAgrupadas.length})
@@ -282,10 +283,10 @@ export const SalasView: React.FC<SalasViewProps> = ({
               key={s.sala}
               type="button"
               onClick={() => setSelectedSala(s.sala)}
-              className={`px-3 py-1.5 rounded-md text-xs font-semibold transition-colors cursor-pointer whitespace-nowrap ${
+              className={`px-3.5 py-1.5 rounded-[160px] text-xs font-medium transition-all cursor-pointer whitespace-nowrap ${
                 selectedSala === s.sala
-                  ? 'bg-[#1E3A8A] text-white'
-                  : 'bg-[#FFFFFF] border border-[#D6CEBE] text-[#44403C] hover:bg-[#F3EFE7]'
+                  ? 'bg-[#6161ff] text-white shadow-xs font-semibold'
+                  : 'bg-[#f5f6f8] text-[#535768] hover:text-[#333333] hover:bg-[#e7ecff]'
               }`}
             >
               {s.sala} · {s.pasillos.length} {s.pasillos.length === 1 ? 'pasillo' : 'pasillos'}
@@ -296,12 +297,12 @@ export const SalasView: React.FC<SalasViewProps> = ({
 
       {/* Directorio Detallado por Sala y Pasillo */}
       {filteredSalas.length === 0 ? (
-        <div className="rounded-xl border border-[#E7E2D8] bg-[#FFFFFF] py-14 px-6 text-center">
-          <BookOpen className="w-9 h-9 text-[#A8A29E] mx-auto mb-2.5" />
-          <h3 className="font-serif text-lg font-semibold text-[#1C1917]">
+        <div className="card-monday bg-[#ffffff] py-14 px-6 text-center">
+          <BookOpen className="w-9 h-9 text-[#808080] mx-auto mb-2.5" />
+          <h3 className="text-lg font-bold text-[#333333]">
             Sin coincidencias en salas o estantes
           </h3>
-          <p className="mt-1 text-xs text-[#57534E]">
+          <p className="mt-1 text-xs text-[#535768]">
             Intenta con otro término como “Pasillo 2”, “Estante 01”, “Sala B” o limpia el filtro.
           </p>
         </div>
@@ -313,28 +314,28 @@ export const SalasView: React.FC<SalasViewProps> = ({
               initial={{ opacity: 0, y: 6 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.16 }}
-              className="rounded-xl border border-[#E7E2D8] bg-[#FFFFFF] overflow-hidden"
+              className="card-monday bg-[#ffffff] overflow-hidden"
             >
-              <div className="px-6 py-4 border-b border-[#E7E2D8] bg-[#FBF9F5] flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+              <div className="px-6 py-5 border-b border-[#d0d4e4] bg-[#f5f6f8] flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                 <div>
-                  <div className="text-[11px] font-mono uppercase tracking-wider text-[#78716C]">
+                  <div className="badge-monday bg-[#dbdbff] text-[#6161ff] font-semibold text-[10px] mb-1">
                     {grupo.meta.nivel}
                   </div>
-                  <h2 className="font-serif text-2xl font-semibold text-[#1C1917]">
+                  <h2 className="text-2xl font-bold text-[#333333] tracking-tight">
                     {grupo.sala}
                   </h2>
-                  <p className="text-xs text-[#57534E] mt-0.5">{grupo.meta.subtitulo}</p>
+                  <p className="text-xs text-[#535768] mt-0.5">{grupo.meta.subtitulo}</p>
                 </div>
 
-                <div className="flex items-center gap-5 text-xs font-mono tabular-nums shrink-0 text-[#44403C]">
+                <div className="flex items-center gap-4 text-xs font-mono tabular-nums shrink-0 text-[#535768]">
                   <span>
                     {grupo.pasillos.length}{' '}
                     {grupo.pasillos.length === 1 ? 'pasillo / zona' : 'pasillos / zonas'}
                   </span>
-                  <span className="text-[#D6CEBE]">·</span>
+                  <span className="text-[#cacbcd]">·</span>
                   <span>{grupo.totalLibros} títulos</span>
-                  <span className="text-[#D6CEBE]">·</span>
-                  <span className="font-semibold text-[#15803D]">{grupo.totalDisp} disponibles</span>
+                  <span className="text-[#cacbcd]">·</span>
+                  <span className="badge-monday bg-[#bcfe90] text-[#2a5c4e] font-semibold">{grupo.totalDisp} disponibles</span>
                 </div>
               </div>
 
@@ -342,11 +343,11 @@ export const SalasView: React.FC<SalasViewProps> = ({
                 {grupo.pasillos.map(({ categoria, pasilloLabel, libros: librosPasillo }) => (
                   <article
                     key={categoria.id_categoria}
-                    className="rounded-lg border border-[#E7E2D8] bg-[#FBF9F5] overflow-hidden flex flex-col justify-between"
+                    className="rounded-[16px] border border-[#d0d4e4] bg-[#ffffff] overflow-hidden flex flex-col justify-between shadow-xs hover:border-[#6161ff]/40 transition-colors"
                   >
                     <div>
-                      <div className="flex gap-4 p-4 bg-[#FFFFFF] border-b border-[#E7E2D8]">
-                        <div className="w-24 h-20 rounded-md overflow-hidden shrink-0 bg-[#1E293B]">
+                      <div className="flex gap-4 p-4 bg-[#f5f6f8] border-b border-[#d0d4e4]">
+                        <div className="w-24 h-20 rounded-[12px] overflow-hidden shrink-0 bg-[#e7ecff]">
                           <img
                             src={resolveCategoryBannerArt(categoria.nombre)}
                             alt={categoria.nombre}
@@ -356,16 +357,16 @@ export const SalasView: React.FC<SalasViewProps> = ({
                         </div>
 
                         <div className="flex-1 min-w-0">
-                          <div className="flex items-center justify-between gap-2 text-[11px] font-mono text-[#1E3A8A] font-semibold">
+                          <div className="flex items-center justify-between gap-2 text-[11px] font-mono text-[#6161ff] font-semibold">
                             <span className="truncate">{pasilloLabel}</span>
-                            <span className="text-[#78716C] shrink-0">
+                            <span className="badge-monday bg-[#ffffff] text-[#535768] shrink-0">
                               CDU {categoria.codigo_archivo}
                             </span>
                           </div>
-                          <h3 className="mt-1 font-serif text-lg font-semibold text-[#1C1917] truncate">
+                          <h3 className="mt-1 text-base font-bold text-[#333333] truncate">
                             {categoria.nombre}
                           </h3>
-                          <p className="mt-0.5 text-xs text-[#57534E] line-clamp-2">
+                          <p className="mt-0.5 text-xs text-[#535768] line-clamp-2">
                             {categoria.descripcion}
                           </p>
                         </div>
@@ -373,16 +374,16 @@ export const SalasView: React.FC<SalasViewProps> = ({
 
                       {/* Estanterías y Obras en este pasillo */}
                       <div className="p-4 space-y-2">
-                        <div className="text-[11px] font-semibold uppercase tracking-wider text-[#78716C]">
-                          Estantes y ejemplares ubicados aquí ({librosPasillo.length})
+                        <div className="text-[11px] font-semibold uppercase tracking-wider text-[#535768]">
+                          Estantes y ejemplares ({librosPasillo.length})
                         </div>
 
                         {librosPasillo.length === 0 ? (
-                          <p className="text-xs text-[#78716C] py-2">
+                          <p className="text-xs text-[#808080] py-2">
                             Espacio reservado para nuevas adquisiciones de esta colección.
                           </p>
                         ) : (
-                          <ul className="divide-y divide-[#E7E2D8]">
+                          <ul className="divide-y divide-[#f5f6f8]">
                             {librosPasillo.map((libro) => (
                               <li key={libro.id_libro} className="py-2 first:pt-1 last:pb-0">
                                 <button
@@ -391,19 +392,19 @@ export const SalasView: React.FC<SalasViewProps> = ({
                                   className="w-full text-left group flex items-start justify-between gap-3 cursor-pointer"
                                 >
                                   <div className="min-w-0">
-                                    <div className="text-xs font-semibold text-[#1C1917] group-hover:text-[#1E3A8A] group-hover:underline underline-offset-2 truncate">
+                                    <div className="text-xs font-semibold text-[#333333] group-hover:text-[#6161ff] group-hover:underline underline-offset-2 truncate">
                                       {libro.titulo}
                                     </div>
-                                    <div className="text-[11px] font-mono text-[#57534E] truncate">
+                                    <div className="text-[11px] font-mono text-[#535768] truncate">
                                       {libro.ubicacion_estante || categoria.ubicacion_sala}
                                     </div>
                                   </div>
 
                                   <span
-                                    className={`text-[11px] font-mono font-semibold tabular-nums shrink-0 ${
+                                    className={`badge-monday font-mono text-[10px] tabular-nums shrink-0 ${
                                       libro.copias_disp === 0
-                                        ? 'text-[#B91C1C]'
-                                        : 'text-[#15803D]'
+                                        ? 'bg-[#fcd0f8] text-[#991B1B]'
+                                        : 'bg-[#bcfe90] text-[#2a5c4e]'
                                     }`}
                                   >
                                     {libro.copias_disp}/{libro.copias_totales} disp.
@@ -416,15 +417,15 @@ export const SalasView: React.FC<SalasViewProps> = ({
                       </div>
                     </div>
 
-                    <div className="px-4 py-3 border-t border-[#E7E2D8] bg-[#FFFFFF] flex items-center justify-between text-xs">
-                      <span className="text-[#78716C] truncate">{categoria.enfoque_lector}</span>
+                    <div className="px-4 py-3 border-t border-[#f5f6f8] bg-[#f5f6f8]/40 flex items-center justify-between text-xs">
+                      <span className="text-[#535768] truncate">{categoria.enfoque_lector}</span>
                       <button
                         type="button"
                         onClick={() => onExploreCategory(categoria.nombre)}
-                        className="inline-flex items-center gap-1 font-semibold text-[#1E3A8A] hover:underline underline-offset-4 whitespace-nowrap shrink-0 cursor-pointer"
+                        className="btn-outline-pill text-xs py-1 px-3.5 cursor-pointer"
                       >
                         Abrir colección
-                        <ArrowRight className="w-3.5 h-3.5" />
+                        <ArrowRight className="w-3 h-3" />
                       </button>
                     </div>
                   </article>
