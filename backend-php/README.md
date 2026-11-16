@@ -92,3 +92,4 @@ DB_USERNAME=root
 DB_PASSWORD=
 ```
 2. La clase `Sgbi\Config\Database` cambiará automáticamente su controlador PDO a MySQL sin requerir cambios de código.
+

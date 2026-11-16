@@ -9,3 +9,4 @@ set "PATH=C:\xampp\php;%PATH%"
 cd /d "%~dp0"
 "C:\xampp\php\php.exe" -S 0.0.0.0:8000 backend-php/router.php
 pause
+

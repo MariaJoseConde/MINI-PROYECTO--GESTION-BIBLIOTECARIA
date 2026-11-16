@@ -1,6 +1,6 @@
 <?php
 /**
- * SGBI - Enrutador Front-Controller para API REST en PHP 8.2+
+ * SGBI - Enrutador Front-Controller para API REST y Servidor Web en PHP 8.2+
  */
 
 // Simple PSR-4 Autoloader for Sgbi namespace
@@ -35,14 +35,10 @@ Response::initCors();
 $method = $_SERVER['REQUEST_METHOD'];
 $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 
-// Serve static files if requested and present
 $rootPath = dirname(__DIR__);
-$filePath = $rootPath . $uri;
-if ($uri !== '/' && !str_starts_with($uri, '/api') && file_exists($filePath) && !is_dir($filePath)) {
-    return false; // Let PHP built-in server serve the static file
-}
+$distPath = $rootPath . '/dist';
 
-// Router for /api/* endpoints
+// 1. Router for /api/* endpoints (Pure PHP Controllers)
 if (str_starts_with($uri, '/api/')) {
     $path = substr($uri, 4); // Remove '/api'
 
@@ -147,11 +143,37 @@ if (str_starts_with($uri, '/api/')) {
     Response::error("Recurso API no encontrado: {$method} {$uri}", 404);
 }
 
-// Fallback: serve index.html for SPA routes
-$indexHtml = $rootPath . '/index.html';
-if (file_exists($indexHtml)) {
+// 2. Serve static assets from dist/
+$targetFile = $distPath . $uri;
+if ($uri !== '/' && file_exists($targetFile) && !is_dir($targetFile)) {
+    $ext = strtolower(pathinfo($targetFile, PATHINFO_EXTENSION));
+    $mimes = [
+        'js' => 'text/javascript; charset=utf-8',
+        'css' => 'text/css; charset=utf-8',
+        'html' => 'text/html; charset=utf-8',
+        'json' => 'application/json; charset=utf-8',
+        'png' => 'image/png',
+        'jpg' => 'image/jpeg',
+        'jpeg' => 'image/jpeg',
+        'svg' => 'image/svg+xml',
+        'ico' => 'image/x-icon',
+        'woff' => 'font/woff',
+        'woff2' => 'font/woff2',
+        'ttf' => 'font/ttf',
+    ];
+    if (isset($mimes[$ext])) {
+        header("Content-Type: {$mimes[$ext]}");
+    }
+    header('Cache-Control: public, max-age=31536000');
+    readfile($targetFile);
+    exit;
+}
+
+// 3. Fallback: serve dist/index.html (or root index.html) for all SPA views
+$indexFile = file_exists($distPath . '/index.html') ? $distPath . '/index.html' : $rootPath . '/index.html';
+if (file_exists($indexFile)) {
     header('Content-Type: text/html; charset=utf-8');
-    readfile($indexHtml);
+    readfile($indexFile);
     exit;
 }
 

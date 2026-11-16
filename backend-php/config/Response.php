@@ -40,3 +40,4 @@ class Response {
         return is_array($data) ? $data : [];
     }
 }
+

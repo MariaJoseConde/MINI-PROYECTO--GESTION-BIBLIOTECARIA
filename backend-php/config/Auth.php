@@ -107,3 +107,4 @@ class Auth {
         return false;
     }
 }
+

@@ -55,3 +55,4 @@ class AuthController {
         Response::json(['ok' => true]);
     }
 }
+
