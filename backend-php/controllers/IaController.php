@@ -23,15 +23,20 @@ class IaController {
         if (empty($query)) {
             $stmt = $db->query("SELECT * FROM libros ORDER BY id_libro DESC LIMIT 10");
         } else {
+            $connectionType = getenv('DB_CONNECTION') ?: 'mysql';
+            $concatSyntax = ($connectionType === 'mysql') 
+                ? "GROUP_CONCAT(a.nombre SEPARATOR ' ')" 
+                : "GROUP_CONCAT(a.nombre, ' ')";
+
             $stmt = $db->prepare("
                 SELECT l.*,
-                    (SELECT GROUP_CONCAT(a.nombre, ' ') FROM autores a JOIN libro_autor la ON la.id_autor = a.id_autor WHERE la.id_libro = l.id_libro) AS autores_nombres
+                    (SELECT {$concatSyntax} FROM autores a JOIN libro_autor la ON la.id_autor = a.id_autor WHERE la.id_libro = l.id_libro) AS autores_nombres
                 FROM libros l
                 WHERE LOWER(l.titulo) LIKE LOWER(?)
                    OR LOWER(l.sinopsis) LIKE LOWER(?)
                    OR LOWER(l.temas_clave) LIKE LOWER(?)
                    OR LOWER(l.categoria) LIKE LOWER(?)
-                   OR LOWER((SELECT GROUP_CONCAT(a.nombre, ' ') FROM autores a JOIN libro_autor la ON la.id_autor = a.id_autor WHERE la.id_libro = l.id_libro)) LIKE LOWER(?)
+                   OR LOWER((SELECT {$concatSyntax} FROM autores a JOIN libro_autor la ON la.id_autor = a.id_autor WHERE la.id_libro = l.id_libro)) LIKE LOWER(?)
                 ORDER BY l.id_libro DESC
             ");
             $like = "%{$query}%";

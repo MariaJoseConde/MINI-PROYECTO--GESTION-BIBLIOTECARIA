@@ -6,13 +6,41 @@ use Exception;
 
 class Database {
     private static ?PDO $instance = null;
+    private static bool $envLoaded = false;
+
+    public static function loadEnv(): void {
+        if (self::$envLoaded) {
+            return;
+        }
+        self::$envLoaded = true;
+
+        $envFile = dirname(__DIR__, 2) . '/.env';
+        if (file_exists($envFile)) {
+            $lines = file($envFile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+            foreach ($lines as $line) {
+                $line = trim($line);
+                if ($line === '' || str_starts_with($line, '#')) continue;
+                if (str_contains($line, '=')) {
+                    [$key, $val] = explode('=', $line, 2);
+                    $key = trim($key);
+                    $val = trim($val, " \t\n\r\0\x0B\"'");
+                    if (getenv($key) === false) {
+                        putenv("{$key}={$val}");
+                        $_ENV[$key] = $val;
+                    }
+                }
+            }
+        }
+    }
 
     public static function getConnection(): PDO {
         if (self::$instance !== null) {
             return self::$instance;
         }
 
-        $connectionType = getenv('DB_CONNECTION') ?: 'sqlite';
+        self::loadEnv();
+
+        $connectionType = getenv('DB_CONNECTION') ?: 'mysql';
 
         if ($connectionType === 'mysql') {
             $host = getenv('DB_HOST') ?: '127.0.0.1';
@@ -26,6 +54,7 @@ class Database {
                 PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
                 PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
                 PDO::ATTR_EMULATE_PREPARES => false,
+                PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8mb4 COLLATE utf8mb4_unicode_ci",
             ]);
         } else {
             // Default: SQLite database in data/sgbi.db
@@ -60,14 +89,44 @@ class Database {
     }
 
     public static function getStats(): array {
+        self::loadEnv();
         $db = self::getConnection();
-        $dbPath = getenv('DB_PATH') ?: dirname(__DIR__, 2) . '/data/sgbi.db';
-        $fileSizeKb = file_exists($dbPath) ? round(filesize($dbPath) / 1024, 1) : 0;
+        $connectionType = getenv('DB_CONNECTION') ?: 'mysql';
 
+        $fileSizeKb = 0;
         $indexesCount = 0;
-        try {
-            $indexesCount = (int)$db->query("SELECT COUNT(*) FROM sqlite_master WHERE type = 'index' AND name NOT LIKE 'sqlite_%'")->fetchColumn();
-        } catch (Exception) {}
+        $journalMode = 'wal';
+        $foreignKeys = true;
+
+        if ($connectionType === 'mysql') {
+            $database = getenv('DB_DATABASE') ?: 'sgbi';
+            $journalMode = 'InnoDB';
+            try {
+                $foreignKeys = (bool)$db->query('SELECT @@foreign_key_checks')->fetchColumn();
+            } catch (Exception) {}
+
+            try {
+                $fileSizeKb = (float)$db->query("
+                    SELECT ROUND(SUM(data_length + index_length) / 1024, 1) 
+                    FROM information_schema.TABLES 
+                    WHERE table_schema = '{$database}'
+                ")->fetchColumn();
+            } catch (Exception) {}
+
+            try {
+                $indexesCount = (int)$db->query("
+                    SELECT COUNT(DISTINCT table_name, index_name) 
+                    FROM information_schema.STATISTICS 
+                    WHERE table_schema = '{$database}'
+                ")->fetchColumn();
+            } catch (Exception) {}
+        } else {
+            $dbPath = getenv('DB_PATH') ?: dirname(__DIR__, 2) . '/data/sgbi.db';
+            $fileSizeKb = file_exists($dbPath) ? round(filesize($dbPath) / 1024, 1) : 0;
+            try {
+                $indexesCount = (int)$db->query("SELECT COUNT(*) FROM sqlite_master WHERE type = 'index' AND name NOT LIKE 'sqlite_%'")->fetchColumn();
+            } catch (Exception) {}
+        }
 
         $schemaVersion = 'v3';
         try {
@@ -84,8 +143,9 @@ class Database {
         };
 
         return [
-            'journalMode' => 'wal',
-            'foreignKeys' => true,
+            'engine' => $connectionType,
+            'journalMode' => $journalMode,
+            'foreignKeys' => $foreignKeys,
             'integrityOk' => true,
             'schemaVersion' => $schemaVersion,
             'fileSizeKb' => $fileSizeKb,
@@ -103,4 +163,3 @@ class Database {
         ];
     }
 }
-
