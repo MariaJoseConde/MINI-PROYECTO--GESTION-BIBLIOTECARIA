@@ -1,0 +1,12 @@
+{
+  "version": 2,
+  "skills": {
+    "automate-github-issues": {
+      "source": "google-labs-code/jules-skills",
+      "commit": "7a76d3bfcf4258ee437d65b5d12e54b51c395de5",
+      "sourceType": "github",
+      "skillPath": "skills/automate-github-issues/SKILL.md",
+      "computedHash": "a348287ea0d103e1cce7d9be778bd6f4ca03cb94ae39b83779ade2d0409f22ac"
+    }
+  }
+}
