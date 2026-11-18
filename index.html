@@ -3,6 +3,19 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="light dark" />
+    <script>
+      try {
+        const saved = localStorage.getItem("theme");
+        if (saved === "dark" || (!saved && window.matchMedia("(prefers-color-scheme: dark)").matches)) {
+          document.documentElement.classList.add("dark");
+          document.querySelector('meta[name="color-scheme"]').content = "dark";
+        } else {
+          document.documentElement.classList.remove("dark");
+          document.querySelector('meta[name="color-scheme"]').content = "light";
+        }
+      } catch (e) {}
+    </script>
     <title>SGBI · Plataforma Educativa y Estudio con IA</title>
     <meta name="description" content="Plataforma educativa y de gestión bibliotecaria con herramientas de estudio impulsadas por IA, evaluaciones pedagógicas y catálogo accesible." />
     <meta property="og:title" content="SGBI · Plataforma Educativa y Estudio con IA" />

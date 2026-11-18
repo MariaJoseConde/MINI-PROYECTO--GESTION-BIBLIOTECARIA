@@ -17,6 +17,7 @@ import {
   Map as MapIcon,
   Menu,
   SlidersHorizontal,
+  Sun,
   X,
 } from 'lucide-react';
 import { AnimatePresence, MotionConfig, motion } from 'motion/react';
@@ -94,6 +95,14 @@ function buildHashUrl(route: ActiveRoute, category: string): string {
 
 export default function App() {
   const initialHash = parseHashState();
+  const [theme, setTheme] = useState<'light' | 'dark'>(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('theme');
+      if (saved === 'dark' || saved === 'light') return saved;
+      if (window.matchMedia('(prefers-color-scheme: dark)').matches) return 'dark';
+    }
+    return 'light';
+  });
   const [user, setUser] = useState<Usuario | null>(null);
   const [libros, setLibros] = useState<Libro[]>([]);
   const [categorias, setCategorias] = useState<Categoria[]>([]);
@@ -166,6 +175,23 @@ export default function App() {
     window.addEventListener('hashchange', onHashChange);
     return () => window.removeEventListener('hashchange', onHashChange);
   }, []);
+
+  useEffect(() => {
+    const meta = document.querySelector('meta[name="color-scheme"]');
+    if (theme === 'dark') {
+      document.documentElement.classList.add('dark');
+      if (meta) meta.setAttribute('content', 'dark');
+      localStorage.setItem('theme', 'dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+      if (meta) meta.setAttribute('content', 'light');
+      localStorage.setItem('theme', 'light');
+    }
+  }, [theme]);
+
+  function toggleTheme() {
+    setTheme((prev) => (prev === 'light' ? 'dark' : 'light'));
+  }
 
   async function handleLogout() {
     try {
@@ -260,23 +286,23 @@ export default function App() {
   const currentBreadcrumb = ROUTE_LABELS[route];
 
   const renderSidebarContent = () => (
-    <div className="flex flex-col h-full bg-white">
+    <div className="flex flex-col h-full bg-white dark:bg-slate-900">
       {/* Brand Header */}
-      <div className="px-5 h-16 min-h-16 flex items-center justify-between border-b border-slate-200 shrink-0 bg-white">
+      <div className="px-5 h-16 min-h-16 flex items-center justify-between border-b border-slate-200 dark:border-slate-800 shrink-0 bg-white dark:bg-slate-900">
         <button
           type="button"
           onClick={goToMainScreen}
-          className="min-h-[44px] flex items-center gap-2.5 font-sans text-base font-bold tracking-tight text-slate-900 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-600 rounded-md"
+          className="min-h-[44px] flex items-center gap-2.5 font-sans text-base font-bold tracking-tight text-slate-900 dark:text-white cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-600 rounded-md"
         >
           <div className="w-8 h-8 rounded-lg bg-indigo-600 text-white flex items-center justify-center font-bold text-sm shadow-xs shrink-0">
             S
           </div>
-          <span className="font-bold text-slate-900">SGBI <span className="text-indigo-600 font-semibold">· Estudio IA</span></span>
+          <span className="font-bold text-slate-900 dark:text-white">SGBI <span className="text-indigo-600 dark:text-indigo-400 font-semibold">· Estudio IA</span></span>
         </button>
         <button
           type="button"
           onClick={() => setMobileMenuOpen(false)}
-          className="lg:hidden min-h-[44px] min-w-[44px] flex items-center justify-center rounded-lg text-slate-700 hover:bg-slate-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-600"
+          className="lg:hidden min-h-[44px] min-w-[44px] flex items-center justify-center rounded-lg text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-600"
           aria-label="Cerrar menú lateral"
         >
           <X className="w-5 h-5" />
@@ -287,7 +313,7 @@ export default function App() {
       <div className="flex-1 overflow-y-auto px-3 py-4 space-y-6">
         {/* Sección 1: Explorar */}
         <nav aria-label="Explorar biblioteca" className="space-y-1.5">
-          <div className="px-3 pb-1 text-xs font-semibold uppercase tracking-wider text-slate-700">
+          <div className="px-3 pb-1 text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-400">
             Explorar
           </div>
           <button
@@ -296,7 +322,7 @@ export default function App() {
             className={`w-full min-h-[44px] flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-sm font-medium transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-600 ${
               route === 'catalogo' && selectedCategory === 'Todas'
                 ? 'bg-indigo-600 text-white font-semibold shadow-xs'
-                : 'text-slate-700 hover:bg-slate-100 hover:text-slate-950'
+                : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-950 dark:hover:text-white'
             }`}
           >
             <Home className="w-4 h-4 shrink-0" />
@@ -317,7 +343,7 @@ export default function App() {
                 className={`w-full min-h-[44px] flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-sm font-medium transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-600 ${
                   active
                     ? 'bg-indigo-600 text-white font-semibold shadow-xs'
-                    : 'text-slate-700 hover:bg-slate-100 hover:text-slate-950'
+                    : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-950 dark:hover:text-white'
                 }`}
               >
                 <Icon className="w-4 h-4 shrink-0" />
@@ -329,8 +355,8 @@ export default function App() {
 
         {/* Sección 2: Operación y Cuenta (RBAC) */}
         {visibleAccountItems.length > 0 && (
-          <nav aria-label="Operación y cuenta" className="pt-4 border-t border-slate-200 space-y-1.5">
-            <div className="px-3 pb-1 text-xs font-semibold uppercase tracking-wider text-slate-700">
+          <nav aria-label="Operación y cuenta" className="pt-4 border-t border-slate-200 dark:border-slate-800 space-y-1.5">
+            <div className="px-3 pb-1 text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-400">
               Operación y Cuenta
             </div>
             {visibleAccountItems.map((item) => {
@@ -344,7 +370,7 @@ export default function App() {
                   className={`w-full min-h-[44px] flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-sm font-medium transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-600 ${
                     active
                       ? 'bg-indigo-600 text-white font-semibold shadow-xs'
-                      : 'text-slate-700 hover:bg-slate-100 hover:text-slate-950'
+                      : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-950 dark:hover:text-white'
                   }`}
                 >
                   <Icon className="w-4 h-4 shrink-0" />
@@ -356,15 +382,15 @@ export default function App() {
         )}
 
         {/* Sección 3: Colecciones por Categoría */}
-        <div className="pt-4 border-t border-slate-200 space-y-1">
+        <div className="pt-4 border-t border-slate-200 dark:border-slate-800 space-y-1">
           <div className="px-3 pb-1.5 flex items-center justify-between">
-            <span className="text-xs font-semibold uppercase tracking-wider text-slate-700">
+            <span className="text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-400">
               Colecciones
             </span>
             <button
               type="button"
               onClick={() => navigateToRoute('categorias')}
-              className="text-xs font-medium text-indigo-600 hover:text-indigo-800 hover:underline underline-offset-2 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-600 rounded"
+              className="text-xs font-medium text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-300 hover:underline underline-offset-2 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-600 rounded"
             >
               Ver todas
             </button>
@@ -375,12 +401,12 @@ export default function App() {
             onClick={() => handleJumpToCategory('Todas')}
             className={`w-full min-h-[40px] flex items-center justify-between gap-2 px-3 py-2 rounded-lg text-xs font-medium transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-600 ${
               route === 'catalogo' && selectedCategory === 'Todas'
-                ? 'bg-indigo-50 text-indigo-700 font-semibold border border-indigo-200'
-                : 'text-slate-700 hover:bg-slate-100 hover:text-slate-950'
+                ? 'bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 font-semibold border border-indigo-200 dark:border-indigo-800'
+                : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-950 dark:hover:text-white'
             }`}
           >
             <span className="truncate">Todas las colecciones</span>
-            <span className="font-mono text-xs tabular-nums text-slate-600">
+            <span className="font-mono text-xs tabular-nums text-slate-600 dark:text-slate-400">
               {libros.length}
             </span>
           </button>
@@ -395,12 +421,12 @@ export default function App() {
                 title={cat.descripcion}
                 className={`w-full min-h-[40px] flex items-center justify-between gap-2 px-3 py-2 rounded-lg text-xs font-medium transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-600 ${
                   isActiveCat
-                    ? 'bg-indigo-50 text-indigo-700 font-semibold border border-indigo-200'
-                    : 'text-slate-700 hover:bg-slate-100 hover:text-slate-950'
+                    ? 'bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 font-semibold border border-indigo-200 dark:border-indigo-800'
+                    : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-950 dark:hover:text-white'
                 }`}
               >
                 <span className="truncate">{cat.nombre}</span>
-                <span className="font-mono text-xs tabular-nums text-slate-600 shrink-0">
+                <span className="font-mono text-xs tabular-nums text-slate-600 dark:text-slate-400 shrink-0">
                   {cat.libros_count ?? 0}
                 </span>
               </button>
@@ -410,19 +436,37 @@ export default function App() {
       </div>
 
       {/* Pie de barra lateral: Cuenta y Sesión */}
-      <div className="p-4 border-t border-slate-200 bg-white shrink-0">
+      <div className="p-4 border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shrink-0">
+        {/* Selector de Tema con icono de Sol (Modo Claro / Oscuro) */}
+        <div className="mb-3">
+          <button
+            type="button"
+            onClick={toggleTheme}
+            aria-label={theme === 'dark' ? 'Cambiar a tema claro' : 'Cambiar a tema oscuro'}
+            className="w-full min-h-[44px] px-3.5 py-2 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 flex items-center justify-between transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-600 text-xs font-medium text-slate-800 dark:text-slate-200"
+          >
+            <div className="flex items-center gap-2.5">
+              <Sun className={`w-4 h-4 ${theme === 'dark' ? 'text-amber-400 rotate-90' : 'text-amber-500'} transition-transform duration-500`} />
+              <span>Tema de pantalla</span>
+            </div>
+            <span className="font-semibold text-amber-600 dark:text-amber-400">
+              {theme === 'dark' ? 'Oscuro' : 'Claro'}
+            </span>
+          </button>
+        </div>
+
         {user ? (
           <div className="space-y-3">
             <div className="px-1 flex items-center gap-2.5">
-              <div className="w-9 h-9 rounded-full bg-indigo-50 text-indigo-700 font-bold text-sm flex items-center justify-center shrink-0 border border-indigo-200">
+              <div className="w-9 h-9 rounded-full bg-indigo-50 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-300 font-bold text-sm flex items-center justify-center shrink-0 border border-indigo-200 dark:border-indigo-800">
                 {user.nombre_completo.charAt(0).toUpperCase()}
               </div>
               <div className="min-w-0">
-                <div className="text-sm font-semibold text-slate-900 truncate">
+                <div className="text-sm font-semibold text-slate-900 dark:text-slate-100 truncate">
                   {user.nombre_completo}
                 </div>
-                <div className="text-xs text-slate-600 truncate">
-                  <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[11px] font-semibold bg-indigo-50 text-indigo-700 border border-indigo-200 mr-1.5">
+                <div className="text-xs text-slate-600 dark:text-slate-400 truncate">
+                  <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[11px] font-semibold bg-indigo-50 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800 mr-1.5">
                     {user.rol}
                   </span>
                   {user.estado}
@@ -432,7 +476,7 @@ export default function App() {
             <button
               type="button"
               onClick={handleLogout}
-              className="w-full min-h-[44px] rounded-lg bg-white border border-slate-300 text-slate-800 hover:bg-slate-100 text-xs font-medium flex items-center justify-center gap-2 transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-600"
+              className="w-full min-h-[44px] rounded-lg bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 text-xs font-medium flex items-center justify-center gap-2 transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-600"
             >
               <LogOut className="w-4 h-4" />
               Cerrar Sesión
@@ -462,9 +506,9 @@ export default function App() {
         Saltar al contenido principal
       </a>
 
-      <div className="min-h-screen flex bg-slate-50 text-slate-800 font-sans">
+      <div className={`min-h-screen flex ${theme === 'dark' ? 'dark bg-slate-950 text-slate-100' : 'bg-slate-50 text-slate-800'} font-sans`}>
         {/* Barra Lateral Izquierda (Escritorio) */}
-        <aside className="no-print hidden lg:flex lg:flex-col lg:w-68 lg:shrink-0 border-r border-slate-200 bg-white sticky top-0 h-screen shadow-xs">
+        <aside className="no-print hidden lg:flex lg:flex-col lg:w-68 lg:shrink-0 border-r border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 sticky top-0 h-screen shadow-xs">
           {renderSidebarContent()}
         </aside>
 
@@ -491,7 +535,7 @@ export default function App() {
                 animate={{ x: 0 }}
                 exit={{ x: '-100%' }}
                 transition={{ duration: 0.18, ease: [0.16, 1, 0.3, 1] }}
-                className="relative w-72 max-w-[85vw] bg-white border-r border-slate-200 h-full z-10 shadow-2xl"
+                className="relative w-72 max-w-[85vw] bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 h-full z-10 shadow-2xl"
               >
                 {renderSidebarContent()}
               </motion.aside>
@@ -502,14 +546,14 @@ export default function App() {
         {/* Área Principal */}
         <div className="flex-1 flex flex-col min-w-0">
           {/* Header Sólido y Proporcionado (WCAG 2.1/2.2 AA) */}
-          <header className="no-print sticky top-0 z-30 min-h-16 h-16 border-b border-slate-200 bg-white/95 backdrop-blur-md px-4 sm:px-6 lg:px-8 py-3 flex items-center justify-between gap-4">
+          <header className="no-print sticky top-0 z-30 min-h-16 h-16 border-b border-slate-200 dark:border-slate-800 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md px-4 sm:px-6 lg:px-8 py-3 flex items-center justify-between gap-4">
             <div className="flex items-center gap-3 sm:gap-4 min-w-0">
               <button
                 type="button"
                 onClick={() => setMobileMenuOpen((prev) => !prev)}
                 aria-expanded={mobileMenuOpen}
                 aria-controls="mobile-nav-drawer"
-                className="lg:hidden min-h-[44px] min-w-[44px] flex items-center justify-center rounded-lg border border-slate-300 bg-white text-slate-800 hover:bg-slate-100 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-600 cursor-pointer"
+                className="lg:hidden min-h-[44px] min-w-[44px] flex items-center justify-center rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-600 cursor-pointer"
                 aria-label="Abrir navegación lateral"
               >
                 <Menu className="w-5 h-5" />
@@ -519,13 +563,13 @@ export default function App() {
               <button
                 type="button"
                 onClick={goToMainScreen}
-                className="min-h-[44px] flex items-center gap-2 font-sans text-base font-bold tracking-tight text-slate-900 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-600 rounded-md shrink-0 mr-1"
+                className="min-h-[44px] flex items-center gap-2 font-sans text-base font-bold tracking-tight text-slate-900 dark:text-white cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-600 rounded-md shrink-0 mr-1"
               >
                 <div className="w-7 h-7 rounded-lg bg-indigo-600 text-white flex items-center justify-center font-bold text-xs shadow-xs">
                   S
                 </div>
-                <span className="font-bold text-slate-900 hidden sm:inline">
-                  SGBI <span className="text-indigo-600 font-semibold">· Estudio IA</span>
+                <span className="font-bold text-slate-900 dark:text-white hidden sm:inline">
+                  SGBI <span className="text-indigo-600 dark:text-indigo-400 font-semibold">· Estudio IA</span>
                 </span>
               </button>
 
@@ -535,8 +579,8 @@ export default function App() {
                   onClick={() => navigateToRoute('catalogo')}
                   className={`min-h-[44px] px-3.5 py-2 rounded-lg text-sm font-medium transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-600 ${
                     route === 'catalogo'
-                      ? 'bg-indigo-50 text-indigo-700 font-semibold border border-indigo-200'
-                      : 'text-slate-700 hover:bg-slate-100 hover:text-slate-950'
+                      ? 'bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 font-semibold border border-indigo-200 dark:border-indigo-800'
+                      : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-950 dark:hover:text-white'
                   }`}
                 >
                   Mis Temas
@@ -546,8 +590,8 @@ export default function App() {
                   onClick={() => navigateToRoute('evaluaciones')}
                   className={`min-h-[44px] px-3.5 py-2 rounded-lg text-sm font-medium transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-600 ${
                     route === 'evaluaciones'
-                      ? 'bg-indigo-50 text-indigo-700 font-semibold border border-indigo-200'
-                      : 'text-slate-700 hover:bg-slate-100 hover:text-slate-950'
+                      ? 'bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 font-semibold border border-indigo-200 dark:border-indigo-800'
+                      : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-950 dark:hover:text-white'
                   }`}
                 >
                   Práctica e IA
@@ -557,8 +601,8 @@ export default function App() {
                   onClick={() => navigateToRoute('salas')}
                   className={`min-h-[44px] px-3.5 py-2 rounded-lg text-sm font-medium transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-600 ${
                     route === 'salas'
-                      ? 'bg-indigo-50 text-indigo-700 font-semibold border border-indigo-200'
-                      : 'text-slate-700 hover:bg-slate-100 hover:text-slate-950'
+                      ? 'bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 font-semibold border border-indigo-200 dark:border-indigo-800'
+                      : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-950 dark:hover:text-white'
                   }`}
                 >
                   Salas
@@ -568,8 +612,8 @@ export default function App() {
                   onClick={() => (user ? navigateToRoute('mis-prestamos') : navigateToRoute('categorias'))}
                   className={`min-h-[44px] px-3.5 py-2 rounded-lg text-sm font-medium transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-600 ${
                     route === 'mis-prestamos' || route === 'categorias'
-                      ? 'bg-indigo-50 text-indigo-700 font-semibold border border-indigo-200'
-                      : 'text-slate-700 hover:bg-slate-100 hover:text-slate-950'
+                      ? 'bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 font-semibold border border-indigo-200 dark:border-indigo-800'
+                      : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-950 dark:hover:text-white'
                   }`}
                 >
                   {user ? 'Mi Progreso' : 'Colecciones'}
@@ -577,19 +621,37 @@ export default function App() {
               </nav>
             </div>
 
-            <div className="shrink-0 flex items-center gap-3">
+            <div className="shrink-0 flex items-center gap-2 sm:gap-3">
               {/* Ruta constante de migas de pan en header */}
-              <nav aria-label="Ubicación constante" className="hidden xl:flex items-center gap-2 text-xs font-medium text-slate-500 mr-2">
+              <nav aria-label="Ubicación constante" className="hidden xl:flex items-center gap-2 text-xs font-medium text-slate-500 dark:text-slate-400 mr-1 sm:mr-2">
                 <span>{currentBreadcrumb.section}</span>
-                <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
-                <span className="font-semibold text-slate-900">{currentBreadcrumb.label}</span>
+                <ChevronRight className="w-3.5 h-3.5 text-slate-400 dark:text-slate-500" />
+                <span className="font-semibold text-slate-900 dark:text-slate-100">{currentBreadcrumb.label}</span>
               </nav>
+
+              {/* Botón selector de tema Claro / Oscuro con icono de Sol (WCAG 2.1/2.2 AA) */}
+              <button
+                type="button"
+                onClick={toggleTheme}
+                aria-label={theme === 'dark' ? 'Cambiar a tema claro' : 'Cambiar a tema oscuro'}
+                title={theme === 'dark' ? 'Tema actual: Oscuro (Clic para cambiar a Claro)' : 'Tema actual: Claro (Clic para cambiar a Oscuro)'}
+                className={`min-h-[44px] min-w-[44px] px-3 rounded-lg border transition-all flex items-center justify-center gap-2 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-600 ${
+                  theme === 'dark'
+                    ? 'border-amber-500/50 bg-slate-800 text-amber-400 hover:bg-slate-700 hover:border-amber-400 shadow-xs'
+                    : 'border-slate-300 bg-white text-amber-600 hover:bg-amber-50/70 hover:border-amber-300 shadow-xs'
+                }`}
+              >
+                <Sun className={`w-5 h-5 transition-transform duration-500 ${theme === 'dark' ? 'rotate-90 text-amber-400 fill-amber-400/20' : 'text-amber-500 fill-amber-500/20'}`} />
+                <span className="hidden sm:inline text-xs font-semibold text-slate-800 dark:text-slate-200">
+                  {theme === 'dark' ? 'Oscuro' : 'Claro'}
+                </span>
+              </button>
 
               {user ? (
                 <button
                   type="button"
                   onClick={handleLogout}
-                  className="min-h-[44px] px-4 rounded-lg border border-slate-300 bg-white text-slate-800 hover:bg-slate-100 font-medium text-sm flex items-center gap-2 transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-600 focus-visible:ring-offset-2"
+                  className="min-h-[44px] px-4 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 font-medium text-sm flex items-center gap-2 transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-600 focus-visible:ring-offset-2"
                 >
                   <LogOut className="w-4 h-4" />
                   <span>Salir</span>
@@ -680,11 +742,11 @@ export default function App() {
           </main>
 
           {/* Pie de página accesible */}
-          <footer className="no-print border-t border-slate-200 bg-white py-6 px-4 sm:px-6 lg:px-8 mt-auto">
-            <div className="max-w-[1200px] mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-slate-600">
+          <footer className="no-print border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 py-6 px-4 sm:px-6 lg:px-8 mt-auto">
+            <div className="max-w-[1200px] mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-slate-600 dark:text-slate-400">
               <div className="flex items-center gap-2">
                 <div className="w-2.5 h-2.5 rounded-full bg-indigo-600 shrink-0" />
-                <span className="font-medium text-slate-700">
+                <span className="font-medium text-slate-700 dark:text-slate-300">
                   SGBI · Sistema de Gestión Bibliotecaria y Estudio IA
                 </span>
               </div>
@@ -692,21 +754,21 @@ export default function App() {
                 <button
                   type="button"
                   onClick={() => navigateToRoute('catalogo')}
-                  className="min-h-[44px] inline-flex items-center text-sm font-medium text-slate-600 hover:text-indigo-600 transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-600 rounded"
+                  className="min-h-[44px] inline-flex items-center text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-600 rounded"
                 >
                   Catálogo
                 </button>
                 <button
                   type="button"
                   onClick={() => navigateToRoute('categorias')}
-                  className="min-h-[44px] inline-flex items-center text-sm font-medium text-slate-600 hover:text-indigo-600 transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-600 rounded"
+                  className="min-h-[44px] inline-flex items-center text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-600 rounded"
                 >
                   Categorías
                 </button>
                 <button
                   type="button"
                   onClick={() => navigateToRoute('salas')}
-                  className="min-h-[44px] inline-flex items-center text-sm font-medium text-slate-600 hover:text-indigo-600 transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-600 rounded"
+                  className="min-h-[44px] inline-flex items-center text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-600 rounded"
                 >
                   Salas y Pasillos
                 </button>
