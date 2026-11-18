@@ -118,6 +118,55 @@ class AdminController {
         Response::json(['usuario' => $usuario]);
     }
 
+    public function getUsuario(int $id): void {
+        Auth::requireRole('ADMIN');
+        $db = Database::getConnection();
+        $stmt = $db->prepare('SELECT id_usuario, numero_documento, nombre_completo, email, rol, estado, created_at FROM usuarios WHERE id_usuario = ?');
+        $stmt->execute([$id]);
+        $usuario = $stmt->fetch();
+
+        if (!$usuario) {
+            Response::error('Usuario no encontrado.', 404, 'USER_NOT_FOUND');
+        }
+
+        $usuario['id_usuario'] = (int)$usuario['id_usuario'];
+        Response::json(['usuario' => $usuario]);
+    }
+
+    public function deleteUsuario(int $id): void {
+        $admin = Auth::requireRole('ADMIN');
+        if ((int)$admin['id_usuario'] === $id) {
+            Response::error('No puedes eliminar tu propia cuenta de administrador.', 409, 'SELF_DELETE_FORBIDDEN');
+        }
+
+        $db = Database::getConnection();
+        $stmt = $db->prepare('SELECT id_usuario, nombre_completo FROM usuarios WHERE id_usuario = ?');
+        $stmt->execute([$id]);
+        $usuario = $stmt->fetch();
+
+        if (!$usuario) {
+            Response::error('Usuario no encontrado.', 404, 'USER_NOT_FOUND');
+        }
+
+        // Verify no active loans
+        $stmtLoans = $db->prepare("SELECT COUNT(*) FROM prestamos WHERE id_usuario = ? AND estado IN ('ACTIVO', 'MORA')");
+        $stmtLoans->execute([$id]);
+        if ((int)$stmtLoans->fetchColumn() > 0) {
+            Response::error('No se puede eliminar el usuario porque tiene préstamos activos o en mora.', 409, 'USER_HAS_ACTIVE_LOANS');
+        }
+
+        try {
+            $db->prepare('DELETE FROM usuarios WHERE id_usuario = ?')->execute([$id]);
+            Database::logEvent('USUARIO_ELIMINADO', "Usuario eliminado: {$usuario['nombre_completo']} (ID {$id}).", (int)$admin['id_usuario']);
+            Response::json(['ok' => true, 'deleted_id' => $id]);
+        } catch (Exception $e) {
+            // If referenced by historical records (FK RESTRICT), soft-deactivate instead
+            $db->prepare("UPDATE usuarios SET estado = 'INACTIVO' WHERE id_usuario = ?")->execute([$id]);
+            Database::logEvent('USUARIO_DESACTIVADO', "Usuario desactivado por historial referencial: {$usuario['nombre_completo']} (ID {$id}).", (int)$admin['id_usuario']);
+            Response::json(['ok' => true, 'deactivated_id' => $id, 'mensaje' => 'Usuario marcado como INACTIVO para preservar historial de préstamos/evaluaciones.']);
+        }
+    }
+
     public function listAuditoria(): void {
         Auth::requireRole('ADMIN');
         $db = Database::getConnection();

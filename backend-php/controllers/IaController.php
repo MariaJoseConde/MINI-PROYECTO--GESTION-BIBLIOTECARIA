@@ -221,4 +221,50 @@ class IaController {
 
         Response::json(['pruebas' => $pruebas]);
     }
+
+    public function getPrueba(int $id): void {
+        $db = Database::getConnection();
+        $stmt = $db->prepare("
+            SELECT p.*, u.nombre_completo AS docente_nombre, l.titulo AS libro_titulo
+            FROM pruebas_lectura p
+            JOIN usuarios u ON u.id_usuario = p.id_docente
+            JOIN libros l ON l.id_libro = p.id_libro
+            WHERE p.id_prueba = ?
+        ");
+        $stmt->execute([$id]);
+        $r = $stmt->fetch();
+
+        if (!$r) {
+            Response::error('Prueba de lectura no encontrada.', 404, 'TEST_NOT_FOUND');
+        }
+
+        Response::json([
+            'prueba' => [
+                'id_prueba' => (int)$r['id_prueba'],
+                'id_libro' => (int)$r['id_libro'],
+                'id_docente' => (int)$r['id_docente'],
+                'docente_nombre' => $r['docente_nombre'],
+                'libro_titulo' => $r['libro_titulo'],
+                'contenido' => json_decode($r['contenido_json'], true),
+                'created_at' => $r['created_at'],
+            ],
+        ]);
+    }
+
+    public function deletePrueba(int $id): void {
+        $user = Auth::requireRole('DOCENTE', 'ADMIN');
+        $db = Database::getConnection();
+
+        $stmt = $db->prepare('SELECT * FROM pruebas_lectura WHERE id_prueba = ?');
+        $stmt->execute([$id]);
+        $r = $stmt->fetch();
+
+        if (!$r) {
+            Response::error('Prueba de lectura no encontrada.', 404, 'TEST_NOT_FOUND');
+        }
+
+        $db->prepare('DELETE FROM pruebas_lectura WHERE id_prueba = ?')->execute([$id]);
+        Database::logEvent('PRUEBA_ELIMINADA', "Prueba de lectura #{$id} eliminada.", (int)$user['id_usuario']);
+        Response::json(['ok' => true, 'deleted_id' => $id]);
+    }
 }

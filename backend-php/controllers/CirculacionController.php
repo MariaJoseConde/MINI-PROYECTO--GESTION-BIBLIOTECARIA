@@ -85,6 +85,42 @@ class CirculacionController {
         Response::json(['prestamos' => $prestamos]);
     }
 
+    public function getPrestamo(int $id): void {
+        $user = Auth::requireAuth();
+        $db = Database::getConnection();
+
+        $stmt = $db->prepare("
+            SELECT 
+                p.*,
+                l.titulo AS libro_titulo,
+                l.isbn AS libro_isbn,
+                u.nombre_completo AS usuario_nombre,
+                u.numero_documento AS usuario_documento,
+                u.estado AS usuario_estado
+            FROM prestamos p
+            JOIN libros l ON l.id_libro = p.id_libro
+            JOIN usuarios u ON u.id_usuario = p.id_usuario
+            WHERE p.id_prestamo = ?
+        ");
+        $stmt->execute([$id]);
+        $prestamo = $stmt->fetch();
+
+        if (!$prestamo) {
+            Response::error('Préstamo no encontrado.', 404, 'LOAN_NOT_FOUND');
+        }
+
+        if ($user['rol'] !== 'ADMIN' && (int)$prestamo['id_usuario'] !== (int)$user['id_usuario']) {
+            Response::error('No tiene permisos para ver este préstamo.', 403, 'FORBIDDEN');
+        }
+
+        $prestamo['id_prestamo'] = (int)$prestamo['id_prestamo'];
+        $prestamo['id_libro'] = (int)$prestamo['id_libro'];
+        $prestamo['id_usuario'] = (int)$prestamo['id_usuario'];
+        $prestamo['multa_calculada'] = (float)($prestamo['multa_calculada'] ?? 0);
+
+        Response::json(['prestamo' => $prestamo]);
+    }
+
     public function createPrestamo(): void {
         $admin = Auth::requireRole('ADMIN');
         $body = Response::getBody();

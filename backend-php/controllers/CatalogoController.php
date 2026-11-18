@@ -11,21 +11,43 @@ class CatalogoController {
     public function listLibros(): void {
         $db = Database::getConnection();
         $categoria = trim($_GET['categoria'] ?? '');
+        $q = trim($_GET['q'] ?? '');
+        $page = isset($_GET['page']) ? max(1, (int)$_GET['page']) : null;
+        $limit = isset($_GET['limit']) ? min(100, max(1, (int)$_GET['limit'])) : null;
+
+        $whereClauses = [];
+        $params = [];
+
+        if (!empty($categoria) && $categoria !== 'Todas') {
+            $whereClauses[] = "l.categoria = ?";
+            $params[] = $categoria;
+        }
+
+        if (!empty($q)) {
+            $whereClauses[] = "(LOWER(l.titulo) LIKE LOWER(?) OR LOWER(l.isbn) LIKE LOWER(?) OR LOWER(COALESCE(l.sinopsis, '')) LIKE LOWER(?) OR LOWER(COALESCE(l.temas_clave, '')) LIKE LOWER(?) OR EXISTS (SELECT 1 FROM libro_autor la_q JOIN autores a_q ON a_q.id_autor = la_q.id_autor WHERE la_q.id_libro = l.id_libro AND LOWER(a_q.nombre) LIKE LOWER(?)))";
+            $like = "%{$q}%";
+            array_push($params, $like, $like, $like, $like, $like);
+        }
+
+        $whereSql = !empty($whereClauses) ? ' WHERE ' . implode(' AND ', $whereClauses) : '';
+
+        $countStmt = $db->prepare("SELECT COUNT(*) FROM libros l{$whereSql}");
+        $countStmt->execute($params);
+        $total = (int)$countStmt->fetchColumn();
 
         $sql = "
             SELECT 
                 l.*,
                 (SELECT COUNT(*) FROM pruebas_lectura pl WHERE pl.id_libro = l.id_libro) AS pruebas_count
             FROM libros l
+            {$whereSql}
+            ORDER BY l.id_libro DESC
         ";
 
-        $params = [];
-        if (!empty($categoria) && $categoria !== 'Todas') {
-            $sql .= " WHERE l.categoria = ?";
-            $params[] = $categoria;
+        if ($limit !== null) {
+            $offset = (($page ?? 1) - 1) * $limit;
+            $sql .= " LIMIT {$limit} OFFSET {$offset}";
         }
-
-        $sql .= " ORDER BY l.id_libro DESC";
 
         $stmt = $db->prepare($sql);
         $stmt->execute($params);
@@ -49,10 +71,18 @@ class CatalogoController {
             $libro['pruebas_count'] = (int)$libro['pruebas_count'];
         }
 
-        Response::json(['libros' => $libros]);
+        Response::json([
+            'libros' => $libros,
+            'meta' => [
+                'total' => $total,
+                'count' => count($libros),
+                'page' => $page ?? 1,
+                'limit' => $limit ?? $total,
+            ],
+        ]);
     }
 
-    public function getLibro(int $id): void {
+    public function getLibro(int $id, int $status = 200): void {
         $db = Database::getConnection();
         $stmt = $db->prepare("
             SELECT 
@@ -110,7 +140,8 @@ class CatalogoController {
             }
         }
 
-        Response::json(['libro' => $libro, 'pruebas' => $pruebas]);
+        $extraHeaders = $status === 201 ? ['Location' => "/api/libros/{$id}"] : [];
+        Response::json(['libro' => $libro, 'pruebas' => $pruebas], $status, $extraHeaders);
     }
 
     public function createLibro(): void {
@@ -169,7 +200,7 @@ class CatalogoController {
             Database::logEvent('LIBRO_CREADO', "Libro registrado: \"{$titulo}\" (ISBN {$isbn}).", (int)$user['id_usuario']);
             $db->commit();
 
-            $this->getLibro($idLibro);
+            $this->getLibro($idLibro, 201);
         } catch (Exception $e) {
             $db->rollBack();
             Response::error('Error al registrar el libro: ' . $e->getMessage(), 500);
@@ -293,11 +324,14 @@ class CatalogoController {
         $user = Auth::requireRole('ADMIN');
         $db = Database::getConnection();
 
+        $isMysql = (getenv('DB_CONNECTION') ?: 'mysql') === 'mysql';
+        $concatAutores = $isMysql ? "GROUP_CONCAT(a.nombre SEPARATOR ' / ')" : "GROUP_CONCAT(a.nombre, ' / ')";
+
         $stmt = $db->query("
             SELECT 
                 l.id_libro, l.isbn, l.titulo, l.categoria, l.anio_publicacion,
                 l.editorial, l.copias_totales, l.copias_disp, l.ubicacion_estante,
-                COALESCE((SELECT GROUP_CONCAT(a.nombre, ' / ') FROM autores a JOIN libro_autor la ON la.id_autor = a.id_autor WHERE la.id_libro = l.id_libro), 'Sin autor') AS autores
+                COALESCE((SELECT {$concatAutores} FROM autores a JOIN libro_autor la ON la.id_autor = a.id_autor WHERE la.id_libro = l.id_libro), 'Sin autor') AS autores
             FROM libros l
             ORDER BY l.id_libro ASC
         ");
@@ -380,20 +414,158 @@ class CatalogoController {
             $categoria = $stmtGet->fetch();
 
             Database::logEvent('CATEGORIA_CREADA', "Categoría \"{$nombre}\" creada.", (int)$user['id_usuario']);
-            Response::json(['categoria' => $categoria], 201);
+            Response::created(['categoria' => $categoria], "/api/v1/categorias/{$id}");
         } catch (Exception $e) {
-            if (str_contains($e->getMessage(), 'UNIQUE')) {
-                Response::error("La categoría \"{$nombre}\" ya existe.", 409);
+            if (str_contains($e->getMessage(), 'UNIQUE') || str_contains($e->getMessage(), 'Duplicate')) {
+                Response::error("La categoría \"{$nombre}\" ya existe.", 409, 'DUPLICATE_RESOURCE');
             }
             Response::error('Error al registrar categoría: ' . $e->getMessage(), 500);
         }
+    }
+
+    public function getCategoria(int $id): void {
+        $db = Database::getConnection();
+        $stmt = $db->prepare('SELECT * FROM categorias WHERE id_categoria = ?');
+        $stmt->execute([$id]);
+        $cat = $stmt->fetch();
+        if (!$cat) {
+            Response::error('Categoría no encontrada.', 404, 'CATEGORY_NOT_FOUND');
+        }
+        $cat['id_categoria'] = (int)$cat['id_categoria'];
+        Response::json(['categoria' => $cat]);
+    }
+
+    public function updateCategoria(int $id): void {
+        $user = Auth::requireRole('ADMIN');
+        $body = Response::getBody();
+        $db = Database::getConnection();
+
+        $stmt = $db->prepare('SELECT * FROM categorias WHERE id_categoria = ?');
+        $stmt->execute([$id]);
+        $existing = $stmt->fetch();
+        if (!$existing) {
+            Response::error('Categoría no encontrada.', 404, 'CATEGORY_NOT_FOUND');
+        }
+
+        $nombre = trim($body['nombre'] ?? $existing['nombre']);
+        $descripcion = trim($body['descripcion'] ?? $existing['descripcion']);
+        $codigo = trim($body['codigo_archivo'] ?? $existing['codigo_archivo']);
+        $sala = trim($body['ubicacion_sala'] ?? $existing['ubicacion_sala']);
+        $publico = trim($body['publico_recomendado'] ?? $existing['publico_recomendado']);
+        $enfoque = trim($body['enfoque_lector'] ?? $existing['enfoque_lector']);
+
+        try {
+            $stmtUp = $db->prepare('UPDATE categorias SET nombre = ?, codigo_archivo = ?, descripcion = ?, ubicacion_sala = ?, publico_recomendado = ?, enfoque_lector = ? WHERE id_categoria = ?');
+            $stmtUp->execute([$nombre, $codigo, $descripcion, $sala, $publico, $enfoque, $id]);
+
+            $stmt->execute([$id]);
+            $updated = $stmt->fetch();
+            $updated['id_categoria'] = (int)$updated['id_categoria'];
+
+            Database::logEvent('CATEGORIA_ACTUALIZADA', "Categoría \"{$nombre}\" actualizada.", (int)$user['id_usuario']);
+            Response::json(['categoria' => $updated]);
+        } catch (Exception $e) {
+            if (str_contains($e->getMessage(), 'UNIQUE') || str_contains($e->getMessage(), 'Duplicate')) {
+                Response::error("Ya existe una categoría con el nombre \"{$nombre}\".", 409, 'DUPLICATE_RESOURCE');
+            }
+            Response::error('Error al actualizar categoría: ' . $e->getMessage(), 500);
+        }
+    }
+
+    public function deleteCategoria(int $id): void {
+        $user = Auth::requireRole('ADMIN');
+        $db = Database::getConnection();
+
+        $stmt = $db->prepare('SELECT * FROM categorias WHERE id_categoria = ?');
+        $stmt->execute([$id]);
+        $cat = $stmt->fetch();
+        if (!$cat) {
+            Response::error('Categoría no encontrada.', 404, 'CATEGORY_NOT_FOUND');
+        }
+
+        // Verify no books use this category
+        $check = $db->prepare('SELECT COUNT(*) FROM libros WHERE categoria = ?');
+        $check->execute([$cat['nombre']]);
+        if ((int)$check->fetchColumn() > 0) {
+            Response::error('No se puede eliminar la categoría porque hay libros asignados a ella.', 409, 'CATEGORY_IN_USE');
+        }
+
+        $db->prepare('DELETE FROM categorias WHERE id_categoria = ?')->execute([$id]);
+        Database::logEvent('CATEGORIA_ELIMINADA', "Categoría eliminada: \"{$cat['nombre']}\".", (int)$user['id_usuario']);
+        Response::json(['ok' => true, 'deleted_id' => $id]);
     }
 
     public function listAutores(): void {
         $db = Database::getConnection();
         $stmt = $db->query('SELECT * FROM autores ORDER BY nombre ASC');
         $autores = $stmt->fetchAll();
+        foreach ($autores as &$a) {
+            $a['id_autor'] = (int)$a['id_autor'];
+        }
         Response::json(['autores' => $autores]);
+    }
+
+    public function getAutor(int $id): void {
+        $db = Database::getConnection();
+        $stmt = $db->prepare('SELECT * FROM autores WHERE id_autor = ?');
+        $stmt->execute([$id]);
+        $autor = $stmt->fetch();
+        if (!$autor) {
+            Response::error('Autor no encontrado.', 404, 'AUTHOR_NOT_FOUND');
+        }
+        $autor['id_autor'] = (int)$autor['id_autor'];
+        Response::json(['autor' => $autor]);
+    }
+
+    public function updateAutor(int $id): void {
+        $user = Auth::requireRole('ADMIN');
+        $body = Response::getBody();
+        $db = Database::getConnection();
+
+        $stmt = $db->prepare('SELECT * FROM autores WHERE id_autor = ?');
+        $stmt->execute([$id]);
+        $existing = $stmt->fetch();
+        if (!$existing) {
+            Response::error('Autor no encontrado.', 404, 'AUTHOR_NOT_FOUND');
+        }
+
+        $nombre = trim($body['nombre'] ?? $existing['nombre']);
+        $nacionalidad = array_key_exists('nacionalidad', $body) ? ($body['nacionalidad'] ?: null) : $existing['nacionalidad'];
+
+        if (empty($nombre)) {
+            Response::error('El nombre del autor no puede estar vacío.', 422, 'VALIDATION_ERROR');
+        }
+
+        $db->prepare('UPDATE autores SET nombre = ?, nacionalidad = ? WHERE id_autor = ?')->execute([$nombre, $nacionalidad, $id]);
+
+        $stmt->execute([$id]);
+        $updated = $stmt->fetch();
+        $updated['id_autor'] = (int)$updated['id_autor'];
+
+        Database::logEvent('AUTOR_ACTUALIZADO', "Autor actualizado: {$nombre}.", (int)$user['id_usuario']);
+        Response::json(['autor' => $updated]);
+    }
+
+    public function deleteAutor(int $id): void {
+        $user = Auth::requireRole('ADMIN');
+        $db = Database::getConnection();
+
+        $stmt = $db->prepare('SELECT * FROM autores WHERE id_autor = ?');
+        $stmt->execute([$id]);
+        $autor = $stmt->fetch();
+        if (!$autor) {
+            Response::error('Autor no encontrado.', 404, 'AUTHOR_NOT_FOUND');
+        }
+
+        $check = $db->prepare('SELECT COUNT(*) FROM libro_autor WHERE id_autor = ?');
+        $check->execute([$id]);
+        if ((int)$check->fetchColumn() > 0) {
+            Response::error('No se puede eliminar el autor porque tiene libros asociados.', 409, 'AUTHOR_IN_USE');
+        }
+
+        $db->prepare('DELETE FROM autores WHERE id_autor = ?')->execute([$id]);
+        Database::logEvent('AUTOR_ELIMINADO', "Autor eliminado: \"{$autor['nombre']}\".", (int)$user['id_usuario']);
+        Response::json(['ok' => true, 'deleted_id' => $id]);
     }
 
     public function createAutor(): void {
@@ -414,8 +586,9 @@ class CatalogoController {
         $stmtGet = $db->prepare('SELECT * FROM autores WHERE id_autor = ?');
         $stmtGet->execute([$id]);
         $autor = $stmtGet->fetch();
+        $autor['id_autor'] = (int)$autor['id_autor'];
 
         Database::logEvent('AUTOR_CREADO', "Autor registrado: {$nombre}.", (int)$user['id_usuario']);
-        Response::json(['autor' => $autor], 201);
+        Response::created(['autor' => $autor], "/api/v1/autores/{$id}");
     }
 }

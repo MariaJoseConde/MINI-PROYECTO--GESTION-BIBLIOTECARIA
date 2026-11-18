@@ -29,7 +29,43 @@ app.use(apiGzipMiddleware);
 app.use(express.json({ limit: '1mb' }));
 app.use(attachSessionUser);
 
-// Modular REST API v1 routes
+// Resilient API Gateway: Proxy to PHP 8.2 + MySQL REST API when available, with fallback to native routers
+app.use('/api', async (req, res, next) => {
+  try {
+    const phpTarget = `http://127.0.0.1:8000${req.originalUrl}`;
+    const fHeaders: Record<string, string> = {};
+    for (const [k, v] of Object.entries(req.headers)) {
+      if (k.toLowerCase() !== 'host' && typeof v === 'string') {
+        fHeaders[k] = v;
+      }
+    }
+    const hasBody = ['POST', 'PUT', 'PATCH'].includes(req.method) && req.body && Object.keys(req.body).length > 0;
+    const phpRes = await fetch(phpTarget, {
+      method: req.method,
+      headers: {
+        ...fHeaders,
+        ...(hasBody ? { 'content-type': 'application/json' } : {}),
+      },
+      body: hasBody ? JSON.stringify(req.body) : undefined,
+      redirect: 'manual',
+      signal: AbortSignal.timeout(3000),
+    });
+
+    res.status(phpRes.status);
+    phpRes.headers.forEach((val, key) => {
+      if (key.toLowerCase() !== 'content-encoding') {
+        res.setHeader(key, val);
+      }
+    });
+    const buf = await phpRes.arrayBuffer();
+    return res.send(Buffer.from(buf));
+  } catch {
+    // If PHP server is not available or timed out, fallback to internal Express routes
+    return next();
+  }
+});
+
+// Modular REST API v1 routes (Local fallback)
 app.use('/api', healthRouter);
 app.use('/api', authRouter);
 app.use('/api', catalogoRouter);

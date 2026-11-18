@@ -1,6 +1,6 @@
 <?php
 /**
- * SGBI - Enrutador Front-Controller para API REST y Servidor Web en PHP 8.2+
+ * SGBI - Enrutador Front-Controller para API RESTful y Servidor Web en PHP 8.2+
  */
 
 // Simple PSR-4 Autoloader for Sgbi namespace
@@ -27,27 +27,47 @@ use Sgbi\Controllers\CatalogoController;
 use Sgbi\Controllers\CirculacionController;
 use Sgbi\Controllers\AdminController;
 use Sgbi\Controllers\IaController;
+use Sgbi\Controllers\SalasController;
+use Sgbi\Controllers\DocsController;
 use Sgbi\Controllers\HealthController;
 
-// Handle CORS
+// Handle CORS & Preflight OPTIONS
 Response::initCors();
 
-$method = $_SERVER['REQUEST_METHOD'];
-$uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+$method = $_SERVER['REQUEST_METHOD'] ?? 'GET';
+$uri = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH);
 
 $rootPath = dirname(__DIR__);
 $distPath = $rootPath . '/dist';
 
-// 1. Router for /api/* endpoints (Pure PHP Controllers)
-if (str_starts_with($uri, '/api/')) {
-    $path = substr($uri, 4); // Remove '/api'
+// ---------------------------------------------------------------------
+// 1. Router for /api/* and /api/v1/* RESTful Endpoints
+// ---------------------------------------------------------------------
+if (str_starts_with($uri, '/api')) {
+    $path = substr($uri, 4); // Remove leading '/api'
+    if (empty($path)) {
+        $path = '/';
+    }
 
-    // Health
+    // Normalizar versionamiento REST: /api/v1/libros -> /libros
+    if (str_starts_with($path, '/v1/')) {
+        $path = substr($path, 3);
+    }
+
+    // --- Documentación Interactiva Swagger / OpenAPI ---
+    if (($path === '/' || $path === '/docs') && $method === 'GET') {
+        (new DocsController())->renderSwaggerUi();
+    }
+    if ($path === '/openapi.json' && $method === 'GET') {
+        (new DocsController())->getSpec();
+    }
+
+    // --- Health Check & Monitoreo MySQL ---
     if ($path === '/health' && $method === 'GET') {
         (new HealthController())->check();
     }
 
-    // Auth
+    // --- Autenticación y Sesiones ---
     if ($path === '/auth/login' && $method === 'POST') {
         (new AuthController())->login();
     }
@@ -58,7 +78,7 @@ if (str_starts_with($uri, '/api/')) {
         (new AuthController())->logout();
     }
 
-    // Libros
+    // --- Libros (Colección y Recursos Individuales) ---
     if ($path === '/libros/exportar/csv' && $method === 'GET') {
         (new CatalogoController())->exportCsv();
     }
@@ -71,27 +91,57 @@ if (str_starts_with($uri, '/api/')) {
     if (preg_match('#^/libros/(\d+)$#', $path, $m)) {
         $id = (int)$m[1];
         if ($method === 'GET') (new CatalogoController())->getLibro($id);
-        if ($method === 'PUT') (new CatalogoController())->updateLibro($id);
+        if ($method === 'PUT' || $method === 'PATCH') (new CatalogoController())->updateLibro($id);
         if ($method === 'DELETE') (new CatalogoController())->deleteLibro($id);
+        Response::methodNotAllowed(['GET', 'PUT', 'PATCH', 'DELETE']);
     }
 
-    // Categorias
+    // --- Categorías ---
     if ($path === '/categorias' && $method === 'GET') {
         (new CatalogoController())->listCategorias();
     }
     if ($path === '/categorias' && $method === 'POST') {
         (new CatalogoController())->createCategoria();
     }
+    if (preg_match('#^/categorias/(\d+)$#', $path, $m)) {
+        $id = (int)$m[1];
+        if ($method === 'GET') (new CatalogoController())->getCategoria($id);
+        if ($method === 'PUT' || $method === 'PATCH') (new CatalogoController())->updateCategoria($id);
+        if ($method === 'DELETE') (new CatalogoController())->deleteCategoria($id);
+        Response::methodNotAllowed(['GET', 'PUT', 'PATCH', 'DELETE']);
+    }
 
-    // Autores
+    // --- Autores ---
     if ($path === '/autores' && $method === 'GET') {
         (new CatalogoController())->listAutores();
     }
     if ($path === '/autores' && $method === 'POST') {
         (new CatalogoController())->createAutor();
     }
+    if (preg_match('#^/autores/(\d+)$#', $path, $m)) {
+        $id = (int)$m[1];
+        if ($method === 'GET') (new CatalogoController())->getAutor($id);
+        if ($method === 'PUT' || $method === 'PATCH') (new CatalogoController())->updateAutor($id);
+        if ($method === 'DELETE') (new CatalogoController())->deleteAutor($id);
+        Response::methodNotAllowed(['GET', 'PUT', 'PATCH', 'DELETE']);
+    }
 
-    // Circulacion (Prestamos)
+    // --- Salas de Lectura ---
+    if ($path === '/salas' && $method === 'GET') {
+        (new SalasController())->listSalas();
+    }
+    if ($path === '/salas' && $method === 'POST') {
+        (new SalasController())->createSala();
+    }
+    if (preg_match('#^/salas/(\d+)$#', $path, $m)) {
+        $id = (int)$m[1];
+        if ($method === 'GET') (new SalasController())->getSala($id);
+        if ($method === 'PUT' || $method === 'PATCH') (new SalasController())->updateSala($id);
+        if ($method === 'DELETE') (new SalasController())->deleteSala($id);
+        Response::methodNotAllowed(['GET', 'PUT', 'PATCH', 'DELETE']);
+    }
+
+    // --- Circulación y Préstamos ---
     if ($path === '/prestamos/calcular-fecha' && $method === 'GET') {
         (new CirculacionController())->calcularFecha();
     }
@@ -101,11 +151,16 @@ if (str_starts_with($uri, '/api/')) {
     if ($path === '/prestamos' && $method === 'POST') {
         (new CirculacionController())->createPrestamo();
     }
+    if (preg_match('#^/prestamos/(\d+)$#', $path, $m)) {
+        $id = (int)$m[1];
+        if ($method === 'GET') (new CirculacionController())->getPrestamo($id);
+        Response::methodNotAllowed(['GET']);
+    }
     if (preg_match('#^/prestamos/(\d+)/devolver$#', $path, $m) && $method === 'POST') {
         (new CirculacionController())->devolverPrestamo((int)$m[1]);
     }
 
-    // IA y Evaluaciones
+    // --- IA y Evaluaciones de Lectura ---
     if ($path === '/ia/buscar' && $method === 'POST') {
         (new IaController())->buscar();
     }
@@ -115,16 +170,26 @@ if (str_starts_with($uri, '/api/')) {
     if ($path === '/pruebas' && $method === 'GET') {
         (new IaController())->listPruebas();
     }
+    if (preg_match('#^/pruebas/(\d+)$#', $path, $m)) {
+        $id = (int)$m[1];
+        if ($method === 'GET') (new IaController())->getPrueba($id);
+        if ($method === 'DELETE') (new IaController())->deletePrueba($id);
+        Response::methodNotAllowed(['GET', 'DELETE']);
+    }
 
-    // Admin
+    // --- Administración y Auditoría ---
     if ($path === '/admin/usuarios' && $method === 'GET') {
         (new AdminController())->listUsuarios();
     }
     if ($path === '/admin/usuarios' && $method === 'POST') {
         (new AdminController())->createUsuario();
     }
-    if (preg_match('#^/admin/usuarios/(\d+)$#', $path, $m) && $method === 'PUT') {
-        (new AdminController())->updateUsuario((int)$m[1]);
+    if (preg_match('#^/admin/usuarios/(\d+)$#', $path, $m)) {
+        $id = (int)$m[1];
+        if ($method === 'GET') (new AdminController())->getUsuario($id);
+        if ($method === 'PUT' || $method === 'PATCH') (new AdminController())->updateUsuario($id);
+        if ($method === 'DELETE') (new AdminController())->deleteUsuario($id);
+        Response::methodNotAllowed(['GET', 'PUT', 'PATCH', 'DELETE']);
     }
     if ($path === '/admin/auditoria/test-fallback' && $method === 'POST') {
         (new AdminController())->testFallback();
@@ -139,11 +204,13 @@ if (str_starts_with($uri, '/api/')) {
         (new AdminController())->descargarRespaldo();
     }
 
-    // 404 for unmatched API routes
-    Response::error("Recurso API no encontrado: {$method} {$uri}", 404);
+    // 404 para rutas API no coincidentes con cabecera estándar
+    Response::error("Recurso API no encontrado: {$method} {$uri}", 404, 'ROUTE_NOT_FOUND');
 }
 
-// 2. Serve static assets from dist/
+// ---------------------------------------------------------------------
+// 2. Servir recursos estáticos compilados desde dist/
+// ---------------------------------------------------------------------
 $targetFile = $distPath . $uri;
 if ($uri !== '/' && file_exists($targetFile) && !is_dir($targetFile)) {
     $ext = strtolower(pathinfo($targetFile, PATHINFO_EXTENSION));
@@ -169,7 +236,9 @@ if ($uri !== '/' && file_exists($targetFile) && !is_dir($targetFile)) {
     exit;
 }
 
-// 3. Fallback: serve dist/index.html (or root index.html) for all SPA views
+// ---------------------------------------------------------------------
+// 3. Fallback SPA para vistas React (dist/index.html o root index.html)
+// ---------------------------------------------------------------------
 $indexFile = file_exists($distPath . '/index.html') ? $distPath . '/index.html' : $rootPath . '/index.html';
 if (file_exists($indexFile)) {
     header('Content-Type: text/html; charset=utf-8');
@@ -177,4 +246,4 @@ if (file_exists($indexFile)) {
     exit;
 }
 
-Response::error('Página no encontrada.', 404);
+Response::error('Página no encontrada.', 404, 'NOT_FOUND');
