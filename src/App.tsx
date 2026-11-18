@@ -54,12 +54,12 @@ const VALID_ROUTES: ActiveRoute[] = [
 ];
 
 const ROUTE_LABELS: Record<ActiveRoute, { section: string; label: string }> = {
-  catalogo: { section: 'Acervo', label: 'Catálogo Bibliográfico' },
+  catalogo: { section: 'Acervo', label: 'Mis Temas y Catálogo' },
   categorias: { section: 'Acervo', label: 'Categorías y Colecciones' },
   salas: { section: 'Orientación', label: 'Salas y Pasillos' },
   mostrador: { section: 'Circulación', label: 'Mostrador de Préstamos' },
-  'mis-prestamos': { section: 'Cuenta', label: 'Mis Préstamos' },
-  evaluaciones: { section: 'Pedagogía', label: 'Evaluaciones IA' },
+  'mis-prestamos': { section: 'Cuenta', label: 'Mi Progreso y Préstamos' },
+  evaluaciones: { section: 'Estudio IA', label: 'Tutoría y Práctica Guiada' },
   admin: { section: 'Sistema', label: 'Administración' },
 };
 
@@ -224,9 +224,10 @@ export default function App() {
     label: string;
     icon: typeof BookOpen;
   }> = [
-    { id: 'catalogo', label: 'Catálogo', icon: BookOpen },
-    { id: 'categorias', label: 'Categorías', icon: Layers },
+    { id: 'catalogo', label: 'Mis Temas / Catálogo', icon: BookOpen },
+    { id: 'evaluaciones', label: 'Práctica y Tutoría IA', icon: FileCheck2 },
     { id: 'salas', label: 'Salas y Pasillos', icon: MapIcon },
+    { id: 'categorias', label: 'Categorías y CDU', icon: Layers },
   ];
 
   const accountItems: Array<{
@@ -237,7 +238,7 @@ export default function App() {
   }> = [
     {
       id: 'mis-prestamos',
-      label: 'Mis Préstamos',
+      label: 'Mi Progreso y Préstamos',
       icon: BookmarkCheck,
       visible: Boolean(user),
     },
@@ -246,12 +247,6 @@ export default function App() {
       label: 'Mostrador',
       icon: ArrowRightLeft,
       visible: user?.rol === 'ADMIN',
-    },
-    {
-      id: 'evaluaciones',
-      label: 'Evaluaciones',
-      icon: FileCheck2,
-      visible: user?.rol === 'DOCENTE' || user?.rol === 'ADMIN',
     },
     {
       id: 'admin',
@@ -476,7 +471,13 @@ export default function App() {
         {/* Drawer Lateral Móvil */}
         <AnimatePresence>
           {mobileMenuOpen && (
-            <div className="no-print fixed inset-0 z-50 lg:hidden flex">
+            <div
+              id="mobile-nav-drawer"
+              role="dialog"
+              aria-modal="true"
+              aria-label="Menú de navegación móvil"
+              className="no-print fixed inset-0 z-50 lg:hidden flex"
+            >
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
@@ -501,35 +502,89 @@ export default function App() {
         {/* Área Principal */}
         <div className="flex-1 flex flex-col min-w-0">
           {/* Header Sólido y Proporcionado (WCAG 2.1/2.2 AA) */}
-          <header className="no-print sticky top-0 z-30 min-h-16 h-16 border-b border-slate-200 bg-white px-4 sm:px-6 lg:px-8 py-3 flex items-center justify-between gap-4">
-            <div className="flex items-center gap-3 min-w-0">
+          <header className="no-print sticky top-0 z-30 min-h-16 h-16 border-b border-slate-200 bg-white/95 backdrop-blur-md px-4 sm:px-6 lg:px-8 py-3 flex items-center justify-between gap-4">
+            <div className="flex items-center gap-3 sm:gap-4 min-w-0">
               <button
                 type="button"
-                onClick={() => setMobileMenuOpen(true)}
+                onClick={() => setMobileMenuOpen((prev) => !prev)}
+                aria-expanded={mobileMenuOpen}
+                aria-controls="mobile-nav-drawer"
                 className="lg:hidden min-h-[44px] min-w-[44px] flex items-center justify-center rounded-lg border border-slate-300 bg-white text-slate-800 hover:bg-slate-100 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-600 cursor-pointer"
                 aria-label="Abrir navegación lateral"
               >
                 <Menu className="w-5 h-5" />
               </button>
 
-              <nav aria-label="Ruta actual de navegación" className="flex items-center gap-2 text-sm text-slate-600 truncate">
-                <span className="font-medium text-slate-600">{currentBreadcrumb.section}</span>
-                <ChevronRight className="w-4 h-4 shrink-0 text-slate-400" />
-                <span className="font-semibold text-slate-900 truncate">
-                  {currentBreadcrumb.label}
+              {/* Marca y Navegación Predecible (3 o 4 opciones esenciales) */}
+              <button
+                type="button"
+                onClick={goToMainScreen}
+                className="min-h-[44px] flex items-center gap-2 font-sans text-base font-bold tracking-tight text-slate-900 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-600 rounded-md shrink-0 mr-1"
+              >
+                <div className="w-7 h-7 rounded-lg bg-indigo-600 text-white flex items-center justify-center font-bold text-xs shadow-xs">
+                  S
+                </div>
+                <span className="font-bold text-slate-900 hidden sm:inline">
+                  SGBI <span className="text-indigo-600 font-semibold">· Estudio IA</span>
                 </span>
-                {route === 'catalogo' && selectedCategory !== 'Todas' && (
-                  <>
-                    <ChevronRight className="w-4 h-4 shrink-0 text-slate-400" />
-                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-md bg-indigo-50 text-indigo-700 font-medium text-xs border border-indigo-200 truncate">
-                      {selectedCategory}
-                    </span>
-                  </>
-                )}
+              </button>
+
+              <nav aria-label="Navegación principal de estudio" className="hidden md:flex items-center gap-1.5">
+                <button
+                  type="button"
+                  onClick={() => navigateToRoute('catalogo')}
+                  className={`min-h-[44px] px-3.5 py-2 rounded-lg text-sm font-medium transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-600 ${
+                    route === 'catalogo'
+                      ? 'bg-indigo-50 text-indigo-700 font-semibold border border-indigo-200'
+                      : 'text-slate-700 hover:bg-slate-100 hover:text-slate-950'
+                  }`}
+                >
+                  Mis Temas
+                </button>
+                <button
+                  type="button"
+                  onClick={() => navigateToRoute('evaluaciones')}
+                  className={`min-h-[44px] px-3.5 py-2 rounded-lg text-sm font-medium transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-600 ${
+                    route === 'evaluaciones'
+                      ? 'bg-indigo-50 text-indigo-700 font-semibold border border-indigo-200'
+                      : 'text-slate-700 hover:bg-slate-100 hover:text-slate-950'
+                  }`}
+                >
+                  Práctica e IA
+                </button>
+                <button
+                  type="button"
+                  onClick={() => navigateToRoute('salas')}
+                  className={`min-h-[44px] px-3.5 py-2 rounded-lg text-sm font-medium transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-600 ${
+                    route === 'salas'
+                      ? 'bg-indigo-50 text-indigo-700 font-semibold border border-indigo-200'
+                      : 'text-slate-700 hover:bg-slate-100 hover:text-slate-950'
+                  }`}
+                >
+                  Salas
+                </button>
+                <button
+                  type="button"
+                  onClick={() => (user ? navigateToRoute('mis-prestamos') : navigateToRoute('categorias'))}
+                  className={`min-h-[44px] px-3.5 py-2 rounded-lg text-sm font-medium transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-600 ${
+                    route === 'mis-prestamos' || route === 'categorias'
+                      ? 'bg-indigo-50 text-indigo-700 font-semibold border border-indigo-200'
+                      : 'text-slate-700 hover:bg-slate-100 hover:text-slate-950'
+                  }`}
+                >
+                  {user ? 'Mi Progreso' : 'Colecciones'}
+                </button>
               </nav>
             </div>
 
             <div className="shrink-0 flex items-center gap-3">
+              {/* Ruta constante de migas de pan en header */}
+              <nav aria-label="Ubicación constante" className="hidden xl:flex items-center gap-2 text-xs font-medium text-slate-500 mr-2">
+                <span>{currentBreadcrumb.section}</span>
+                <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
+                <span className="font-semibold text-slate-900">{currentBreadcrumb.label}</span>
+              </nav>
+
               {user ? (
                 <button
                   type="button"
@@ -603,10 +658,13 @@ export default function App() {
 
                   {route === 'mis-prestamos' && user && <MisPrestamosView user={user} />}
 
-                  {route === 'evaluaciones' &&
-                    (user?.rol === 'DOCENTE' || user?.rol === 'ADMIN') && (
-                      <EvaluacionesView libros={libros} onSelectLibro={setSelectedLibro} />
-                    )}
+                  {route === 'evaluaciones' && (
+                    <EvaluacionesView
+                      libros={libros}
+                      onSelectLibro={setSelectedLibro}
+                      user={user}
+                    />
+                  )}
 
                   {route === 'admin' && user?.rol === 'ADMIN' && (
                     <AdminView
