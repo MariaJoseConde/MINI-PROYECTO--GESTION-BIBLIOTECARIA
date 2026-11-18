@@ -63,7 +63,7 @@ export const BookCover: React.FC<BookCoverProps> = ({ libro, size = 'md' }) => {
           />
         ) : (
           <div className="w-full h-full flex flex-col items-center justify-center p-6 text-center">
-            <BookOpen className={`w-8 h-8 mb-2 opacity-60 ${palette.text}`} />
+            <BookOpen className={`w-8 h-8 mb-2 ${palette.text}`} />
             <span className={`text-base font-semibold line-clamp-2 ${palette.text}`}>
               {libro.titulo}
             </span>

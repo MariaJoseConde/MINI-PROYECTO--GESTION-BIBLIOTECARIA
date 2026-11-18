@@ -405,8 +405,8 @@ export const AdminView: React.FC<AdminViewProps> = ({
             <ShieldCheck className="w-3.5 h-3.5" />
             <span>Consola de Administración</span>
           </div>
-          <h1 className="text-3xl sm:text-4xl font-light tracking-[-0.03em] text-[#333333] text-balance">
-            Gestión de <span className="gradient-hero-text font-normal">inventario, roles y sistema</span>
+          <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-slate-900 text-balance">
+            Gestión de <span className="text-indigo-600 font-bold">inventario, roles y sistema</span>
           </h1>
           <p className="mt-2 text-sm text-[#535768]">
             Administración centralizada de títulos, clasificaciones CDU, permisos RBAC, infraestructura y auditoría transaccional.

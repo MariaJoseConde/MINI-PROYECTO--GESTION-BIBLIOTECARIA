@@ -242,8 +242,8 @@ export const MostradorView: React.FC<MostradorViewProps> = ({
             <ArrowRightLeft className="w-3.5 h-3.5" />
             <span>Circulación Transaccional</span>
           </div>
-          <h1 className="text-3xl sm:text-4xl font-light tracking-[-0.03em] text-[#333333] text-balance">
-            Mostrador de <span className="gradient-hero-text font-normal">préstamos y devoluciones</span>
+          <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-slate-900 text-balance">
+            Mostrador de <span className="text-indigo-600 font-bold">préstamos y devoluciones</span>
           </h1>
           <p className="mt-2 text-sm text-[#535768]">
             Operaciones atómicas con verificación de solvencia del lector, descuento de inventario y cálculo automático de 8 días hábiles.

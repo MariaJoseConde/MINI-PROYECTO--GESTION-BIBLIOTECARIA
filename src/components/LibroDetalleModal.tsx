@@ -113,35 +113,32 @@ export const LibroDetalleModal: React.FC<LibroDetalleModalProps> = ({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-xs p-3 sm:p-6 overflow-y-auto"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 p-3 sm:p-6 overflow-y-auto"
       role="dialog"
       aria-modal="true"
       aria-labelledby="libro-detalle-title"
     >
-      <div className="w-full max-w-4xl rounded-[24px] border border-[#d0d4e4] bg-[#ffffff] shadow-[0px_5px_55px_rgba(0,0,0,0.35)] overflow-hidden my-auto max-h-[92vh] flex flex-col">
+      <div className="w-full max-w-4xl rounded-2xl border border-slate-200 bg-white shadow-xl overflow-hidden my-auto max-h-[92vh] flex flex-col font-sans">
         {/* Cabecera del Modal (oculta en impresión cuando hay prueba activa) */}
-        <div className="no-print flex items-center justify-between border-b border-[#d0d4e4] bg-[#ffffff] px-6 py-4 shrink-0">
+        <div className="no-print flex items-center justify-between border-b border-slate-200 bg-white px-6 py-4 shrink-0 min-h-16">
           <div className="flex items-center gap-2.5">
-            <div className="w-6 h-6 rounded-full prism-mark-circle shrink-0 flex items-center justify-center p-0.5">
-              <div className="w-full h-full rounded-full bg-white/40" />
-            </div>
-            <span className="badge-monday bg-[#dbdbff] text-[#6161ff] font-semibold text-xs">
+            <span className="inline-flex items-center px-3 py-1 rounded-md bg-indigo-50 text-indigo-700 font-semibold text-xs border border-indigo-200">
               Ficha Bibliográfica · Folio #{libro.id_libro}
             </span>
           </div>
           <button
             type="button"
             onClick={onClose}
-            className="p-1.5 rounded-full text-[#535768] hover:bg-[#f5f6f8] transition-colors cursor-pointer"
+            className="min-h-[44px] min-w-[44px] flex items-center justify-center rounded-lg text-slate-700 hover:bg-slate-100 transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-600"
             aria-label="Cerrar ficha del libro"
           >
-            <X className="w-4 h-4" />
+            <X className="w-5 h-5" />
           </button>
         </div>
 
-        <div className="overflow-y-auto p-6 sm:p-8 space-y-8">
+        <div className="overflow-y-auto p-6 sm:p-8 space-y-8 bg-slate-50">
           {/* Bloque principal de ficha (oculto al imprimir si se imprime evaluación) */}
-          <div className={activePrueba ? 'no-print' : ''}>
+          <div className={`bg-white border border-slate-200 rounded-xl p-6 sm:p-8 shadow-xs ${activePrueba ? 'no-print' : ''}`}>
             <div className="grid grid-cols-1 md:grid-cols-[220px_1fr] gap-6 items-start">
               <div className="mx-auto md:mx-0 w-48 md:w-full">
                 <BookCover libro={libro} size="lg" />
@@ -149,47 +146,47 @@ export const LibroDetalleModal: React.FC<LibroDetalleModalProps> = ({
 
               <div className="space-y-4">
                 <div>
-                  <span className="badge-monday bg-[#e7ecff] text-[#6161ff] font-semibold text-xs">
+                  <span className="inline-flex items-center px-2.5 py-1 rounded-md bg-indigo-50 text-indigo-700 font-semibold text-xs border border-indigo-200">
                     {libro.categoria}
                     {categoriaMeta ? ` · CDU ${categoriaMeta.codigo_archivo}` : ''}
                   </span>
                   <h2
                     id="libro-detalle-title"
-                    className="mt-2 text-2xl sm:text-3xl font-bold text-[#333333] leading-tight tracking-tight"
+                    className="mt-2 text-2xl sm:text-3xl font-bold text-slate-900 leading-tight tracking-tight text-left"
                   >
                     {libro.titulo}
                   </h2>
-                  <p className="mt-1 text-sm font-medium text-[#535768]">{autoresTexto}</p>
+                  <p className="mt-1 text-sm font-medium text-slate-700 text-left">{autoresTexto}</p>
                 </div>
 
                 {/* Tabla de metadatos bibliográficos ampliada */}
-                <dl className="grid grid-cols-2 sm:grid-cols-4 gap-3 border-y border-[#d0d4e4] py-4 text-xs">
+                <dl className="grid grid-cols-2 sm:grid-cols-4 gap-4 border-y border-slate-200 py-4 text-sm">
                   <div>
-                    <dt className="text-[#535768] font-medium">ISBN</dt>
-                    <dd className="mt-0.5 font-mono font-semibold text-[#333333] tabular-nums">
+                    <dt className="text-slate-600 font-medium">ISBN</dt>
+                    <dd className="mt-0.5 font-mono font-semibold text-slate-900 tabular-nums">
                       {libro.isbn}
                     </dd>
                   </div>
                   <div>
-                    <dt className="text-[#535768] font-medium">Año</dt>
-                    <dd className="mt-0.5 font-mono font-semibold text-[#333333] tabular-nums">
+                    <dt className="text-slate-600 font-medium">Año</dt>
+                    <dd className="mt-0.5 font-mono font-semibold text-slate-900 tabular-nums">
                       {libro.anio_publicacion ?? 'Sin dato'}
                     </dd>
                   </div>
                   <div>
-                    <dt className="text-[#535768] font-medium">Extensión</dt>
-                    <dd className="mt-0.5 font-mono font-semibold text-[#333333] tabular-nums">
+                    <dt className="text-slate-600 font-medium">Extensión</dt>
+                    <dd className="mt-0.5 font-mono font-semibold text-slate-900 tabular-nums">
                       {libro.paginas ? `${libro.paginas} págs.` : 'Sin dato'}
                     </dd>
                   </div>
                   <div>
-                    <dt className="text-[#535768] font-medium">Disponibilidad</dt>
+                    <dt className="text-slate-600 font-medium">Disponibilidad</dt>
                     <dd className="mt-0.5">
                       <span
-                        className={`badge-monday font-mono text-[11px] tabular-nums ${
+                        className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-semibold tabular-nums border ${
                           libro.copias_disp === 0
-                            ? 'bg-[#fcd0f8] text-[#991B1B]'
-                            : 'bg-[#bcfe90] text-[#2a5c4e]'
+                            ? 'bg-rose-50 text-rose-800 border-rose-300'
+                            : 'bg-emerald-50 text-emerald-800 border-emerald-300'
                         }`}
                       >
                         {libro.copias_disp} / {libro.copias_totales} uds.
@@ -197,59 +194,58 @@ export const LibroDetalleModal: React.FC<LibroDetalleModalProps> = ({
                     </dd>
                   </div>
                   <div className="col-span-2">
-                    <dt className="text-[#535768] font-medium">Editorial / Colección</dt>
-                    <dd className="mt-0.5 font-medium text-[#333333]">
+                    <dt className="text-slate-600 font-medium">Editorial / Colección</dt>
+                    <dd className="mt-0.5 font-medium text-slate-900">
                       {libro.editorial || 'Edición de catálogo'}
                     </dd>
                   </div>
                   <div>
-                    <dt className="text-[#535768] font-medium">Idioma</dt>
-                    <dd className="mt-0.5 font-medium text-[#333333]">
+                    <dt className="text-slate-600 font-medium">Idioma</dt>
+                    <dd className="mt-0.5 font-medium text-slate-900">
                       {libro.idioma || 'Español'}
                     </dd>
                   </div>
                   <div>
-                    <dt className="text-[#535768] font-medium">Ubicación en sala</dt>
-                    <dd className="mt-0.5 font-mono font-medium text-[#333333]">
+                    <dt className="text-slate-600 font-medium">Ubicación en sala</dt>
+                    <dd className="mt-0.5 font-mono font-semibold text-slate-900">
                       {libro.ubicacion_estante || categoriaMeta?.ubicacion_sala || 'Sala General'}
                     </dd>
                   </div>
                 </dl>
 
                 {libro.temas_clave && (
-                  <div className="text-xs text-[#535768]">
-                    <span className="font-semibold text-[#333333] uppercase tracking-wider mr-2">
+                  <div className="text-sm text-slate-700">
+                    <span className="font-semibold text-slate-900 uppercase tracking-wider mr-2 text-xs">
                       Temas clave:
                     </span>
-                    <span>{libro.temas_clave}</span>
+                    <span className="font-medium">{libro.temas_clave}</span>
                   </div>
                 )}
 
                 <div>
-                  <h3 className="text-xs font-semibold uppercase tracking-wider text-[#535768] mb-1.5">
+                  <h3 className="text-xs font-semibold uppercase tracking-wider text-slate-700 mb-1.5 text-left">
                     Sinopsis de la obra
                   </h3>
                   {hasSinopsis ? (
-                    <p className="text-sm text-[#535768] leading-relaxed">{libro.sinopsis}</p>
+                    <p className="text-sm font-normal text-slate-800 leading-relaxed max-w-prose text-left">{libro.sinopsis}</p>
                   ) : (
-                    <div className="flex items-start gap-2.5 rounded-[12px] border border-[#ff8940]/40 bg-[#ff8940]/10 p-3.5 text-xs text-[#333333]">
-                      <AlertTriangle className="w-4 h-4 text-[#ff8940] shrink-0 mt-0.5" />
-                      <span>
-                        Este volumen no tiene una sinopsis descriptiva registrada. Para habilitar la generación automática de pruebas de comprensión lectora, un administrador debe completar la sinopsis en el catálogo.
+                    <div className="flex items-start gap-2.5 rounded-lg border border-amber-300 bg-amber-50 p-4 text-sm font-medium text-amber-900">
+                      <AlertTriangle className="w-5 h-5 text-amber-800 shrink-0 mt-0.5" />
+                      <span className="leading-relaxed">
+                        Este volumen no tiene una sinopsis descriptiva registrada. Para habilitar la generación automática de pruebas pedagógicas, un docente o administrador debe completar la sinopsis en el catálogo.
                       </span>
                     </div>
                   )}
                 </div>
 
                 {categoriaMeta && (
-                  <div className="rounded-[16px] border border-[#d0d4e4] bg-[#f5f6f8] p-4 text-xs space-y-1">
-                    <div className="font-semibold text-[#333333]">
+                  <div className="rounded-lg border border-slate-200 bg-slate-50 p-4 text-sm space-y-1 text-left">
+                    <div className="font-bold text-slate-900">
                       Sobre la categoría: {categoriaMeta.nombre} (CDU {categoriaMeta.codigo_archivo})
                     </div>
-                    <p className="text-[#535768] leading-relaxed">{categoriaMeta.descripcion}</p>
-                    <div className="text-[11px] text-[#808080] pt-1">
-                      Público recomendado: {categoriaMeta.publico_recomendado} · Enfoque:{' '}
-                      {categoriaMeta.enfoque_lector}
+                    <p className="text-slate-700 leading-relaxed font-normal">{categoriaMeta.descripcion}</p>
+                    <div className="text-xs font-medium text-slate-600 pt-1">
+                      Público recomendado: {categoriaMeta.publico_recomendado} · Enfoque: {categoriaMeta.enfoque_lector}
                     </div>
                   </div>
                 )}
@@ -259,49 +255,42 @@ export const LibroDetalleModal: React.FC<LibroDetalleModalProps> = ({
 
           {/* Módulo Pedagógico IA (Solo DOCENTE o ADMIN) */}
           {canManageTests && (
-            <div className="pt-6 border-t border-[#d0d4e4] space-y-5">
+            <div className="bg-white border border-slate-200 rounded-xl p-6 sm:p-8 shadow-xs space-y-6">
               <div className="no-print flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                <div>
-                  <h3 className="text-lg font-bold text-[#333333]">
+                <div className="space-y-1">
+                  <h3 className="text-xl font-bold text-slate-900 text-left">
                     Evaluación de Comprensión Lectora (IA)
                   </h3>
-                  <p className="text-xs text-[#535768] mt-0.5">
-                    Cuestionario estructurado de selección múltiple (A–D) generado y validado a partir de la sinopsis.
+                  <p className="text-sm font-normal text-slate-700 text-left max-w-prose leading-relaxed">
+                    Cuestionario estructurado de selección múltiple (A–D) generado y validado a partir de la sinopsis de la obra.
                   </p>
                 </div>
 
-                <div className="relative group shrink-0">
+                <div className="shrink-0">
                   <button
                     type="button"
                     onClick={handleGeneratePrueba}
                     disabled={!hasSinopsis || generating}
-                    title={
-                      !hasSinopsis
-                        ? 'Requiere sinopsis descriptiva registrada en el libro'
-                        : 'Generar nueva prueba con Gemini'
-                    }
-                    className="btn-primary-pill text-xs py-2.5 px-5 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+                    className="min-h-[44px] px-5 rounded-lg bg-indigo-600 text-white hover:bg-indigo-700 font-medium text-sm flex items-center gap-2 shadow-xs transition-colors cursor-pointer disabled:bg-slate-200 disabled:text-slate-500 disabled:cursor-not-allowed focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-600"
                   >
                     {!hasSinopsis ? (
-                      <Lock className="w-3.5 h-3.5" />
+                      <Lock className="w-4 h-4" />
                     ) : (
-                      <Sparkles className="w-3.5 h-3.5" />
+                      <Sparkles className="w-4 h-4" />
                     )}
-                    {generating
-                      ? 'Analizando obra...'
-                      : 'Generar Prueba (IA)'}
+                    <span>{generating ? 'Estructurando con IA...' : 'Generar Prueba con IA'}</span>
                   </button>
                 </div>
               </div>
 
               {generating && (
-                <div className="no-print rounded-[16px] border border-[#6161ff]/30 bg-[#e7ecff]/40 p-5 space-y-2.5">
-                  <div className="flex items-center gap-2.5 text-xs font-semibold text-[#6161ff]">
-                    <div className="w-4 h-4 rounded-full border-2 border-[#6161ff] border-t-transparent animate-spin" />
+                <div className="no-print rounded-lg border border-indigo-200 bg-indigo-50 p-5 space-y-2.5">
+                  <div className="flex items-center gap-2.5 text-sm font-semibold text-indigo-700">
+                    <div className="w-4 h-4 rounded-full border-2 border-indigo-600 border-t-transparent animate-spin" />
                     Analizando obra y estructurando preguntas bajo esquema PruebaLecturaDTO...
                   </div>
-                  <div className="h-1.5 w-full bg-[#dddfeb] rounded-full overflow-hidden">
-                    <div className="h-full bg-[#6161ff] w-2/3 animate-pulse rounded-full" />
+                  <div className="h-1.5 w-full bg-indigo-200 rounded-full overflow-hidden">
+                    <div className="h-full bg-indigo-600 w-2/3 animate-pulse rounded-full" />
                   </div>
                 </div>
               )}
@@ -309,16 +298,16 @@ export const LibroDetalleModal: React.FC<LibroDetalleModalProps> = ({
               {/* Selector de pruebas guardadas si hay varias */}
               {pruebas.length > 1 && (
                 <div className="no-print flex items-center gap-2 overflow-x-auto pb-1">
-                  <span className="text-xs text-[#535768] shrink-0 font-medium">Versiones guardadas:</span>
+                  <span className="text-sm text-slate-700 shrink-0 font-medium">Versiones guardadas:</span>
                   {pruebas.map((p, idx) => (
                     <button
                       key={p.id_prueba}
                       type="button"
                       onClick={() => setActivePrueba(p)}
-                      className={`px-3.5 py-1 rounded-[160px] text-xs font-medium transition-all shrink-0 cursor-pointer ${
+                      className={`min-h-[38px] px-3.5 rounded-lg text-xs font-semibold transition-colors shrink-0 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-600 ${
                         activePrueba?.id_prueba === p.id_prueba
-                          ? 'bg-[#6161ff] text-white shadow-xs'
-                          : 'bg-[#f5f6f8] text-[#535768] hover:text-[#333333]'
+                          ? 'bg-indigo-600 text-white shadow-xs'
+                          : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
                       }`}
                     >
                       Prueba #{p.id_prueba} ({idx === 0 ? 'Reciente' : p.created_at.slice(0, 10)})
@@ -329,16 +318,16 @@ export const LibroDetalleModal: React.FC<LibroDetalleModalProps> = ({
 
               {/* Renderizado de la prueba activa */}
               {!loadingPruebas && activePrueba && (
-                <div className="rounded-[20px] border border-[#d0d4e4] bg-[#f5f6f8] p-5 sm:p-6 space-y-5">
-                  <div className="no-print flex flex-wrap items-center justify-between gap-3 pb-4 border-b border-[#d0d4e4]">
-                    <div className="inline-flex rounded-[160px] border border-[#dddfeb] bg-[#ffffff] p-1 shadow-2xs">
+                <div className="rounded-xl border border-slate-200 bg-slate-50 p-5 sm:p-6 space-y-6">
+                  <div className="no-print flex flex-wrap items-center justify-between gap-3 pb-4 border-b border-slate-200">
+                    <div className="inline-flex rounded-lg border border-slate-300 bg-white p-1">
                       <button
                         type="button"
                         onClick={() => setViewMode('estudiante')}
-                        className={`inline-flex items-center gap-1.5 rounded-[160px] px-3.5 py-1.5 text-xs font-semibold transition-all cursor-pointer ${
+                        className={`min-h-[36px] inline-flex items-center gap-1.5 rounded-md px-3.5 text-xs font-semibold transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-600 ${
                           viewMode === 'estudiante'
-                            ? 'bg-[#6161ff] text-white shadow-xs'
-                            : 'text-[#535768] hover:text-[#333333]'
+                            ? 'bg-indigo-600 text-white shadow-xs'
+                            : 'text-slate-700 hover:text-slate-900'
                         }`}
                       >
                         <FileText className="w-3.5 h-3.5" />
@@ -347,10 +336,10 @@ export const LibroDetalleModal: React.FC<LibroDetalleModalProps> = ({
                       <button
                         type="button"
                         onClick={() => setViewMode('docente')}
-                        className={`inline-flex items-center gap-1.5 rounded-[160px] px-3.5 py-1.5 text-xs font-semibold transition-all cursor-pointer ${
+                        className={`min-h-[36px] inline-flex items-center gap-1.5 rounded-md px-3.5 text-xs font-semibold transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-600 ${
                           viewMode === 'docente'
-                            ? 'bg-[#6161ff] text-white shadow-xs'
-                            : 'text-[#535768] hover:text-[#333333]'
+                            ? 'bg-indigo-600 text-white shadow-xs'
+                            : 'text-slate-700 hover:text-slate-900'
                         }`}
                       >
                         <Eye className="w-3.5 h-3.5" />
@@ -358,11 +347,11 @@ export const LibroDetalleModal: React.FC<LibroDetalleModalProps> = ({
                       </button>
                     </div>
 
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-3">
                       <button
                         type="button"
                         onClick={() => handlePrintQuiz('estudiante')}
-                        className="btn-outline-pill text-xs py-1.5 px-3.5 cursor-pointer"
+                        className="min-h-[40px] px-3.5 rounded-lg bg-white border border-slate-300 text-slate-800 hover:bg-slate-100 text-xs font-medium flex items-center gap-1.5 transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-600"
                       >
                         <Printer className="w-3.5 h-3.5" />
                         Imprimir / PDF Alumno
@@ -370,7 +359,7 @@ export const LibroDetalleModal: React.FC<LibroDetalleModalProps> = ({
                       <button
                         type="button"
                         onClick={() => handlePrintQuiz('docente')}
-                        className="btn-primary-pill text-xs py-1.5 px-3.5 cursor-pointer shadow-xs"
+                        className="min-h-[40px] px-3.5 rounded-lg bg-indigo-600 text-white hover:bg-indigo-700 text-xs font-medium flex items-center gap-1.5 shadow-xs transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-600"
                       >
                         <Printer className="w-3.5 h-3.5" />
                         Imprimir Clave Docente
@@ -379,19 +368,19 @@ export const LibroDetalleModal: React.FC<LibroDetalleModalProps> = ({
                   </div>
 
                   {/* Encabezado formal para hoja impresa */}
-                  <div className="border-b border-[#d0d4e4] pb-3">
+                  <div className="border-b border-slate-200 pb-3">
                     <div className="flex flex-wrap items-baseline justify-between gap-2">
-                      <h4 className="text-lg font-bold text-[#333333]">
+                      <h4 className="text-lg font-bold text-slate-900 text-left">
                         {viewMode === 'estudiante'
                           ? `Evaluación de Comprensión Lectora: ${libro.titulo}`
                           : `Hoja de Claves Docentes: ${libro.titulo}`}
                       </h4>
-                      <span className="badge-monday bg-[#dbdbff] text-[#6161ff] font-mono text-xs">
+                      <span className="inline-flex items-center px-2.5 py-0.5 rounded text-xs font-mono font-semibold bg-indigo-50 text-indigo-700 border border-indigo-200">
                         Prueba #{activePrueba.id_prueba} · ISBN {libro.isbn}
                       </span>
                     </div>
                     {viewMode === 'estudiante' && (
-                      <div className="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs text-[#535768]">
+                      <div className="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm font-medium text-slate-700">
                         <div>Nombre del estudiante: ________________________________________</div>
                         <div>Fecha: ____ / ____ / ________ &nbsp;&nbsp; Curso: __________</div>
                       </div>
@@ -402,29 +391,29 @@ export const LibroDetalleModal: React.FC<LibroDetalleModalProps> = ({
                     {activePrueba.contenido.evaluacion.map((q, idx) => (
                       <li
                         key={idx}
-                        className="print-break-avoid rounded-[16px] border border-[#d0d4e4] bg-[#ffffff] p-5 space-y-3 shadow-2xs"
+                        className="print-break-avoid rounded-xl border border-slate-200 bg-white p-5 space-y-3 shadow-xs"
                       >
-                        <p className="text-sm font-semibold text-[#333333] leading-snug">
+                        <p className="text-base font-semibold text-slate-900 leading-relaxed text-left max-w-prose">
                           {idx + 1}. {q.pregunta}
                         </p>
 
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                           {(['A', 'B', 'C', 'D'] as const).map((letra) => {
                             const isCorrect = q.respuesta_correcta === letra;
                             const showAnswer = viewMode === 'docente' && isCorrect;
                             return (
                               <div
                                 key={letra}
-                                className={`rounded-[8px] border px-3.5 py-2 text-xs flex items-start gap-2.5 transition-all ${
+                                className={`rounded-lg border px-4 py-3 text-sm flex items-start gap-3 transition-colors ${
                                   showAnswer
-                                    ? 'border-[#2a5c4e] bg-[#bcfe90]/40 text-[#2a5c4e] font-semibold'
-                                    : 'border-[#dddfeb] bg-[#f5f6f8] text-[#333333]'
+                                    ? 'border-emerald-500 bg-emerald-50 text-emerald-900 font-semibold'
+                                    : 'border-slate-300 bg-slate-50 text-slate-800'
                                 }`}
                               >
                                 <span className="font-mono font-bold shrink-0">{letra}.</span>
-                                <span className="flex-1">{q.opciones[letra]}</span>
+                                <span className="flex-1 font-medium leading-relaxed">{q.opciones[letra]}</span>
                                 {showAnswer && (
-                                  <CheckCircle2 className="w-3.5 h-3.5 text-[#2a5c4e] shrink-0 mt-0.5" />
+                                  <CheckCircle2 className="w-4 h-4 text-emerald-700 shrink-0 mt-0.5" />
                                 )}
                               </div>
                             );
@@ -432,11 +421,11 @@ export const LibroDetalleModal: React.FC<LibroDetalleModalProps> = ({
                         </div>
 
                         {viewMode === 'docente' && (
-                          <div className="pt-2.5 border-t border-[#f5f6f8] text-xs text-[#535768]">
-                            <span className="font-semibold text-[#2a5c4e]">
+                          <div className="pt-3 border-t border-slate-100 text-sm font-medium text-slate-700">
+                            <span className="font-bold text-emerald-800">
                               Respuesta correcta ({q.respuesta_correcta}):
                             </span>{' '}
-                            {q.justificacion}
+                            <span className="text-slate-800 font-normal leading-relaxed">{q.justificacion}</span>
                           </div>
                         )}
                       </li>

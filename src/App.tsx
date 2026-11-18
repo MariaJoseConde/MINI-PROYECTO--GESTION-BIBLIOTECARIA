@@ -265,26 +265,26 @@ export default function App() {
   const currentBreadcrumb = ROUTE_LABELS[route];
 
   const renderSidebarContent = () => (
-    <div className="flex flex-col h-full bg-[#ffffff]">
-      {/* Brand Wordmark with Monday.com Conic Prism Mark */}
-      <div className="px-5 h-16 flex items-center justify-between border-b border-[#d0d4e4] shrink-0">
+    <div className="flex flex-col h-full bg-white">
+      {/* Brand Header */}
+      <div className="px-5 h-16 min-h-16 flex items-center justify-between border-b border-slate-200 shrink-0 bg-white">
         <button
           type="button"
           onClick={goToMainScreen}
-          className="flex items-center gap-2.5 font-sans text-lg font-bold tracking-tight text-[#333333] whitespace-nowrap cursor-pointer group"
+          className="min-h-[44px] flex items-center gap-2.5 font-sans text-base font-bold tracking-tight text-slate-900 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-600 rounded-md"
         >
-          <div className="w-7 h-7 rounded-full prism-mark-circle shrink-0 shadow-sm flex items-center justify-center p-0.5 transition-transform duration-300 group-hover:rotate-45">
-            <div className="w-full h-full rounded-full bg-[#ffffff]/30 backdrop-blur-[1px]" />
+          <div className="w-8 h-8 rounded-lg bg-indigo-600 text-white flex items-center justify-center font-bold text-sm shadow-xs shrink-0">
+            S
           </div>
-          <span className="font-bold text-[#333333]">SGBI <span className="text-[#6161ff] font-medium">· Acervo</span></span>
+          <span className="font-bold text-slate-900">SGBI <span className="text-indigo-600 font-semibold">· Estudio IA</span></span>
         </button>
         <button
           type="button"
           onClick={() => setMobileMenuOpen(false)}
-          className="lg:hidden p-1.5 rounded-full text-[#535768] hover:bg-[#f5f6f8]"
+          className="lg:hidden min-h-[44px] min-w-[44px] flex items-center justify-center rounded-lg text-slate-700 hover:bg-slate-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-600"
           aria-label="Cerrar menú lateral"
         >
-          <X className="w-4 h-4" />
+          <X className="w-5 h-5" />
         </button>
       </div>
 
@@ -292,16 +292,16 @@ export default function App() {
       <div className="flex-1 overflow-y-auto px-3 py-4 space-y-6">
         {/* Sección 1: Explorar */}
         <nav aria-label="Explorar biblioteca" className="space-y-1.5">
-          <div className="px-3 pb-1 text-[11px] font-semibold uppercase tracking-wider text-[#535768]">
+          <div className="px-3 pb-1 text-xs font-semibold uppercase tracking-wider text-slate-700">
             Explorar
           </div>
           <button
             type="button"
             onClick={goToMainScreen}
-            className={`w-full flex items-center gap-2.5 px-3.5 py-2.5 rounded-[160px] text-sm font-medium transition-all whitespace-nowrap cursor-pointer ${
+            className={`w-full min-h-[44px] flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-sm font-medium transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-600 ${
               route === 'catalogo' && selectedCategory === 'Todas'
-                ? 'bg-[#6161ff] text-white shadow-sm font-semibold'
-                : 'text-[#535768] hover:bg-[#e7ecff] hover:text-[#333333]'
+                ? 'bg-indigo-600 text-white font-semibold shadow-xs'
+                : 'text-slate-700 hover:bg-slate-100 hover:text-slate-950'
             }`}
           >
             <Home className="w-4 h-4 shrink-0" />
@@ -319,10 +319,10 @@ export default function App() {
                 key={item.id}
                 type="button"
                 onClick={() => navigateToRoute(item.id)}
-                className={`w-full flex items-center gap-2.5 px-3.5 py-2.5 rounded-[160px] text-sm font-medium transition-all whitespace-nowrap cursor-pointer ${
+                className={`w-full min-h-[44px] flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-sm font-medium transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-600 ${
                   active
-                    ? 'bg-[#6161ff] text-white shadow-sm font-semibold'
-                    : 'text-[#535768] hover:bg-[#e7ecff] hover:text-[#333333]'
+                    ? 'bg-indigo-600 text-white font-semibold shadow-xs'
+                    : 'text-slate-700 hover:bg-slate-100 hover:text-slate-950'
                 }`}
               >
                 <Icon className="w-4 h-4 shrink-0" />
@@ -334,8 +334,8 @@ export default function App() {
 
         {/* Sección 2: Operación y Cuenta (RBAC) */}
         {visibleAccountItems.length > 0 && (
-          <nav aria-label="Operación y cuenta" className="pt-4 border-t border-[#d0d4e4] space-y-1.5">
-            <div className="px-3 pb-1 text-[11px] font-semibold uppercase tracking-wider text-[#535768]">
+          <nav aria-label="Operación y cuenta" className="pt-4 border-t border-slate-200 space-y-1.5">
+            <div className="px-3 pb-1 text-xs font-semibold uppercase tracking-wider text-slate-700">
               Operación y Cuenta
             </div>
             {visibleAccountItems.map((item) => {
@@ -346,10 +346,10 @@ export default function App() {
                   key={item.id}
                   type="button"
                   onClick={() => navigateToRoute(item.id)}
-                  className={`w-full flex items-center gap-2.5 px-3.5 py-2.5 rounded-[160px] text-sm font-medium transition-all whitespace-nowrap cursor-pointer ${
+                  className={`w-full min-h-[44px] flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-sm font-medium transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-600 ${
                     active
-                      ? 'bg-[#6161ff] text-white shadow-sm font-semibold'
-                      : 'text-[#535768] hover:bg-[#e7ecff] hover:text-[#333333]'
+                      ? 'bg-indigo-600 text-white font-semibold shadow-xs'
+                      : 'text-slate-700 hover:bg-slate-100 hover:text-slate-950'
                   }`}
                 >
                   <Icon className="w-4 h-4 shrink-0" />
@@ -361,15 +361,15 @@ export default function App() {
         )}
 
         {/* Sección 3: Colecciones por Categoría */}
-        <div className="pt-4 border-t border-[#d0d4e4] space-y-1">
+        <div className="pt-4 border-t border-slate-200 space-y-1">
           <div className="px-3 pb-1.5 flex items-center justify-between">
-            <span className="text-[11px] font-semibold uppercase tracking-wider text-[#535768]">
+            <span className="text-xs font-semibold uppercase tracking-wider text-slate-700">
               Colecciones
             </span>
             <button
               type="button"
               onClick={() => navigateToRoute('categorias')}
-              className="text-[11px] font-medium text-[#6161ff] hover:underline underline-offset-2 cursor-pointer"
+              className="text-xs font-medium text-indigo-600 hover:text-indigo-800 hover:underline underline-offset-2 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-600 rounded"
             >
               Ver todas
             </button>
@@ -378,14 +378,14 @@ export default function App() {
           <button
             type="button"
             onClick={() => handleJumpToCategory('Todas')}
-            className={`w-full flex items-center justify-between gap-2 px-3 py-1.5 rounded-[6px] text-xs transition-colors cursor-pointer ${
+            className={`w-full min-h-[40px] flex items-center justify-between gap-2 px-3 py-2 rounded-lg text-xs font-medium transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-600 ${
               route === 'catalogo' && selectedCategory === 'Todas'
-                ? 'bg-[#e7ecff] text-[#6161ff] font-semibold'
-                : 'text-[#535768] hover:bg-[#f5f6f8] hover:text-[#333333]'
+                ? 'bg-indigo-50 text-indigo-700 font-semibold border border-indigo-200'
+                : 'text-slate-700 hover:bg-slate-100 hover:text-slate-950'
             }`}
           >
             <span className="truncate">Todas las colecciones</span>
-            <span className="font-mono text-[11px] tabular-nums text-[#808080]">
+            <span className="font-mono text-xs tabular-nums text-slate-600">
               {libros.length}
             </span>
           </button>
@@ -398,14 +398,14 @@ export default function App() {
                 type="button"
                 onClick={() => handleJumpToCategory(cat.nombre)}
                 title={cat.descripcion}
-                className={`w-full flex items-center justify-between gap-2 px-3 py-1.5 rounded-[6px] text-xs transition-colors cursor-pointer ${
+                className={`w-full min-h-[40px] flex items-center justify-between gap-2 px-3 py-2 rounded-lg text-xs font-medium transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-600 ${
                   isActiveCat
-                    ? 'bg-[#e7ecff] text-[#6161ff] font-semibold'
-                    : 'text-[#535768] hover:bg-[#f5f6f8] hover:text-[#333333]'
+                    ? 'bg-indigo-50 text-indigo-700 font-semibold border border-indigo-200'
+                    : 'text-slate-700 hover:bg-slate-100 hover:text-slate-950'
                 }`}
               >
                 <span className="truncate">{cat.nombre}</span>
-                <span className="font-mono text-[11px] tabular-nums text-[#808080] shrink-0">
+                <span className="font-mono text-xs tabular-nums text-slate-600 shrink-0">
                   {cat.libros_count ?? 0}
                 </span>
               </button>
@@ -415,19 +415,21 @@ export default function App() {
       </div>
 
       {/* Pie de barra lateral: Cuenta y Sesión */}
-      <div className="p-4 border-t border-[#d0d4e4] bg-[#ffffff] shrink-0">
+      <div className="p-4 border-t border-slate-200 bg-white shrink-0">
         {user ? (
           <div className="space-y-3">
             <div className="px-1 flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-full bg-[#eddff7] text-[#6161ff] font-bold text-xs flex items-center justify-center shrink-0 border border-[#6161ff]/20">
+              <div className="w-9 h-9 rounded-full bg-indigo-50 text-indigo-700 font-bold text-sm flex items-center justify-center shrink-0 border border-indigo-200">
                 {user.nombre_completo.charAt(0).toUpperCase()}
               </div>
               <div className="min-w-0">
-                <div className="text-xs font-semibold text-[#333333] truncate">
+                <div className="text-sm font-semibold text-slate-900 truncate">
                   {user.nombre_completo}
                 </div>
-                <div className="text-[11px] text-[#535768] truncate">
-                  <span className="badge-monday bg-[#dbdbff] text-[#6161ff] text-[10px] py-0 px-1.5 mr-1 font-semibold">{user.rol}</span>
+                <div className="text-xs text-slate-600 truncate">
+                  <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[11px] font-semibold bg-indigo-50 text-indigo-700 border border-indigo-200 mr-1.5">
+                    {user.rol}
+                  </span>
                   {user.estado}
                 </div>
               </div>
@@ -435,9 +437,9 @@ export default function App() {
             <button
               type="button"
               onClick={handleLogout}
-              className="w-full btn-outline-pill py-2 text-xs font-medium cursor-pointer"
+              className="w-full min-h-[44px] rounded-lg bg-white border border-slate-300 text-slate-800 hover:bg-slate-100 text-xs font-medium flex items-center justify-center gap-2 transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-600"
             >
-              <LogOut className="w-3.5 h-3.5" />
+              <LogOut className="w-4 h-4" />
               Cerrar Sesión
             </button>
           </div>
@@ -448,9 +450,9 @@ export default function App() {
               setMobileMenuOpen(false);
               setLoginOpen(true);
             }}
-            className="w-full btn-primary-pill py-2.5 text-xs font-medium shadow-sm cursor-pointer"
+            className="w-full min-h-[44px] rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-medium flex items-center justify-center gap-2 shadow-xs transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-600"
           >
-            <LogIn className="w-3.5 h-3.5" />
+            <LogIn className="w-4 h-4" />
             Iniciar Sesión
           </button>
         )}
@@ -460,9 +462,14 @@ export default function App() {
 
   return (
     <MotionConfig reducedMotion="user">
-      <div className="min-h-screen flex bg-[#f5f6f8] text-[#333333] font-sans">
+      {/* Enlace de accesibilidad para saltar al contenido principal (WCAG 2.4.1) */}
+      <a href="#main-content" className="skip-link">
+        Saltar al contenido principal
+      </a>
+
+      <div className="min-h-screen flex bg-slate-50 text-slate-800 font-sans">
         {/* Barra Lateral Izquierda (Escritorio) */}
-        <aside className="no-print hidden lg:flex lg:flex-col lg:w-68 lg:shrink-0 border-r border-[#d0d4e4] bg-[#ffffff] sticky top-0 h-screen shadow-sm">
+        <aside className="no-print hidden lg:flex lg:flex-col lg:w-68 lg:shrink-0 border-r border-slate-200 bg-white sticky top-0 h-screen shadow-xs">
           {renderSidebarContent()}
         </aside>
 
@@ -476,14 +483,14 @@ export default function App() {
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.16 }}
                 onClick={() => setMobileMenuOpen(false)}
-                className="fixed inset-0 bg-black/40 backdrop-blur-xs"
+                className="fixed inset-0 bg-slate-900/50"
               />
               <motion.aside
                 initial={{ x: '-100%' }}
                 animate={{ x: 0 }}
                 exit={{ x: '-100%' }}
                 transition={{ duration: 0.18, ease: [0.16, 1, 0.3, 1] }}
-                className="relative w-72 max-w-[85vw] bg-[#ffffff] border-r border-[#d0d4e4] h-full z-10 shadow-2xl"
+                className="relative w-72 max-w-[85vw] bg-white border-r border-slate-200 h-full z-10 shadow-2xl"
               >
                 {renderSidebarContent()}
               </motion.aside>
@@ -493,59 +500,60 @@ export default function App() {
 
         {/* Área Principal */}
         <div className="flex-1 flex flex-col min-w-0">
-          {/* Top Bar contextual monday style */}
-          <header className="no-print sticky top-0 z-30 h-16 border-b border-[#d0d4e4] bg-[#ffffff]/90 backdrop-blur-md px-4 sm:px-6 lg:px-8 flex items-center justify-between gap-4 shadow-xs">
+          {/* Header Sólido y Proporcionado (WCAG 2.1/2.2 AA) */}
+          <header className="no-print sticky top-0 z-30 min-h-16 h-16 border-b border-slate-200 bg-white px-4 sm:px-6 lg:px-8 py-3 flex items-center justify-between gap-4">
             <div className="flex items-center gap-3 min-w-0">
               <button
                 type="button"
                 onClick={() => setMobileMenuOpen(true)}
-                className="lg:hidden p-2 rounded-full border border-[#d0d4e4] bg-[#ffffff] text-[#333333] hover:bg-[#f5f6f8]"
+                className="lg:hidden min-h-[44px] min-w-[44px] flex items-center justify-center rounded-lg border border-slate-300 bg-white text-slate-800 hover:bg-slate-100 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-600 cursor-pointer"
                 aria-label="Abrir navegación lateral"
               >
-                <Menu className="w-4 h-4" />
+                <Menu className="w-5 h-5" />
               </button>
 
-              <div className="flex items-center gap-2 text-xs text-[#535768] truncate">
-                <span className="font-medium text-[#535768]">{currentBreadcrumb.section}</span>
-                <ChevronRight className="w-3.5 h-3.5 shrink-0 text-[#808080]" />
-                <span className="font-semibold text-[#333333] truncate">
+              <nav aria-label="Ruta actual de navegación" className="flex items-center gap-2 text-sm text-slate-600 truncate">
+                <span className="font-medium text-slate-600">{currentBreadcrumb.section}</span>
+                <ChevronRight className="w-4 h-4 shrink-0 text-slate-400" />
+                <span className="font-semibold text-slate-900 truncate">
                   {currentBreadcrumb.label}
                 </span>
                 {route === 'catalogo' && selectedCategory !== 'Todas' && (
                   <>
-                    <ChevronRight className="w-3.5 h-3.5 shrink-0 text-[#808080]" />
-                    <span className="badge-monday bg-[#dbdbff] text-[#6161ff] font-semibold truncate">
+                    <ChevronRight className="w-4 h-4 shrink-0 text-slate-400" />
+                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-md bg-indigo-50 text-indigo-700 font-medium text-xs border border-indigo-200 truncate">
                       {selectedCategory}
                     </span>
                   </>
                 )}
-              </div>
+              </nav>
             </div>
 
-            <div className="shrink-0 flex items-center gap-2.5">
+            <div className="shrink-0 flex items-center gap-3">
               {user ? (
                 <button
                   type="button"
                   onClick={handleLogout}
-                  className="btn-outline-pill text-xs py-1.5 px-4 cursor-pointer"
+                  className="min-h-[44px] px-4 rounded-lg border border-slate-300 bg-white text-slate-800 hover:bg-slate-100 font-medium text-sm flex items-center gap-2 transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-600 focus-visible:ring-offset-2"
                 >
-                  <LogOut className="w-3.5 h-3.5" />
-                  Salir
+                  <LogOut className="w-4 h-4" />
+                  <span>Salir</span>
                 </button>
               ) : (
                 <button
                   type="button"
                   onClick={() => setLoginOpen(true)}
-                  className="btn-primary-pill text-xs py-2 px-5 cursor-pointer shadow-sm"
+                  className="min-h-[44px] px-5 rounded-lg bg-indigo-600 text-white hover:bg-indigo-700 font-medium text-sm flex items-center gap-2 shadow-xs transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-600 focus-visible:ring-offset-2"
                 >
-                  Iniciar Sesión
+                  <LogIn className="w-4 h-4" />
+                  <span>Iniciar Sesión</span>
                 </button>
               )}
             </div>
           </header>
 
           {/* Contenido de la Ruta Activa protegido con ErrorBoundary */}
-          <main className="flex-1 max-w-[1200px] w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <main id="main-content" tabIndex={-1} className="flex-1 max-w-[1200px] w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 focus:outline-none">
             <ErrorBoundary onReset={goToMainScreen}>
               <AnimatePresence mode="wait">
                 <motion.div
@@ -613,34 +621,34 @@ export default function App() {
             </ErrorBoundary>
           </main>
 
-          {/* Pie de página monday style */}
-          <footer className="no-print border-t border-[#d0d4e4] bg-[#ffffff] py-6 px-4 sm:px-6 lg:px-8 mt-auto">
-            <div className="max-w-[1200px] mx-auto flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-[#535768]">
+          {/* Pie de página accesible */}
+          <footer className="no-print border-t border-slate-200 bg-white py-6 px-4 sm:px-6 lg:px-8 mt-auto">
+            <div className="max-w-[1200px] mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-slate-600">
               <div className="flex items-center gap-2">
-                <div className="w-4 h-4 rounded-full prism-mark-circle shrink-0" />
-                <span>
-                  SGBI · Sistema de Gestión Bibliotecaria Inteligente
+                <div className="w-2.5 h-2.5 rounded-full bg-indigo-600 shrink-0" />
+                <span className="font-medium text-slate-700">
+                  SGBI · Sistema de Gestión Bibliotecaria y Estudio IA
                 </span>
               </div>
-              <div className="flex items-center gap-5">
+              <div className="flex items-center gap-6">
                 <button
                   type="button"
                   onClick={() => navigateToRoute('catalogo')}
-                  className="hover:text-[#6161ff] transition-colors cursor-pointer"
+                  className="min-h-[44px] inline-flex items-center text-sm font-medium text-slate-600 hover:text-indigo-600 transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-600 rounded"
                 >
                   Catálogo
                 </button>
                 <button
                   type="button"
                   onClick={() => navigateToRoute('categorias')}
-                  className="hover:text-[#6161ff] transition-colors cursor-pointer"
+                  className="min-h-[44px] inline-flex items-center text-sm font-medium text-slate-600 hover:text-indigo-600 transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-600 rounded"
                 >
                   Categorías
                 </button>
                 <button
                   type="button"
                   onClick={() => navigateToRoute('salas')}
-                  className="hover:text-[#6161ff] transition-colors cursor-pointer"
+                  className="min-h-[44px] inline-flex items-center text-sm font-medium text-slate-600 hover:text-indigo-600 transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-600 rounded"
                 >
                   Salas y Pasillos
                 </button>

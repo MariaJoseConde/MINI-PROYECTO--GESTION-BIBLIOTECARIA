@@ -29,8 +29,8 @@ export const CategoriasView: React.FC<CategoriasViewProps> = ({
           <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-[6px] bg-[#e7ecff] text-[#6161ff] text-xs font-semibold uppercase tracking-wider mb-2.5">
             <span>Clasificación Temática</span>
           </div>
-          <h1 className="text-3xl sm:text-4xl font-light tracking-[-0.03em] text-[#333333] text-balance">
-            Categorías y <span className="gradient-hero-text font-normal">colecciones bibliográficas</span>
+          <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-slate-900 text-balance">
+            Categorías y <span className="text-indigo-600 font-bold">colecciones bibliográficas</span>
           </h1>
           <p className="mt-2.5 text-sm text-[#535768] leading-relaxed">
             Explora la descripción curatorial, ubicación física en sala, público recomendado y enfoque de lectura de cada colección del catálogo.

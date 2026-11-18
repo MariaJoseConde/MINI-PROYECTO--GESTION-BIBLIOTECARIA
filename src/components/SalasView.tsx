@@ -187,8 +187,8 @@ export const SalasView: React.FC<SalasViewProps> = ({
             <Compass className="w-3.5 h-3.5" />
             <span>Orientación Espacial</span>
           </div>
-          <h1 className="text-3xl sm:text-4xl font-light tracking-[-0.03em] text-[#333333] text-balance">
-            Organización de salas, <span className="gradient-hero-text font-normal">pasillos y estanterías</span>
+          <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-slate-900 text-balance">
+            Organización de salas, <span className="text-indigo-600 font-bold">pasillos y estanterías</span>
           </h1>
           <p className="mt-2.5 text-sm text-[#535768] leading-relaxed">
             Ubica físicamente cada colección dentro del edificio, explora la distribución de pasillos y consulta en qué estante se encuentra cada obra.
@@ -255,7 +255,7 @@ export const SalasView: React.FC<SalasViewProps> = ({
                 >
                   <MapPin className="w-3.5 h-3.5 shrink-0" />
                   <span>{s.sala}</span>
-                  <span className="font-mono text-[10px] opacity-80 tabular-nums">
+                  <span className="font-mono text-[10px] text-slate-700 font-semibold tabular-nums">
                     ({s.pasillos.length})
                   </span>
                 </button>

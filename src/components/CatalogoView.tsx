@@ -168,11 +168,11 @@ export const CatalogoView: React.FC<CatalogoViewProps> = ({
                 <Sparkles className="w-3.5 h-3.5" />
                 <span>Acervo Bibliográfico Inteligente</span>
               </div>
-              <h1 className="font-light text-3xl sm:text-4xl lg:text-[2.75rem] tracking-[-0.03em] leading-[1.15] text-[#333333] text-balance">
+              <h1 className="font-bold text-3xl sm:text-4xl lg:text-[2.75rem] tracking-[-0.03em] leading-[1.15] text-slate-900 text-balance">
                 Explora la colección con{' '}
-                <span className="gradient-hero-text font-normal">inteligencia artificial</span>
+                <span className="text-indigo-600 font-bold">inteligencia artificial</span>
               </h1>
-              <p className="mt-3 text-base text-[#535768] leading-relaxed max-w-xl">
+              <p className="mt-3 text-base font-normal text-slate-700 leading-relaxed max-w-xl">
                 Descubre obras por temática o lenguaje natural y consulta la disponibilidad física en sala al instante.
               </p>
             </div>
@@ -260,7 +260,7 @@ export const CatalogoView: React.FC<CatalogoViewProps> = ({
                 <button
                   type="submit"
                   disabled={searching}
-                  className="btn-primary-pill text-xs py-2 px-5 cursor-pointer shadow-sm disabled:opacity-60"
+                  className="btn-primary-pill text-xs py-2 px-5 cursor-pointer shadow-sm disabled:bg-slate-200 disabled:text-slate-500 disabled:cursor-not-allowed"
                 >
                   {searching ? 'Buscando...' : 'Buscar'}
                   <ArrowRight className="w-3.5 h-3.5" />
@@ -344,7 +344,7 @@ export const CatalogoView: React.FC<CatalogoViewProps> = ({
                       <h3 className="text-base font-semibold leading-snug text-[#333333] line-clamp-1 group-hover:text-[#6161ff] transition-colors">
                         {cat.nombre}
                       </h3>
-                      <ArrowRight className="w-4 h-4 text-[#535768] shrink-0 opacity-80 transition-transform group-hover:translate-x-1 group-hover:text-[#6161ff]" />
+                      <ArrowRight className="w-4 h-4 text-slate-700 shrink-0 transition-transform group-hover:translate-x-1 group-hover:text-indigo-600" />
                     </div>
                     <p className="mt-1 text-xs text-[#535768] line-clamp-2 leading-relaxed">
                       {cat.descripcion}
