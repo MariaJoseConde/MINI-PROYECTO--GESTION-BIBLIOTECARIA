@@ -45,18 +45,18 @@ export const ToastBanner: React.FC<ToastBannerProps> = ({ toasts, onDismiss }) =
         return (
           <div
             key={toast.id}
-            className="pointer-events-auto flex items-start gap-3 rounded-[14px] border border-[#d0d4e4] bg-[#ffffff] px-4 py-3 shadow-[0px_4px_24px_rgba(0,0,0,0.08)] transition-all animate-in fade-in slide-in-from-bottom-2 duration-200"
+            className="pointer-events-auto flex items-start gap-3 rounded-2xl glass-surface px-4 py-3 transition-all animate-in fade-in slide-in-from-bottom-2 duration-200 shadow-lg"
           >
             <div className={`w-6 h-6 rounded-full flex items-center justify-center shrink-0 ${badgeBg}`}>
               <Icon className="w-3.5 h-3.5" />
             </div>
-            <p className="text-xs sm:text-sm font-medium text-[#333333] leading-snug flex-1 pt-0.5">
+            <p className="text-xs sm:text-sm font-medium text-slate-800 dark:text-slate-200 leading-snug flex-1 pt-0.5">
               {toast.text}
             </p>
             <button
               type="button"
               onClick={() => onDismiss(toast.id)}
-              className="w-6 h-6 rounded-full flex items-center justify-center text-[#808080] hover:bg-[#e7ecff] hover:text-[#333333] transition-colors cursor-pointer shrink-0"
+              className="w-6 h-6 rounded-full flex items-center justify-center text-slate-500 hover:bg-white/60 dark:hover:bg-slate-800/60 hover:text-slate-900 dark:hover:text-white transition-colors cursor-pointer shrink-0"
               aria-label="Cerrar notificación"
             >
               <X className="w-3.5 h-3.5" />

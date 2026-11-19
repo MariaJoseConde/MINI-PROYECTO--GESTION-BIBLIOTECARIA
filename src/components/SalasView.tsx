@@ -209,13 +209,13 @@ export const SalasView: React.FC<SalasViewProps> = ({
       </div>
 
       {/* Plano Arquitectónico Interactivo */}
-      <section className="card-monday bg-[#ffffff] overflow-hidden">
-        <div className="px-6 py-4 border-b border-[#d0d4e4] bg-[#f5f6f8] flex flex-wrap items-center justify-between gap-3">
-          <div className="flex items-center gap-2 text-xs font-semibold text-[#333333]">
-            <Compass className="w-4 h-4 text-[#6161ff]" />
+      <section className="card-monday overflow-hidden">
+        <div className="px-6 py-4 border-b border-slate-200/60 dark:border-slate-800/60 bg-white/40 dark:bg-slate-800/40 backdrop-blur-xs flex flex-wrap items-center justify-between gap-3">
+          <div className="flex items-center gap-2 text-xs font-semibold text-slate-800 dark:text-slate-200">
+            <Compass className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />
             <span>Plano arquitectónico del edificio bibliotecario</span>
           </div>
-          <span className="text-xs text-[#535768]">
+          <span className="text-xs text-slate-600 dark:text-slate-400">
             Haz clic en una sala del plano o en los filtros inferiores para aislar sus pasillos
           </span>
         </div>

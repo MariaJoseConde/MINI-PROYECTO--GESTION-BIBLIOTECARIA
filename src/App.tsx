@@ -286,9 +286,9 @@ export default function App() {
   const currentBreadcrumb = ROUTE_LABELS[route];
 
   const renderSidebarContent = () => (
-    <div className="flex flex-col h-full bg-white dark:bg-slate-900">
+    <div className="flex flex-col h-full bg-transparent">
       {/* Brand Header */}
-      <div className="px-5 h-16 min-h-16 flex items-center justify-between border-b border-slate-200 dark:border-slate-800 shrink-0 bg-white dark:bg-slate-900">
+      <div className="px-5 h-16 min-h-16 flex items-center justify-between border-b border-slate-200/70 dark:border-slate-800/60 shrink-0 bg-transparent">
         <button
           type="button"
           onClick={goToMainScreen}
@@ -302,7 +302,7 @@ export default function App() {
         <button
           type="button"
           onClick={() => setMobileMenuOpen(false)}
-          className="lg:hidden min-h-[44px] min-w-[44px] flex items-center justify-center rounded-lg text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-600"
+          className="lg:hidden min-h-[44px] min-w-[44px] flex items-center justify-center rounded-lg text-slate-700 dark:text-slate-300 hover:bg-slate-100/60 dark:hover:bg-slate-800/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-600"
           aria-label="Cerrar menú lateral"
         >
           <X className="w-5 h-5" />
@@ -436,14 +436,14 @@ export default function App() {
       </div>
 
       {/* Pie de barra lateral: Cuenta y Sesión */}
-      <div className="p-4 border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shrink-0">
+      <div className="p-4 border-t border-slate-200/70 dark:border-slate-800/60 bg-transparent shrink-0">
         {/* Selector de Tema con icono de Sol (Modo Claro / Oscuro) */}
         <div className="mb-3">
           <button
             type="button"
             onClick={toggleTheme}
             aria-label={theme === 'dark' ? 'Cambiar a tema claro' : 'Cambiar a tema oscuro'}
-            className="w-full min-h-[44px] px-3.5 py-2 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 flex items-center justify-between transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-600 text-xs font-medium text-slate-800 dark:text-slate-200"
+            className="w-full min-h-[44px] px-3.5 py-2 rounded-xl border border-slate-200/80 dark:border-slate-800/80 bg-white/60 dark:bg-slate-800/50 backdrop-blur-md hover:bg-white/80 dark:hover:bg-slate-800/80 flex items-center justify-between transition-all cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-600 text-xs font-medium text-slate-800 dark:text-slate-200 shadow-2xs"
           >
             <div className="flex items-center gap-2.5">
               <Sun className={`w-4 h-4 ${theme === 'dark' ? 'text-amber-400 rotate-90' : 'text-amber-500'} transition-transform duration-500`} />
@@ -506,9 +506,21 @@ export default function App() {
         Saltar al contenido principal
       </a>
 
-      <div className={`min-h-screen flex ${theme === 'dark' ? 'dark bg-slate-950 text-slate-100' : 'bg-slate-50 text-slate-800'} font-sans`}>
+      <div className={`min-h-screen flex ${theme === 'dark' ? 'dark bg-[#0b1120] text-slate-100' : 'bg-slate-50/70 text-slate-800'} font-sans relative`}>
+        {/* Fondo ambiental difuso con formas orgánicas para realzar el efecto Glassmorphism */}
+        <div className="fixed inset-0 pointer-events-none -z-10 overflow-hidden" aria-hidden="true">
+          {/* Orbe 1: Superior derecha (índigo suave) */}
+          <div className="absolute -top-32 -right-32 w-[650px] h-[650px] rounded-full bg-gradient-to-br from-indigo-400/20 via-sky-300/15 to-transparent dark:from-indigo-600/15 dark:via-blue-900/10 blur-[130px] transform-gpu" />
+          {/* Orbe 2: Central izquierda (celeste / violeta) */}
+          <div className="absolute top-1/3 -left-40 w-[550px] h-[550px] rounded-full bg-gradient-to-tr from-sky-400/15 via-indigo-300/15 to-transparent dark:from-blue-600/10 dark:via-purple-900/10 blur-[120px] transform-gpu" />
+          {/* Orbe 3: Inferior derecha (lavanda / púrpura sutil) */}
+          <div className="absolute -bottom-32 right-1/4 w-[600px] h-[600px] rounded-full bg-gradient-to-tl from-violet-400/15 via-indigo-200/10 to-transparent dark:from-purple-800/10 dark:via-indigo-950/20 blur-[140px] transform-gpu" />
+          {/* Gradiente base sutil */}
+          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-slate-50/30 to-indigo-50/15 dark:from-transparent dark:via-slate-950/40 dark:to-slate-900/30" />
+        </div>
+
         {/* Barra Lateral Izquierda (Escritorio) */}
-        <aside className="no-print hidden lg:flex lg:flex-col lg:w-68 lg:shrink-0 border-r border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 sticky top-0 h-screen shadow-xs">
+        <aside className="no-print hidden lg:flex lg:flex-col lg:w-68 lg:shrink-0 glass-sidebar sticky top-0 h-screen">
           {renderSidebarContent()}
         </aside>
 
@@ -528,14 +540,14 @@ export default function App() {
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.16 }}
                 onClick={() => setMobileMenuOpen(false)}
-                className="fixed inset-0 bg-slate-900/50"
+                className="fixed inset-0 bg-slate-950/40 dark:bg-black/60 backdrop-blur-sm"
               />
               <motion.aside
                 initial={{ x: '-100%' }}
                 animate={{ x: 0 }}
                 exit={{ x: '-100%' }}
                 transition={{ duration: 0.18, ease: [0.16, 1, 0.3, 1] }}
-                className="relative w-72 max-w-[85vw] bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 h-full z-10 shadow-2xl"
+                className="relative w-72 max-w-[85vw] glass-sidebar h-full z-10 shadow-2xl"
               >
                 {renderSidebarContent()}
               </motion.aside>
@@ -545,15 +557,15 @@ export default function App() {
 
         {/* Área Principal */}
         <div className="flex-1 flex flex-col min-w-0">
-          {/* Header Sólido y Proporcionado (WCAG 2.1/2.2 AA) */}
-          <header className="no-print sticky top-0 z-30 min-h-16 h-16 border-b border-slate-200 dark:border-slate-800 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md px-4 sm:px-6 lg:px-8 py-3 flex items-center justify-between gap-4">
+          {/* Header Sólido y Proporcionado (WCAG 2.1/2.2 AA) con Glassmorphism */}
+          <header className="no-print sticky top-0 z-30 min-h-16 h-16 glass-nav px-4 sm:px-6 lg:px-8 py-3 flex items-center justify-between gap-4">
             <div className="flex items-center gap-3 sm:gap-4 min-w-0">
               <button
                 type="button"
                 onClick={() => setMobileMenuOpen((prev) => !prev)}
                 aria-expanded={mobileMenuOpen}
                 aria-controls="mobile-nav-drawer"
-                className="lg:hidden min-h-[44px] min-w-[44px] flex items-center justify-center rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-600 cursor-pointer"
+                className="lg:hidden min-h-[44px] min-w-[44px] flex items-center justify-center rounded-xl border border-slate-300/80 dark:border-slate-700/80 bg-white/60 dark:bg-slate-800/60 backdrop-blur-md text-slate-800 dark:text-slate-200 hover:bg-white/90 dark:hover:bg-slate-700 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-600 cursor-pointer shadow-2xs"
                 aria-label="Abrir navegación lateral"
               >
                 <Menu className="w-5 h-5" />
@@ -577,10 +589,10 @@ export default function App() {
                 <button
                   type="button"
                   onClick={() => navigateToRoute('catalogo')}
-                  className={`min-h-[44px] px-3.5 py-2 rounded-lg text-sm font-medium transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-600 ${
+                  className={`min-h-[44px] px-3.5 py-2 rounded-xl text-sm font-medium transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-600 ${
                     route === 'catalogo'
-                      ? 'bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 font-semibold border border-indigo-200 dark:border-indigo-800'
-                      : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-950 dark:hover:text-white'
+                      ? 'bg-indigo-50/80 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 font-semibold border border-indigo-200/80 dark:border-indigo-800/80 shadow-2xs'
+                      : 'text-slate-700 dark:text-slate-300 hover:bg-white/60 dark:hover:bg-slate-800/60 hover:text-slate-950 dark:hover:text-white'
                   }`}
                 >
                   Mis Temas
@@ -588,10 +600,10 @@ export default function App() {
                 <button
                   type="button"
                   onClick={() => navigateToRoute('evaluaciones')}
-                  className={`min-h-[44px] px-3.5 py-2 rounded-lg text-sm font-medium transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-600 ${
+                  className={`min-h-[44px] px-3.5 py-2 rounded-xl text-sm font-medium transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-600 ${
                     route === 'evaluaciones'
-                      ? 'bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 font-semibold border border-indigo-200 dark:border-indigo-800'
-                      : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-950 dark:hover:text-white'
+                      ? 'bg-indigo-50/80 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 font-semibold border border-indigo-200/80 dark:border-indigo-800/80 shadow-2xs'
+                      : 'text-slate-700 dark:text-slate-300 hover:bg-white/60 dark:hover:bg-slate-800/60 hover:text-slate-950 dark:hover:text-white'
                   }`}
                 >
                   Práctica e IA
@@ -599,10 +611,10 @@ export default function App() {
                 <button
                   type="button"
                   onClick={() => navigateToRoute('salas')}
-                  className={`min-h-[44px] px-3.5 py-2 rounded-lg text-sm font-medium transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-600 ${
+                  className={`min-h-[44px] px-3.5 py-2 rounded-xl text-sm font-medium transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-600 ${
                     route === 'salas'
-                      ? 'bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 font-semibold border border-indigo-200 dark:border-indigo-800'
-                      : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-950 dark:hover:text-white'
+                      ? 'bg-indigo-50/80 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 font-semibold border border-indigo-200/80 dark:border-indigo-800/80 shadow-2xs'
+                      : 'text-slate-700 dark:text-slate-300 hover:bg-white/60 dark:hover:bg-slate-800/60 hover:text-slate-950 dark:hover:text-white'
                   }`}
                 >
                   Salas
@@ -610,10 +622,10 @@ export default function App() {
                 <button
                   type="button"
                   onClick={() => (user ? navigateToRoute('mis-prestamos') : navigateToRoute('categorias'))}
-                  className={`min-h-[44px] px-3.5 py-2 rounded-lg text-sm font-medium transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-600 ${
+                  className={`min-h-[44px] px-3.5 py-2 rounded-xl text-sm font-medium transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-600 ${
                     route === 'mis-prestamos' || route === 'categorias'
-                      ? 'bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 font-semibold border border-indigo-200 dark:border-indigo-800'
-                      : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-950 dark:hover:text-white'
+                      ? 'bg-indigo-50/80 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 font-semibold border border-indigo-200/80 dark:border-indigo-800/80 shadow-2xs'
+                      : 'text-slate-700 dark:text-slate-300 hover:bg-white/60 dark:hover:bg-slate-800/60 hover:text-slate-950 dark:hover:text-white'
                   }`}
                 >
                   {user ? 'Mi Progreso' : 'Colecciones'}
@@ -635,10 +647,10 @@ export default function App() {
                 onClick={toggleTheme}
                 aria-label={theme === 'dark' ? 'Cambiar a tema claro' : 'Cambiar a tema oscuro'}
                 title={theme === 'dark' ? 'Tema actual: Oscuro (Clic para cambiar a Claro)' : 'Tema actual: Claro (Clic para cambiar a Oscuro)'}
-                className={`min-h-[44px] min-w-[44px] px-3 rounded-lg border transition-all flex items-center justify-center gap-2 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-600 ${
+                className={`min-h-[44px] min-w-[44px] px-3 rounded-xl border transition-all flex items-center justify-center gap-2 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-600 ${
                   theme === 'dark'
-                    ? 'border-amber-500/50 bg-slate-800 text-amber-400 hover:bg-slate-700 hover:border-amber-400 shadow-xs'
-                    : 'border-slate-300 bg-white text-amber-600 hover:bg-amber-50/70 hover:border-amber-300 shadow-xs'
+                    ? 'border-amber-500/40 bg-slate-800/60 backdrop-blur-md text-amber-400 hover:bg-slate-700/70 hover:border-amber-400/60 shadow-xs'
+                    : 'border-slate-300/80 bg-white/70 backdrop-blur-md text-amber-600 hover:bg-amber-50/80 hover:border-amber-300 shadow-xs'
                 }`}
               >
                 <Sun className={`w-5 h-5 transition-transform duration-500 ${theme === 'dark' ? 'rotate-90 text-amber-400 fill-amber-400/20' : 'text-amber-500 fill-amber-500/20'}`} />
@@ -651,7 +663,7 @@ export default function App() {
                 <button
                   type="button"
                   onClick={handleLogout}
-                  className="min-h-[44px] px-4 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 font-medium text-sm flex items-center gap-2 transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-600 focus-visible:ring-offset-2"
+                  className="min-h-[44px] px-4 rounded-xl border border-slate-300/80 dark:border-slate-700/80 bg-white/60 dark:bg-slate-800/60 backdrop-blur-md text-slate-800 dark:text-slate-200 hover:bg-white/90 dark:hover:bg-slate-700 font-medium text-sm flex items-center gap-2 transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-600 focus-visible:ring-offset-2 shadow-2xs"
                 >
                   <LogOut className="w-4 h-4" />
                   <span>Salir</span>
@@ -660,7 +672,7 @@ export default function App() {
                 <button
                   type="button"
                   onClick={() => setLoginOpen(true)}
-                  className="min-h-[44px] px-5 rounded-lg bg-indigo-600 text-white hover:bg-indigo-700 font-medium text-sm flex items-center gap-2 shadow-xs transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-600 focus-visible:ring-offset-2"
+                  className="min-h-[44px] px-5 rounded-xl bg-indigo-600 text-white hover:bg-indigo-700 font-medium text-sm flex items-center gap-2 shadow-xs transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-600 focus-visible:ring-offset-2"
                 >
                   <LogIn className="w-4 h-4" />
                   <span>Iniciar Sesión</span>
@@ -741,8 +753,8 @@ export default function App() {
             </ErrorBoundary>
           </main>
 
-          {/* Pie de página accesible */}
-          <footer className="no-print border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 py-6 px-4 sm:px-6 lg:px-8 mt-auto">
+          {/* Pie de página accesible con estilo Glass */}
+          <footer className="no-print glass-nav !border-b-0 !border-t border-slate-200/70 dark:border-slate-800/60 py-6 px-4 sm:px-6 lg:px-8 mt-auto">
             <div className="max-w-[1200px] mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-slate-600 dark:text-slate-400">
               <div className="flex items-center gap-2">
                 <div className="w-2.5 h-2.5 rounded-full bg-indigo-600 shrink-0" />

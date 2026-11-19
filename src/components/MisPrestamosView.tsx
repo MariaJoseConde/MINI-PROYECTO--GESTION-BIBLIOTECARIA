@@ -34,7 +34,7 @@ export const MisPrestamosView: React.FC<MisPrestamosViewProps> = ({ user }) => {
 
   return (
     <div className="space-y-8">
-      <div className="card-monday bg-[#ffffff] p-8 flex flex-col sm:flex-row sm:items-center justify-between gap-6">
+      <div className="card-monday p-8 flex flex-col sm:flex-row sm:items-center justify-between gap-6">
         <div>
           <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-[6px] bg-[#e7ecff] text-[#6161ff] text-xs font-semibold uppercase tracking-wider mb-2.5">
             <BookCheck className="w-3.5 h-3.5" />

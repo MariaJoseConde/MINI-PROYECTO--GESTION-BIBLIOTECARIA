@@ -212,7 +212,7 @@ export const EvaluacionesView: React.FC<EvaluacionesViewProps> = ({
       {/* ========================================================= */}
       <section
         aria-labelledby="zona-contexto-heading"
-        className="bg-white border border-slate-200 rounded-xl p-6 sm:p-8 shadow-xs space-y-5"
+        className="card-monday p-6 sm:p-8 space-y-5"
       >
         {/* Migas de pan de la sesión de estudio (WCAG Ubicación Constante) */}
         <nav aria-label="Migas de pan de la sesión de estudio">
@@ -352,39 +352,39 @@ export const EvaluacionesView: React.FC<EvaluacionesViewProps> = ({
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-stretch">
           {/* Bloque 1: Definición y Concepto Clave */}
-          <article className="bg-white border border-slate-200 rounded-xl p-6 sm:p-7 shadow-xs flex flex-col justify-between space-y-4">
+          <article className="card-monday p-6 sm:p-7 flex flex-col justify-between space-y-4">
             <div className="space-y-3">
-              <div className="w-10 h-10 rounded-lg bg-indigo-50 border border-indigo-200 text-indigo-700 flex items-center justify-center shrink-0">
+              <div className="w-10 h-10 rounded-xl bg-indigo-50/80 dark:bg-indigo-950/60 border border-indigo-200/80 dark:border-indigo-800/80 text-indigo-700 dark:text-indigo-300 flex items-center justify-center shrink-0">
                 <BookOpen className="w-5 h-5" />
               </div>
-              <h3 className="text-lg font-bold text-slate-900 text-left">
+              <h3 className="text-lg font-bold text-slate-900 dark:text-white text-left">
                 1. Concepto y Definición
               </h3>
-              <p className="text-base font-normal text-slate-800 leading-relaxed max-w-prose text-left">
+              <p className="text-base font-normal text-slate-800 dark:text-slate-200 leading-relaxed max-w-prose text-left">
                 {activeBook?.sinopsis ||
                   'Esta obra presenta los principios teóricos y metodológicos fundamentales para la comprensión de su temática central, estructurando un marco de referencia aplicable.'}
               </p>
             </div>
-            <div className="pt-3 border-t border-slate-100 text-xs font-medium text-slate-600 text-left">
+            <div className="pt-3 border-t border-slate-200/60 dark:border-slate-800/60 text-xs font-medium text-slate-600 dark:text-slate-400 text-left">
               Eje conceptual fundamental · Comprensión literal
             </div>
           </article>
 
           {/* Bloque 2: Ejemplo Práctico y Bloque de Código / Cita Técnica */}
-          <article className="bg-white border border-slate-200 rounded-xl p-6 sm:p-7 shadow-xs flex flex-col justify-between space-y-4">
+          <article className="card-monday p-6 sm:p-7 flex flex-col justify-between space-y-4">
             <div className="space-y-3">
-              <div className="w-10 h-10 rounded-lg bg-indigo-50 border border-indigo-200 text-indigo-700 flex items-center justify-center shrink-0">
+              <div className="w-10 h-10 rounded-xl bg-indigo-50/80 dark:bg-indigo-950/60 border border-indigo-200/80 dark:border-indigo-800/80 text-indigo-700 dark:text-indigo-300 flex items-center justify-center shrink-0">
                 <Code className="w-5 h-5" />
               </div>
-              <h3 className="text-lg font-bold text-slate-900 text-left">
+              <h3 className="text-lg font-bold text-slate-900 dark:text-white text-left">
                 2. Aplicación Práctica y Estructura
               </h3>
-              <p className="text-base font-normal text-slate-800 leading-relaxed max-w-prose text-left">
+              <p className="text-base font-normal text-slate-800 dark:text-slate-200 leading-relaxed max-w-prose text-left">
                 El siguiente bloque refleja la estructura formal de análisis y catalogación de la obra dentro del sistema bibliotecario:
               </p>
 
               {/* Bloque de código con fuente monoespaciada, fondo diferenciado y botón de copiado ≥44x44 */}
-              <div className="rounded-lg bg-slate-900 text-slate-50 p-4 font-mono text-xs overflow-x-auto space-y-3">
+              <div className="rounded-xl bg-slate-900 text-slate-50 p-4 font-mono text-xs overflow-x-auto space-y-3 shadow-inner">
                 <div className="flex items-center justify-between gap-2 border-b border-slate-800 pb-2">
                   <span className="text-slate-400 text-[11px] font-medium font-sans">
                     Estructura técnica
@@ -392,7 +392,7 @@ export const EvaluacionesView: React.FC<EvaluacionesViewProps> = ({
                   <button
                     type="button"
                     onClick={() => handleCopyCode(technicalExampleCode)}
-                    className="min-h-[44px] min-w-[44px] px-3 rounded-md bg-slate-800 text-slate-200 hover:bg-slate-700 hover:text-white transition-colors flex items-center gap-1.5 text-xs font-medium cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400"
+                    className="min-h-[44px] min-w-[44px] px-3 rounded-lg bg-slate-800 text-slate-200 hover:bg-slate-700 hover:text-white transition-colors flex items-center gap-1.5 text-xs font-medium cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400"
                     aria-label="Copiar código al portapapeles"
                   >
                     {copiedCode ? (
@@ -413,21 +413,21 @@ export const EvaluacionesView: React.FC<EvaluacionesViewProps> = ({
                 </pre>
               </div>
             </div>
-            <div className="pt-3 border-t border-slate-100 text-xs font-medium text-slate-600 text-left">
+            <div className="pt-3 border-t border-slate-200/60 dark:border-slate-800/60 text-xs font-medium text-slate-600 dark:text-slate-400 text-left">
               Demostración práctica · Enfoque computacional y analítico
             </div>
           </article>
 
           {/* Bloque 3: Resumen Clave y Puntos de Retención */}
-          <article className="bg-white border border-slate-200 rounded-xl p-6 sm:p-7 shadow-xs flex flex-col justify-between space-y-4">
+          <article className="card-monday p-6 sm:p-7 flex flex-col justify-between space-y-4">
             <div className="space-y-3">
-              <div className="w-10 h-10 rounded-lg bg-indigo-50 border border-indigo-200 text-indigo-700 flex items-center justify-center shrink-0">
+              <div className="w-10 h-10 rounded-xl bg-indigo-50/80 dark:bg-indigo-950/60 border border-indigo-200/80 dark:border-indigo-800/80 text-indigo-700 dark:text-indigo-300 flex items-center justify-center shrink-0">
                 <Sparkles className="w-5 h-5" />
               </div>
-              <h3 className="text-lg font-bold text-slate-900 text-left">
+              <h3 className="text-lg font-bold text-slate-900 dark:text-white text-left">
                 3. Resumen Clave para Estudio
               </h3>
-              <ul className="space-y-2.5 text-base font-normal text-slate-800 leading-relaxed text-left max-w-prose">
+              <ul className="space-y-2.5 text-base font-normal text-slate-800 dark:text-slate-200 leading-relaxed text-left max-w-prose">
                 <li className="flex items-start gap-2">
                   <span className="w-1.5 h-1.5 rounded-full bg-indigo-600 mt-2.5 shrink-0" />
                   <span>
@@ -481,7 +481,7 @@ export const EvaluacionesView: React.FC<EvaluacionesViewProps> = ({
 
         {/* Tarjeta de Cuestionario de Verificación Interactiva */}
         {activePrueba && currentQuestion ? (
-          <article className="bg-white border border-slate-200 rounded-xl p-6 sm:p-8 shadow-xs space-y-6">
+          <article className="card-monday p-6 sm:p-8 space-y-6">
             <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 pb-4">
               <span className="inline-flex items-center px-3 py-1 rounded-md bg-indigo-50 text-indigo-700 text-xs font-semibold border border-indigo-200">
                 Pregunta {currentQuestionIndex + 1} de {totalQuestions} · Evaluación Activa
@@ -625,19 +625,19 @@ export const EvaluacionesView: React.FC<EvaluacionesViewProps> = ({
             </div>
           </article>
         ) : (
-          <article className="bg-white border border-slate-200 rounded-xl p-8 text-center space-y-4">
+          <article className="card-monday p-8 text-center space-y-4">
             <HelpCircle className="w-12 h-12 text-slate-400 mx-auto" />
-            <h3 className="text-lg font-bold text-slate-900">
+            <h3 className="text-lg font-bold text-slate-900 dark:text-white">
               No hay cuestionario activo para esta obra
             </h3>
-            <p className="text-base font-normal text-slate-700 max-w-prose mx-auto">
+            <p className="text-base font-normal text-slate-700 dark:text-slate-300 max-w-prose mx-auto">
               Presiona el botón de &ldquo;Generar Cuestionario con IA&rdquo; para estructurar automáticamente una prueba de comprensión pedagógica basada en la sinopsis de este título.
             </p>
           </article>
         )}
 
         {/* Zona de Consulta y Ampliación con el Tutor IA (Reserva de espacio Anti-CLS) */}
-        <article className="bg-white border border-slate-200 rounded-xl p-6 sm:p-8 shadow-xs space-y-6">
+        <article className="card-monday p-6 sm:p-8 space-y-6">
           <div className="space-y-1">
             <h3 className="text-lg font-bold text-slate-900 text-left flex items-center gap-2">
               <MessageSquare className="w-5 h-5 text-indigo-600" />

@@ -113,32 +113,32 @@ export const LibroDetalleModal: React.FC<LibroDetalleModalProps> = ({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 p-3 sm:p-6 overflow-y-auto"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 dark:bg-black/65 backdrop-blur-md p-3 sm:p-6 overflow-y-auto"
       role="dialog"
       aria-modal="true"
       aria-labelledby="libro-detalle-title"
     >
-      <div className="w-full max-w-4xl rounded-2xl border border-slate-200 bg-white shadow-xl overflow-hidden my-auto max-h-[92vh] flex flex-col font-sans">
+      <div className="w-full max-w-4xl rounded-2xl glass-modal overflow-hidden my-auto max-h-[92vh] flex flex-col font-sans">
         {/* Cabecera del Modal (oculta en impresión cuando hay prueba activa) */}
-        <div className="no-print flex items-center justify-between border-b border-slate-200 bg-white px-6 py-4 shrink-0 min-h-16">
+        <div className="no-print flex items-center justify-between border-b border-slate-200/60 dark:border-slate-800/60 bg-transparent px-6 py-4 shrink-0 min-h-16">
           <div className="flex items-center gap-2.5">
-            <span className="inline-flex items-center px-3 py-1 rounded-md bg-indigo-50 text-indigo-700 font-semibold text-xs border border-indigo-200">
+            <span className="inline-flex items-center px-3 py-1 rounded-full bg-indigo-50/80 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 font-semibold text-xs border border-indigo-200/80 dark:border-indigo-800/80 shadow-2xs">
               Ficha Bibliográfica · Folio #{libro.id_libro}
             </span>
           </div>
           <button
             type="button"
             onClick={onClose}
-            className="min-h-[44px] min-w-[44px] flex items-center justify-center rounded-lg text-slate-700 hover:bg-slate-100 transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-600"
+            className="min-h-[44px] min-w-[44px] flex items-center justify-center rounded-xl text-slate-700 dark:text-slate-300 hover:bg-white/60 dark:hover:bg-slate-800/60 transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-600"
             aria-label="Cerrar ficha del libro"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
-        <div className="overflow-y-auto p-6 sm:p-8 space-y-8 bg-slate-50">
+        <div className="overflow-y-auto p-6 sm:p-8 space-y-8 bg-transparent">
           {/* Bloque principal de ficha (oculto al imprimir si se imprime evaluación) */}
-          <div className={`bg-white border border-slate-200 rounded-xl p-6 sm:p-8 shadow-xs ${activePrueba ? 'no-print' : ''}`}>
+          <div className={`card-monday p-6 sm:p-8 ${activePrueba ? 'no-print' : ''}`}>
             <div className="grid grid-cols-1 md:grid-cols-[220px_1fr] gap-6 items-start">
               <div className="mx-auto md:mx-0 w-48 md:w-full">
                 <BookCover libro={libro} size="lg" />
@@ -146,7 +146,7 @@ export const LibroDetalleModal: React.FC<LibroDetalleModalProps> = ({
 
               <div className="space-y-4">
                 <div>
-                  <span className="inline-flex items-center px-2.5 py-1 rounded-md bg-indigo-50 text-indigo-700 font-semibold text-xs border border-indigo-200">
+                  <span className="inline-flex items-center px-2.5 py-1 rounded-full bg-indigo-50/80 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 font-semibold text-xs border border-indigo-200/80 dark:border-indigo-800/80 shadow-2xs">
                     {libro.categoria}
                     {categoriaMeta ? ` · CDU ${categoriaMeta.codigo_archivo}` : ''}
                   </span>
@@ -255,7 +255,7 @@ export const LibroDetalleModal: React.FC<LibroDetalleModalProps> = ({
 
           {/* Módulo Pedagógico IA (Solo DOCENTE o ADMIN) */}
           {canManageTests && (
-            <div className="bg-white border border-slate-200 rounded-xl p-6 sm:p-8 shadow-xs space-y-6">
+            <div className="card-monday p-6 sm:p-8 space-y-6">
               <div className="no-print flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div className="space-y-1">
                   <h3 className="text-xl font-bold text-slate-900 text-left">

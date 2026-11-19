@@ -149,61 +149,61 @@ export const CatalogoView: React.FC<CatalogoViewProps> = ({
 
   return (
     <div className="space-y-10">
-      {/* Hero Visual Monday.com White Workshop Canvas con Búsqueda Integrada */}
-      <section className="relative overflow-hidden card-monday bg-[#ffffff] p-8 sm:p-10 lg:p-12">
-        {/* Soft pastel decorative gradient wash */}
+      {/* Hero Visual Glass Canvas con Búsqueda Integrada */}
+      <section className="relative overflow-hidden card-monday p-8 sm:p-10 lg:p-12">
+        {/* Soft subtle ambient glow */}
         <div
-          className="absolute -top-24 -right-24 w-96 h-96 rounded-full bg-[#abf0ff]/25 blur-3xl pointer-events-none"
+          className="absolute -top-24 -right-24 w-96 h-96 rounded-full bg-indigo-300/15 dark:bg-indigo-600/10 blur-3xl pointer-events-none"
           aria-hidden="true"
         />
         <div
-          className="absolute -bottom-24 -left-24 w-96 h-96 rounded-full bg-[#eddff7]/35 blur-3xl pointer-events-none"
+          className="absolute -bottom-24 -left-24 w-96 h-96 rounded-full bg-sky-300/15 dark:bg-sky-600/10 blur-3xl pointer-events-none"
           aria-hidden="true"
         />
 
         <div className="relative z-10 space-y-8">
           <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
             <div className="max-w-2xl">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-[6px] bg-[#e7ecff] text-[#6161ff] text-xs font-semibold uppercase tracking-wider mb-3">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-50/80 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 text-xs font-semibold uppercase tracking-wider mb-3 border border-indigo-200/80 dark:border-indigo-800/80 shadow-2xs">
                 <Sparkles className="w-3.5 h-3.5" />
                 <span>Acervo Bibliográfico Inteligente</span>
               </div>
-              <h1 className="font-bold text-3xl sm:text-4xl lg:text-[2.75rem] tracking-[-0.03em] leading-[1.15] text-slate-900 text-balance">
+              <h1 className="font-bold text-3xl sm:text-4xl lg:text-[2.75rem] tracking-[-0.03em] leading-[1.15] text-slate-900 dark:text-white text-balance">
                 Explora la colección con{' '}
-                <span className="text-indigo-600 font-bold">inteligencia artificial</span>
+                <span className="text-indigo-600 dark:text-indigo-400 font-bold">inteligencia artificial</span>
               </h1>
-              <p className="mt-3 text-base font-normal text-slate-700 leading-relaxed max-w-xl">
+              <p className="mt-3 text-base font-normal text-slate-700 dark:text-slate-300 leading-relaxed max-w-xl">
                 Descubre obras por temática o lenguaje natural y consulta la disponibilidad física en sala al instante.
               </p>
             </div>
 
-            {/* Metric counters monday pill style */}
+            {/* Metric counters glass pill style */}
             <div className="flex items-center gap-3 sm:gap-4 shrink-0 flex-wrap">
-              <div className="flex items-center gap-3 px-4 py-2.5 rounded-2xl bg-[#f5f6f8] border border-[#dddfeb]">
-                <div className="w-2.5 h-2.5 rounded-full bg-[#6161ff]" />
+              <div className="flex items-center gap-3 px-4 py-2.5 rounded-2xl bg-white/60 dark:bg-slate-800/50 backdrop-blur-md border border-slate-200/70 dark:border-slate-700/60 shadow-2xs">
+                <div className="w-2.5 h-2.5 rounded-full bg-indigo-600 shrink-0" />
                 <div>
-                  <div className="text-[11px] font-medium text-[#535768]">Obras</div>
-                  <div className="font-mono text-xl font-bold tabular-nums text-[#333333]">
+                  <div className="text-[11px] font-medium text-slate-600 dark:text-slate-400">Obras</div>
+                  <div className="font-mono text-xl font-bold tabular-nums text-slate-900 dark:text-white">
                     {libros.length}
                   </div>
                 </div>
               </div>
 
-              <div className="flex items-center gap-3 px-4 py-2.5 rounded-2xl bg-[#f5f6f8] border border-[#dddfeb]">
-                <div className="w-2.5 h-2.5 rounded-full bg-[#abf0ff]" />
+              <div className="flex items-center gap-3 px-4 py-2.5 rounded-2xl bg-white/60 dark:bg-slate-800/50 backdrop-blur-md border border-slate-200/70 dark:border-slate-700/60 shadow-2xs">
+                <div className="w-2.5 h-2.5 rounded-full bg-sky-500 shrink-0" />
                 <div>
-                  <div className="text-[11px] font-medium text-[#535768]">Colecciones</div>
-                  <div className="font-mono text-xl font-bold tabular-nums text-[#333333]">
+                  <div className="text-[11px] font-medium text-slate-600 dark:text-slate-400">Colecciones</div>
+                  <div className="font-mono text-xl font-bold tabular-nums text-slate-900 dark:text-white">
                     {categorias.length}
                   </div>
                 </div>
               </div>
 
-              <div className="flex items-center gap-3 px-4 py-2.5 rounded-2xl bg-[#f5f6f8] border border-[#dddfeb]">
-                <div className="w-2.5 h-2.5 rounded-full bg-[#bcfe90]" />
+              <div className="flex items-center gap-3 px-4 py-2.5 rounded-2xl bg-white/60 dark:bg-slate-800/50 backdrop-blur-md border border-slate-200/70 dark:border-slate-700/60 shadow-2xs">
+                <div className="w-2.5 h-2.5 rounded-full bg-emerald-500 shrink-0" />
                 <div>
-                  <div className="text-[11px] font-medium text-[#535768]">Disponibles</div>
-                  <div className="font-mono text-xl font-bold tabular-nums text-[#2a5c4e]">
+                  <div className="text-[11px] font-medium text-slate-600 dark:text-slate-400">Disponibles</div>
+                  <div className="font-mono text-xl font-bold tabular-nums text-emerald-700 dark:text-emerald-400">
                     {disponiblesEnSala}
                   </div>
                 </div>
@@ -211,24 +211,24 @@ export const CatalogoView: React.FC<CatalogoViewProps> = ({
             </div>
           </div>
 
-          {/* Monday AI Prompt Search Card */}
+          {/* AI Prompt Search Card */}
           <form onSubmit={handleFormSubmit} className="pt-2">
-            <div className="flex flex-col md:flex-row gap-2.5 rounded-[160px] bg-[#ffffff] border border-[#dddfeb] p-2 shadow-sm focus-within:border-[#6161ff] focus-within:ring-3 focus-within:ring-[#6161ff]/15 transition-all">
+            <div className="flex flex-col md:flex-row gap-2.5 rounded-[160px] bg-white/70 dark:bg-slate-800/60 backdrop-blur-md border border-slate-200/80 dark:border-slate-700/70 p-2 shadow-xs focus-within:border-indigo-500 focus-within:ring-2 focus-within:ring-indigo-500/15 transition-all">
               <div className="relative flex-1 flex items-center">
-                <Search className="w-4 h-4 text-[#808080] absolute left-4 pointer-events-none" />
+                <Search className="w-4 h-4 text-slate-500 dark:text-slate-400 absolute left-4 pointer-events-none" />
                 <input
                   type="text"
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
                   placeholder="Busca por título, autor o temática conceptual (ej. distopías tecnológicas, cosmos, filosofía)..."
                   aria-label="Buscar libros por tema, título, autor o ISBN"
-                  className="w-full bg-transparent pl-11 pr-4 py-2.5 text-sm text-[#333333] placeholder:text-[#808080] focus:outline-none"
+                  className="w-full bg-transparent pl-11 pr-4 py-2.5 text-sm text-slate-900 dark:text-slate-100 placeholder:text-slate-500 dark:placeholder:text-slate-400 focus:outline-none"
                 />
               </div>
 
               <div className="flex items-center gap-2 shrink-0 flex-wrap px-2 pb-1 md:p-0">
                 <div
-                  className="inline-flex rounded-[160px] bg-[#f5f6f8] p-1 border border-[#dddfeb]"
+                  className="inline-flex rounded-[160px] bg-white/50 dark:bg-slate-900/50 backdrop-blur-xs p-1 border border-slate-200/60 dark:border-slate-800/60"
                   role="group"
                   aria-label="Modo de búsqueda"
                 >
@@ -237,8 +237,8 @@ export const CatalogoView: React.FC<CatalogoViewProps> = ({
                     onClick={() => setUseIa(true)}
                     className={`inline-flex items-center gap-1.5 rounded-[160px] px-3.5 py-1.5 text-xs font-semibold transition-all whitespace-nowrap shrink-0 cursor-pointer ${
                       useIa
-                        ? 'bg-[#6161ff] text-white shadow-xs'
-                        : 'text-[#535768] hover:text-[#333333]'
+                        ? 'bg-indigo-600 text-white shadow-xs'
+                        : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
                     }`}
                   >
                     <Sparkles className="w-3.5 h-3.5" />
@@ -249,8 +249,8 @@ export const CatalogoView: React.FC<CatalogoViewProps> = ({
                     onClick={() => setUseIa(false)}
                     className={`rounded-[160px] px-3.5 py-1.5 text-xs font-semibold transition-all whitespace-nowrap shrink-0 cursor-pointer ${
                       !useIa
-                        ? 'bg-[#ffffff] text-[#333333] shadow-xs'
-                        : 'text-[#535768] hover:text-[#333333]'
+                        ? 'bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-xs'
+                        : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
                     }`}
                   >
                     Local
@@ -430,7 +430,7 @@ export const CatalogoView: React.FC<CatalogoViewProps> = ({
 
         <div className="flex flex-wrap items-center gap-2.5">
           <div
-            className="inline-flex rounded-[160px] border border-[#dddfeb] bg-[#ffffff] p-1 shadow-2xs"
+            className="inline-flex rounded-[160px] border border-slate-200/80 dark:border-slate-700/70 bg-white/60 dark:bg-slate-800/60 backdrop-blur-md p-1 shadow-2xs"
             role="group"
             aria-label="Filtrar por disponibilidad"
           >
@@ -439,8 +439,8 @@ export const CatalogoView: React.FC<CatalogoViewProps> = ({
               onClick={() => setAvailabilityFilter('all')}
               className={`rounded-[160px] px-3.5 py-1 text-xs font-medium transition-all whitespace-nowrap cursor-pointer ${
                 availabilityFilter === 'all'
-                  ? 'bg-[#6161ff] text-white shadow-xs font-semibold'
-                  : 'text-[#535768] hover:text-[#333333]'
+                  ? 'bg-indigo-600 text-white shadow-xs font-semibold'
+                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
               }`}
             >
               Todos
@@ -450,8 +450,8 @@ export const CatalogoView: React.FC<CatalogoViewProps> = ({
               onClick={() => setAvailabilityFilter('available')}
               className={`rounded-[160px] px-3.5 py-1 text-xs font-medium transition-all whitespace-nowrap cursor-pointer ${
                 availabilityFilter === 'available'
-                  ? 'bg-[#6161ff] text-white shadow-xs font-semibold'
-                  : 'text-[#535768] hover:text-[#333333]'
+                  ? 'bg-indigo-600 text-white shadow-xs font-semibold'
+                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
               }`}
             >
               Solo disponibles
@@ -462,7 +462,7 @@ export const CatalogoView: React.FC<CatalogoViewProps> = ({
             aria-label="Ordenar catálogo"
             value={sortBy}
             onChange={(e) => setSortBy(e.target.value as CatalogSortBy)}
-            className="rounded-[6px] border border-[#dddfeb] bg-[#ffffff] px-3 py-1.5 text-xs font-medium text-[#333333] focus:border-[#6161ff] focus:outline-none cursor-pointer shadow-2xs"
+            className="rounded-xl border border-slate-200/80 dark:border-slate-700/70 bg-white/60 dark:bg-slate-800/60 backdrop-blur-md px-3 py-1.5 text-xs font-medium text-slate-800 dark:text-slate-200 focus:border-indigo-500 focus:outline-none cursor-pointer shadow-2xs"
           >
             <option value="recent">Orden: Recientes</option>
             <option value="title">Orden: Título (A–Z)</option>

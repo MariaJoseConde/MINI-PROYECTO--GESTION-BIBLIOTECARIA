@@ -399,21 +399,21 @@ export const AdminView: React.FC<AdminViewProps> = ({
 
   return (
     <div className="space-y-8">
-      <div className="card-monday bg-[#ffffff] p-8 flex flex-col xl:flex-row xl:items-end justify-between gap-6">
+      <div className="card-monday p-8 flex flex-col xl:flex-row xl:items-end justify-between gap-6">
         <div>
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-[6px] bg-[#e7ecff] text-[#6161ff] text-xs font-semibold uppercase tracking-wider mb-2.5">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-indigo-50/80 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 text-xs font-semibold uppercase tracking-wider mb-2.5 border border-indigo-200/80 dark:border-indigo-800/80 shadow-2xs">
             <ShieldCheck className="w-3.5 h-3.5" />
             <span>Consola de Administración</span>
           </div>
-          <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-slate-900 text-balance">
-            Gestión de <span className="text-indigo-600 font-bold">inventario, roles y sistema</span>
+          <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-slate-900 dark:text-white text-balance">
+            Gestión de <span className="text-indigo-600 dark:text-indigo-400 font-bold">inventario, roles y sistema</span>
           </h1>
-          <p className="mt-2 text-sm text-[#535768]">
+          <p className="mt-2 text-sm text-slate-700 dark:text-slate-300">
             Administración centralizada de títulos, clasificaciones CDU, permisos RBAC, infraestructura y auditoría transaccional.
           </p>
         </div>
 
-        <div className="inline-flex flex-wrap rounded-[160px] border border-[#dddfeb] bg-[#f5f6f8] p-1 shadow-2xs self-start">
+        <div className="inline-flex flex-wrap rounded-[160px] border border-slate-200/80 dark:border-slate-700/70 bg-white/60 dark:bg-slate-800/60 backdrop-blur-md p-1 shadow-2xs self-start">
           {(
             [
               ['inventario', 'Catálogo'],

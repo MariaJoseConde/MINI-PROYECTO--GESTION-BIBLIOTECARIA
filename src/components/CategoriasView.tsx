@@ -24,28 +24,28 @@ export const CategoriasView: React.FC<CategoriasViewProps> = ({
 }) => {
   return (
     <div className="space-y-8">
-      <div className="card-monday bg-[#ffffff] p-8 flex flex-col sm:flex-row sm:items-end justify-between gap-6">
+      <div className="card-monday p-8 flex flex-col sm:flex-row sm:items-end justify-between gap-6">
         <div className="max-w-2xl">
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-[6px] bg-[#e7ecff] text-[#6161ff] text-xs font-semibold uppercase tracking-wider mb-2.5">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-indigo-50/80 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 text-xs font-semibold uppercase tracking-wider mb-2.5 border border-indigo-200/80 dark:border-indigo-800/80 shadow-2xs">
             <span>Clasificación Temática</span>
           </div>
-          <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-slate-900 text-balance">
-            Categorías y <span className="text-indigo-600 font-bold">colecciones bibliográficas</span>
+          <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-slate-900 dark:text-white text-balance">
+            Categorías y <span className="text-indigo-600 dark:text-indigo-400 font-bold">colecciones bibliográficas</span>
           </h1>
-          <p className="mt-2.5 text-sm text-[#535768] leading-relaxed">
+          <p className="mt-2.5 text-sm text-slate-700 dark:text-slate-300 leading-relaxed">
             Explora la descripción curatorial, ubicación física en sala, público recomendado y enfoque de lectura de cada colección del catálogo.
           </p>
         </div>
 
-        <div className="badge-monday bg-[#dbdbff] text-[#6161ff] font-medium text-xs px-3 py-1.5 shrink-0">
+        <div className="badge-monday bg-indigo-50/80 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 font-medium text-xs px-3 py-1.5 shrink-0">
           {categorias.length} colecciones catalogadas
         </div>
       </div>
 
       {categorias.length === 0 ? (
-        <div className="card-monday bg-[#ffffff] p-12 text-center">
-          <BookOpen className="w-8 h-8 text-[#808080] mx-auto mb-2.5" />
-          <p className="text-sm font-semibold text-[#333333]">
+        <div className="card-monday p-12 text-center">
+          <BookOpen className="w-8 h-8 text-slate-400 mx-auto mb-2.5" />
+          <p className="text-sm font-semibold text-slate-800 dark:text-slate-200">
             No hay categorías registradas
           </p>
         </div>
@@ -63,10 +63,10 @@ export const CategoriasView: React.FC<CategoriasViewProps> = ({
                 initial={{ opacity: 0, y: 8 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.18, delay: Math.min(idx * 0.025, 0.15) }}
-                className="group card-monday bg-[#ffffff] overflow-hidden flex flex-col justify-between"
+                className="group card-monday overflow-hidden flex flex-col justify-between"
               >
                 <div>
-                  <div className="relative h-44 bg-[#f5f6f8] overflow-hidden rounded-t-[23px]">
+                  <div className="relative h-44 bg-slate-100 dark:bg-slate-800 overflow-hidden rounded-t-[15px]">
                     <img
                       src={bannerImg}
                       alt={cat.nombre}
@@ -81,39 +81,39 @@ export const CategoriasView: React.FC<CategoriasViewProps> = ({
                       <h2 className="text-xl font-bold leading-tight">
                         {cat.nombre}
                       </h2>
-                      <span className="badge-monday bg-[#ffffff]/90 text-[#333333] font-mono text-xs tabular-nums shrink-0">
+                      <span className="badge-monday bg-white/90 text-slate-900 font-mono text-xs tabular-nums shrink-0">
                         CDU {cat.codigo_archivo}
                       </span>
                     </div>
                   </div>
 
                   <div className="p-6 space-y-4">
-                    <p className="text-sm text-[#535768] leading-relaxed">
+                    <p className="text-sm text-slate-700 dark:text-slate-300 leading-relaxed">
                       {cat.descripcion}
                     </p>
 
-                    <dl className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 pt-4 border-t border-[#f5f6f8] text-xs">
-                      <div className="p-3 rounded-xl bg-[#f5f6f8]">
-                        <dt className="flex items-center gap-1.5 text-[#535768] font-medium">
-                          <MapPin className="w-3.5 h-3.5 text-[#6161ff] shrink-0" />
+                    <dl className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 pt-4 border-t border-slate-200/60 dark:border-slate-800/60 text-xs">
+                      <div className="p-3 rounded-xl bg-white/50 dark:bg-slate-800/40 border border-slate-200/50 dark:border-slate-700/50 backdrop-blur-xs">
+                        <dt className="flex items-center gap-1.5 text-slate-600 dark:text-slate-400 font-medium">
+                          <MapPin className="w-3.5 h-3.5 text-indigo-600 dark:text-indigo-400 shrink-0" />
                           Ubicación física
                         </dt>
-                        <dd className="mt-1 font-mono text-[#333333] font-medium">
+                        <dd className="mt-1 font-mono text-slate-900 dark:text-slate-100 font-medium">
                           {cat.ubicacion_sala}
                         </dd>
                       </div>
-                      <div className="p-3 rounded-xl bg-[#f5f6f8]">
-                        <dt className="flex items-center gap-1.5 text-[#535768] font-medium">
-                          <Users className="w-3.5 h-3.5 text-[#6161ff] shrink-0" />
+                      <div className="p-3 rounded-xl bg-white/50 dark:bg-slate-800/40 border border-slate-200/50 dark:border-slate-700/50 backdrop-blur-xs">
+                        <dt className="flex items-center gap-1.5 text-slate-600 dark:text-slate-400 font-medium">
+                          <Users className="w-3.5 h-3.5 text-indigo-600 dark:text-indigo-400 shrink-0" />
                           Público recomendado
                         </dt>
-                        <dd className="mt-1 font-medium text-[#333333]">
+                        <dd className="mt-1 font-medium text-slate-900 dark:text-slate-100">
                           {cat.publico_recomendado}
                         </dd>
                       </div>
-                      <div className="sm:col-span-2 p-3 rounded-xl bg-[#f5f6f8]">
-                        <dt className="text-[#535768] font-medium">Enfoque de lectura</dt>
-                        <dd className="mt-1 font-medium text-[#333333]">
+                      <div className="sm:col-span-2 p-3 rounded-xl bg-white/50 dark:bg-slate-800/40 border border-slate-200/50 dark:border-slate-700/50 backdrop-blur-xs">
+                        <dt className="text-slate-600 dark:text-slate-400 font-medium">Enfoque de lectura</dt>
+                        <dd className="mt-1 font-medium text-slate-900 dark:text-slate-100">
                           {cat.enfoque_lector}
                         </dd>
                       </div>

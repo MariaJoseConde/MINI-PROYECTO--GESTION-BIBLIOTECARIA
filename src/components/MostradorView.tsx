@@ -236,7 +236,7 @@ export const MostradorView: React.FC<MostradorViewProps> = ({
   return (
     <div className="space-y-8">
       {/* Encabezado de Mostrador */}
-      <div className="no-print card-monday bg-[#ffffff] p-8 flex flex-col sm:flex-row sm:items-end justify-between gap-6">
+      <div className="no-print card-monday p-8 flex flex-col sm:flex-row sm:items-end justify-between gap-6">
         <div>
           <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-[6px] bg-[#e7ecff] text-[#6161ff] text-xs font-semibold uppercase tracking-wider mb-2.5">
             <ArrowRightLeft className="w-3.5 h-3.5" />
