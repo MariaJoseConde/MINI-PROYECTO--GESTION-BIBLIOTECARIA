@@ -113,7 +113,7 @@ async function startServer() {
   }
 
   const server = app.listen(PORT, '0.0.0.0', () => {
-    console.log(`SGBI server running on http://0.0.0.0:${PORT}`);
+    console.log(`SGBI server running on http://localhost:${PORT} (or http://127.0.0.1:${PORT})`);
   });
 
   const gracefulShutdown = (signal: string) => {

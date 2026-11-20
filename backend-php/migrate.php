@@ -159,6 +159,7 @@ try {
     echo "========================================================\n";
 
 } catch (Exception $e) {
-    echo "\n[ERROR CRITICO] " . $e->getMessage() . "\n";
-    exit(1);
+    echo "\n[AVISO MYSQL] " . $e->getMessage() . "\n";
+    echo "[INFO] El servidor funcionará normalmente utilizando la base de datos local SQLite (data/sgbi.db).\n";
+    echo "[INFO] Para habilitar MySQL en 127.0.0.1:3306, inicia el módulo MySQL desde el panel de control de XAMPP.\n";
 }

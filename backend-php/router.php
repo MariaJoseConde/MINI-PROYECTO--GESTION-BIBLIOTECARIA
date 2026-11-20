@@ -209,9 +209,16 @@ if (str_starts_with($uri, '/api')) {
 }
 
 // ---------------------------------------------------------------------
-// 2. Servir recursos estáticos compilados desde dist/
+// 2. Servir recursos estáticos compilados desde dist/ o public/
 // ---------------------------------------------------------------------
 $targetFile = $distPath . $uri;
+if (!file_exists($targetFile) || is_dir($targetFile)) {
+    $publicCandidate = $rootPath . '/public' . $uri;
+    if (file_exists($publicCandidate) && !is_dir($publicCandidate)) {
+        $targetFile = $publicCandidate;
+    }
+}
+
 if ($uri !== '/' && file_exists($targetFile) && !is_dir($targetFile)) {
     $ext = strtolower(pathinfo($targetFile, PATHINFO_EXTENSION));
     $mimes = [
@@ -222,6 +229,7 @@ if ($uri !== '/' && file_exists($targetFile) && !is_dir($targetFile)) {
         'png' => 'image/png',
         'jpg' => 'image/jpeg',
         'jpeg' => 'image/jpeg',
+        'webp' => 'image/webp',
         'svg' => 'image/svg+xml',
         'ico' => 'image/x-icon',
         'woff' => 'font/woff',
@@ -232,6 +240,8 @@ if ($uri !== '/' && file_exists($targetFile) && !is_dir($targetFile)) {
         header("Content-Type: {$mimes[$ext]}");
     }
     header('Cache-Control: public, max-age=31536000');
+    header('X-Content-Type-Options: nosniff');
+    header('X-Frame-Options: SAMEORIGIN');
     readfile($targetFile);
     exit;
 }
@@ -242,6 +252,9 @@ if ($uri !== '/' && file_exists($targetFile) && !is_dir($targetFile)) {
 $indexFile = file_exists($distPath . '/index.html') ? $distPath . '/index.html' : $rootPath . '/index.html';
 if (file_exists($indexFile)) {
     header('Content-Type: text/html; charset=utf-8');
+    header('X-Content-Type-Options: nosniff');
+    header('X-Frame-Options: SAMEORIGIN');
+    header('Referrer-Policy: strict-origin-when-cross-origin');
     readfile($indexFile);
     exit;
 }

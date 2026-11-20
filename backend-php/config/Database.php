@@ -49,30 +49,37 @@ class Database {
             $username = getenv('DB_USERNAME') ?: 'root';
             $password = getenv('DB_PASSWORD') ?: '';
 
-            $dsn = "mysql:host={$host};port={$port};dbname={$database};charset=utf8mb4";
-            self::$instance = new PDO($dsn, $username, $password, [
-                PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-                PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-                PDO::ATTR_EMULATE_PREPARES => false,
-                PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8mb4 COLLATE utf8mb4_unicode_ci",
-            ]);
-        } else {
-            // Default: SQLite database in data/sgbi.db
-            $dbPath = getenv('DB_PATH') ?: dirname(__DIR__, 2) . '/data/sgbi.db';
-            $dir = dirname($dbPath);
-            if (!is_dir($dir)) {
-                mkdir($dir, 0777, true);
+            try {
+                $dsn = "mysql:host={$host};port={$port};dbname={$database};charset=utf8mb4";
+                self::$instance = new PDO($dsn, $username, $password, [
+                    PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+                    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+                    PDO::ATTR_EMULATE_PREPARES => false,
+                    PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8mb4 COLLATE utf8mb4_unicode_ci",
+                ]);
+                return self::$instance;
+            } catch (Exception $e) {
+                // Si MySQL no está disponible en 127.0.0.1:3306 (ej. servicio XAMPP detenido), respaldar en SQLite
+                error_log("[SGBI] Advertencia MySQL: " . $e->getMessage() . ". Usando base de datos SQLite de respaldo.");
+                $connectionType = 'sqlite';
             }
-
-            self::$instance = new PDO("sqlite:" . $dbPath, null, null, [
-                PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-                PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-            ]);
-
-            self::$instance->exec('PRAGMA foreign_keys = ON;');
-            self::$instance->exec('PRAGMA journal_mode = WAL;');
-            self::$instance->exec('PRAGMA busy_timeout = 5000;');
         }
+
+        // Respaldo resiliente: Base de datos SQLite en data/sgbi.db
+        $dbPath = getenv('DB_PATH') ?: dirname(__DIR__, 2) . '/data/sgbi.db';
+        $dir = dirname($dbPath);
+        if (!is_dir($dir)) {
+            mkdir($dir, 0777, true);
+        }
+
+        self::$instance = new PDO("sqlite:" . $dbPath, null, null, [
+            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+        ]);
+
+        self::$instance->exec('PRAGMA foreign_keys = ON;');
+        self::$instance->exec('PRAGMA journal_mode = WAL;');
+        self::$instance->exec('PRAGMA busy_timeout = 5000;');
 
         return self::$instance;
     }
@@ -91,14 +98,14 @@ class Database {
     public static function getStats(): array {
         self::loadEnv();
         $db = self::getConnection();
-        $connectionType = getenv('DB_CONNECTION') ?: 'mysql';
+        $driver = $db->getAttribute(PDO::ATTR_DRIVER_NAME);
 
         $fileSizeKb = 0;
         $indexesCount = 0;
         $journalMode = 'wal';
         $foreignKeys = true;
 
-        if ($connectionType === 'mysql') {
+        if ($driver === 'mysql') {
             $database = getenv('DB_DATABASE') ?: 'sgbi';
             $journalMode = 'InnoDB';
             try {

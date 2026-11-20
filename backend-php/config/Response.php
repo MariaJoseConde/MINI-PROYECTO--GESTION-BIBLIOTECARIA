@@ -21,6 +21,10 @@ class Response {
         header("Vary: Origin");
         header("X-API-Version: 1.0");
         header("X-Request-Id: " . self::getRequestId());
+        // Cabeceras de seguridad para contexto de navegación confiable (W3C / RFC 6761)
+        header("X-Content-Type-Options: nosniff");
+        header("X-Frame-Options: SAMEORIGIN");
+        header("Referrer-Policy: strict-origin-when-cross-origin");
 
         if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'OPTIONS') {
             http_response_code(204);
