@@ -132,10 +132,15 @@ export const MisPrestamosView: React.FC<MisPrestamosViewProps> = ({ user }) => {
               Historial de Devoluciones ({historial.length})
             </h2>
           </div>
-          <div className="overflow-x-auto">
+          <div
+            className="table-accessible-wrapper w-full focus:outline-none"
+            tabIndex={0}
+            role="region"
+            aria-label="Historial de préstamos y devoluciones del lector"
+          >
             <table className="w-full text-left border-collapse text-xs">
               <thead>
-                <tr className="border-b border-[#d0d4e4] bg-[#f5f6f8] text-[#535768] uppercase tracking-wider text-[11px] font-semibold">
+                <tr className="border-b border-slate-200/80 dark:border-slate-800/80 bg-slate-100/60 dark:bg-slate-800/60 text-slate-700 dark:text-slate-300 uppercase tracking-wider text-[11px] font-semibold">
                   <th className="py-3 px-6">Folio</th>
                   <th className="py-3 px-6">Libro</th>
                   <th className="py-3 px-6">Préstamo</th>

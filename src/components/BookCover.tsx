@@ -33,6 +33,8 @@ export const BookCover: React.FC<BookCoverProps> = ({ libro, size = 'md' }) => {
           <img
             src={coverSrc}
             alt=""
+            loading="lazy"
+            decoding="async"
             referrerPolicy="no-referrer"
             onError={() => setImgFailed(true)}
             className="absolute inset-0 w-full h-full object-cover scale-105"
@@ -57,6 +59,8 @@ export const BookCover: React.FC<BookCoverProps> = ({ libro, size = 'md' }) => {
           <img
             src={coverSrc}
             alt={`Portada editorial de ${libro.titulo}`}
+            loading="lazy"
+            decoding="async"
             referrerPolicy="no-referrer"
             onError={() => setImgFailed(true)}
             className="w-full h-full object-cover scale-[1.04] transition-transform duration-500 ease-out group-hover:scale-[1.09]"
@@ -106,6 +110,8 @@ export const BookCover: React.FC<BookCoverProps> = ({ libro, size = 'md' }) => {
         <img
           src={coverSrc}
           alt={`Cubierta de ${libro.titulo}`}
+          loading="lazy"
+          decoding="async"
           referrerPolicy="no-referrer"
           onError={() => setImgFailed(true)}
           className="absolute inset-0 w-full h-full object-cover scale-[1.04]"

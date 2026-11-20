@@ -70,6 +70,8 @@ export const CategoriasView: React.FC<CategoriasViewProps> = ({
                     <img
                       src={bannerImg}
                       alt={cat.nombre}
+                      loading="lazy"
+                      decoding="async"
                       referrerPolicy="no-referrer"
                       className="w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-105"
                     />

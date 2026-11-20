@@ -553,10 +553,15 @@ export const MostradorView: React.FC<MostradorViewProps> = ({
             </p>
           </div>
         ) : (
-          <div className="overflow-x-auto">
+          <div
+            className="table-accessible-wrapper w-full focus:outline-none"
+            tabIndex={0}
+            role="region"
+            aria-label="Historial y registros de préstamos de libros"
+          >
             <table className="w-full text-left border-collapse">
               <thead>
-                <tr className="border-b border-[#d0d4e4] bg-[#f5f6f8] text-[11px] font-semibold uppercase tracking-wider text-[#535768]">
+                <tr className="border-b border-slate-200/80 dark:border-slate-800/80 bg-slate-100/60 dark:bg-slate-800/60 text-[11px] font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300">
                   <th className="py-3 px-5">Folio</th>
                   <th className="py-3 px-5">Lector</th>
                   <th className="py-3 px-5">Ejemplar</th>
@@ -652,7 +657,7 @@ export const MostradorView: React.FC<MostradorViewProps> = ({
           aria-modal="true"
           aria-labelledby="ticket-title"
         >
-          <div className="w-full max-w-md rounded-[24px] border border-[#d0d4e4] bg-[#ffffff] shadow-[0px_5px_45px_rgba(0,0,0,0.25)] overflow-hidden">
+          <div className="w-full max-w-md glass-modal rounded-[24px] border border-slate-200/90 dark:border-slate-700/80 shadow-2xl overflow-hidden max-h-[90vh] flex flex-col">
             <div className="no-print flex items-center justify-between border-b border-[#d0d4e4] bg-[#ffffff] px-6 py-4">
               <div className="flex items-center gap-2">
                 <span className="badge-monday bg-[#bcfe90] text-[#2a5c4e] font-semibold text-xs">

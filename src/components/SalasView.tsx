@@ -225,6 +225,8 @@ export const SalasView: React.FC<SalasViewProps> = ({
             <img
               src={LIBRARY_MEDIA.planoSalas}
               alt="Plano arquitectónico isométrico de las salas y pasillos de la biblioteca"
+              loading="lazy"
+              decoding="async"
               referrerPolicy="no-referrer"
               onError={() => setPlanImgFailed(true)}
               className="w-full h-full object-cover object-center"

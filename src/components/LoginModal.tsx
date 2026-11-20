@@ -84,7 +84,7 @@ export const LoginModal: React.FC<LoginModalProps> = ({ open, onClose, onSuccess
       aria-modal="true"
       aria-labelledby="login-modal-title"
     >
-      <div className="w-full max-w-lg rounded-[24px] glass-modal overflow-hidden">
+      <div className="w-full max-w-lg rounded-[24px] glass-modal overflow-hidden max-h-[92vh] overflow-y-auto">
         <div className="flex items-center justify-between border-b border-slate-200/60 dark:border-slate-800/60 px-6 py-4.5 bg-transparent">
           <div className="flex items-center gap-3">
             <div className="prism-mark-circle w-7 h-7 flex items-center justify-center shrink-0">
@@ -100,10 +100,10 @@ export const LoginModal: React.FC<LoginModalProps> = ({ open, onClose, onSuccess
           <button
             type="button"
             onClick={onClose}
-            className="w-8 h-8 rounded-full flex items-center justify-center text-slate-600 dark:text-slate-400 hover:bg-white/60 dark:hover:bg-slate-800/60 hover:text-slate-900 dark:hover:text-white transition-colors cursor-pointer"
-            aria-label="Cerrar ventana"
+            className="min-h-[44px] min-w-[44px] rounded-xl flex items-center justify-center text-slate-600 dark:text-slate-400 hover:bg-white/60 dark:hover:bg-slate-800/60 hover:text-slate-900 dark:text-white transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-600"
+            aria-label="Cerrar ventana de inicio de sesión"
           >
-            <X className="w-4 h-4" />
+            <X className="w-5 h-5" />
           </button>
         </div>
 

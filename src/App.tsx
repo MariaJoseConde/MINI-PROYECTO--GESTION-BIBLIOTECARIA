@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { Suspense, lazy, useCallback, useEffect, useRef, useState } from 'react';
 import {
   ArrowRightLeft,
   BookOpen,
@@ -21,19 +21,38 @@ import {
   X,
 } from 'lucide-react';
 import { AnimatePresence, MotionConfig, motion } from 'motion/react';
-import { AdminView } from './components/AdminView.tsx';
+import { AccessibilityMenu } from './components/AccessibilityMenu.tsx';
 import { CatalogoView } from './components/CatalogoView.tsx';
-import { CategoriasView } from './components/CategoriasView.tsx';
 import { ErrorBoundary } from './components/ErrorBoundary.tsx';
-import { EvaluacionesView } from './components/EvaluacionesView.tsx';
-import { LibroDetalleModal } from './components/LibroDetalleModal.tsx';
-import { LoginModal } from './components/LoginModal.tsx';
-import { MisPrestamosView } from './components/MisPrestamosView.tsx';
-import { MostradorView } from './components/MostradorView.tsx';
-import { SalasView } from './components/SalasView.tsx';
 import { ToastBanner, type ToastMessage } from './components/ToastBanner.tsx';
 import { apiClient } from './lib/apiClient.ts';
 import type { Categoria, Libro, Usuario } from './types/sgbi.ts';
+
+// Carga perezosa (Lazy loading) de vistas pesadas para optimizar la carga en la intranet
+const AdminView = lazy(() =>
+  import('./components/AdminView.tsx').then((m) => ({ default: m.AdminView })),
+);
+const CategoriasView = lazy(() =>
+  import('./components/CategoriasView.tsx').then((m) => ({ default: m.CategoriasView })),
+);
+const EvaluacionesView = lazy(() =>
+  import('./components/EvaluacionesView.tsx').then((m) => ({ default: m.EvaluacionesView })),
+);
+const LibroDetalleModal = lazy(() =>
+  import('./components/LibroDetalleModal.tsx').then((m) => ({ default: m.LibroDetalleModal })),
+);
+const LoginModal = lazy(() =>
+  import('./components/LoginModal.tsx').then((m) => ({ default: m.LoginModal })),
+);
+const MisPrestamosView = lazy(() =>
+  import('./components/MisPrestamosView.tsx').then((m) => ({ default: m.MisPrestamosView })),
+);
+const MostradorView = lazy(() =>
+  import('./components/MostradorView.tsx').then((m) => ({ default: m.MostradorView })),
+);
+const SalasView = lazy(() =>
+  import('./components/SalasView.tsx').then((m) => ({ default: m.SalasView })),
+);
 
 type ActiveRoute =
   | 'catalogo'
@@ -681,75 +700,91 @@ export default function App() {
             </div>
           </header>
 
-          {/* Contenido de la Ruta Activa protegido con ErrorBoundary */}
+          {/* Contenido de la Ruta Activa protegido con ErrorBoundary y Suspense */}
           <main id="main-content" tabIndex={-1} className="flex-1 max-w-[1200px] w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 focus:outline-none">
             <ErrorBoundary onReset={goToMainScreen}>
-              <AnimatePresence mode="wait">
-                <motion.div
-                  key={route}
-                  initial={{ opacity: 0, y: 6 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -4 }}
-                  transition={{ duration: 0.16, ease: [0.16, 1, 0.3, 1] }}
-                >
-                  {route === 'catalogo' && (
-                    <CatalogoView
-                      libros={libros}
-                      categorias={categorias}
-                      selectedCategory={selectedCategory}
-                      onSelectCategory={setSelectedCategory}
-                      onOpenSalas={() => navigateToRoute('salas')}
-                      homeResetKey={homeResetKey}
-                      loadingInitial={loadingLibros}
-                      onSelectLibro={setSelectedLibro}
-                      onNotify={notify}
-                    />
-                  )}
+              <Suspense
+                fallback={
+                  <div
+                    className="flex flex-col items-center justify-center p-12 min-h-[360px] text-center"
+                    role="status"
+                    aria-live="polite"
+                  >
+                    <div className="w-10 h-10 rounded-full border-3 border-indigo-600 border-t-transparent animate-spin mb-3" />
+                    <p className="text-sm font-medium text-slate-700 dark:text-slate-300">
+                      Cargando módulo de estudio...
+                    </p>
+                    <span className="sr-only">Cargando vista...</span>
+                  </div>
+                }
+              >
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={route}
+                    initial={{ opacity: 0, y: 6 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -4 }}
+                    transition={{ duration: 0.16, ease: [0.16, 1, 0.3, 1] }}
+                  >
+                    {route === 'catalogo' && (
+                      <CatalogoView
+                        libros={libros}
+                        categorias={categorias}
+                        selectedCategory={selectedCategory}
+                        onSelectCategory={setSelectedCategory}
+                        onOpenSalas={() => navigateToRoute('salas')}
+                        homeResetKey={homeResetKey}
+                        loadingInitial={loadingLibros}
+                        onSelectLibro={setSelectedLibro}
+                        onNotify={notify}
+                      />
+                    )}
 
-                  {route === 'categorias' && (
-                    <CategoriasView
-                      categorias={categorias}
-                      onExploreCategory={handleJumpToCategory}
-                    />
-                  )}
+                    {route === 'categorias' && (
+                      <CategoriasView
+                        categorias={categorias}
+                        onExploreCategory={handleJumpToCategory}
+                      />
+                    )}
 
-                  {route === 'salas' && (
-                    <SalasView
-                      categorias={categorias}
-                      libros={libros}
-                      onExploreCategory={handleJumpToCategory}
-                      onSelectLibro={setSelectedLibro}
-                    />
-                  )}
+                    {route === 'salas' && (
+                      <SalasView
+                        categorias={categorias}
+                        libros={libros}
+                        onExploreCategory={handleJumpToCategory}
+                        onSelectLibro={setSelectedLibro}
+                      />
+                    )}
 
-                  {route === 'mostrador' && user?.rol === 'ADMIN' && (
-                    <MostradorView
-                      libros={libros}
-                      onRefreshCatalog={fetchCatalogAndCategories}
-                      onNotify={notify}
-                    />
-                  )}
+                    {route === 'mostrador' && user?.rol === 'ADMIN' && (
+                      <MostradorView
+                        libros={libros}
+                        onRefreshCatalog={fetchCatalogAndCategories}
+                        onNotify={notify}
+                      />
+                    )}
 
-                  {route === 'mis-prestamos' && user && <MisPrestamosView user={user} />}
+                    {route === 'mis-prestamos' && user && <MisPrestamosView user={user} />}
 
-                  {route === 'evaluaciones' && (
-                    <EvaluacionesView
-                      libros={libros}
-                      onSelectLibro={setSelectedLibro}
-                      user={user}
-                    />
-                  )}
+                    {route === 'evaluaciones' && (
+                      <EvaluacionesView
+                        libros={libros}
+                        onSelectLibro={setSelectedLibro}
+                        user={user}
+                      />
+                    )}
 
-                  {route === 'admin' && user?.rol === 'ADMIN' && (
-                    <AdminView
-                      libros={libros}
-                      categorias={categorias}
-                      onRefreshCatalog={fetchCatalogAndCategories}
-                      onNotify={notify}
-                    />
-                  )}
-                </motion.div>
-              </AnimatePresence>
+                    {route === 'admin' && user?.rol === 'ADMIN' && (
+                      <AdminView
+                        libros={libros}
+                        categorias={categorias}
+                        onRefreshCatalog={fetchCatalogAndCategories}
+                        onNotify={notify}
+                      />
+                    )}
+                  </motion.div>
+                </AnimatePresence>
+              </Suspense>
             </ErrorBoundary>
           </main>
 
@@ -789,23 +824,28 @@ export default function App() {
           </footer>
         </div>
 
-        {/* Modales y Notificaciones */}
-        <LibroDetalleModal
-          libro={selectedLibro}
-          categorias={categorias}
-          user={user}
-          onClose={() => setSelectedLibro(null)}
-          onNotify={notify}
-          onPruebaCreated={fetchCatalogAndCategories}
-        />
+        {/* Modales y Notificaciones diferidas */}
+        <Suspense fallback={null}>
+          <LibroDetalleModal
+            libro={selectedLibro}
+            categorias={categorias}
+            user={user}
+            onClose={() => setSelectedLibro(null)}
+            onNotify={notify}
+            onPruebaCreated={fetchCatalogAndCategories}
+          />
 
-        <LoginModal
-          open={loginOpen}
-          onClose={() => setLoginOpen(false)}
-          onSuccess={handleLoginSuccess}
-        />
+          <LoginModal
+            open={loginOpen}
+            onClose={() => setLoginOpen(false)}
+            onSuccess={handleLoginSuccess}
+          />
+        </Suspense>
 
         <ToastBanner toasts={toasts} onDismiss={dismissToast} />
+
+        {/* Botón flotante accesible de configuración universal */}
+        <AccessibilityMenu />
       </div>
     </MotionConfig>
   );

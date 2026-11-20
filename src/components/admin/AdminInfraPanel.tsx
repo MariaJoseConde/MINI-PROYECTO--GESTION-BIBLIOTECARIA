@@ -178,10 +178,15 @@ export const AdminInfraPanel: React.FC<AdminInfraPanelProps> = ({
               <div className="px-6 py-3.5 border-b border-[#d0d4e4] bg-[#f5f6f8] text-xs font-bold text-[#333333]">
                 Trazas recientes de API (X-Response-Time)
               </div>
-              <div className="overflow-x-auto">
+              <div
+                className="table-accessible-wrapper w-full focus:outline-none"
+                tabIndex={0}
+                role="region"
+                aria-label="Trazas recientes de API y tiempos de respuesta"
+              >
                 <table className="w-full text-left border-collapse text-xs">
                   <thead>
-                    <tr className="border-b border-[#d0d4e4] bg-[#ffffff] text-[11px] font-semibold uppercase tracking-wider text-[#535768]">
+                    <tr className="border-b border-slate-200/80 dark:border-slate-800/80 bg-slate-100/60 dark:bg-slate-800/60 text-[11px] font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300">
                       <th className="py-3 px-6">Método</th>
                       <th className="py-3 px-6">Ruta</th>
                       <th className="py-3 px-6">Estado</th>

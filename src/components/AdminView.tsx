@@ -464,10 +464,15 @@ export const AdminView: React.FC<AdminViewProps> = ({
             </button>
           </div>
 
-          <div className="overflow-x-auto">
+          <div
+            className="table-accessible-wrapper w-full focus:outline-none"
+            tabIndex={0}
+            role="region"
+            aria-label="Directorio de libros y autores del catálogo"
+          >
             <table className="w-full text-left border-collapse text-xs">
               <thead>
-                <tr className="border-b border-[#d0d4e4] bg-[#f5f6f8] text-[11px] font-semibold uppercase tracking-wider text-[#535768]">
+                <tr className="border-b border-slate-200/80 dark:border-slate-800/80 bg-slate-100/60 dark:bg-slate-800/60 text-[11px] font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300">
                   <th className="py-3 px-5">ISBN</th>
                   <th className="py-3 px-5">Título y Autores</th>
                   <th className="py-3 px-5">Categoría</th>
@@ -545,10 +550,15 @@ export const AdminView: React.FC<AdminViewProps> = ({
             </button>
           </div>
 
-          <div className="overflow-x-auto">
+          <div
+            className="table-accessible-wrapper w-full focus:outline-none"
+            tabIndex={0}
+            role="region"
+            aria-label="Directorio de categorías y colecciones"
+          >
             <table className="w-full text-left border-collapse text-xs">
               <thead>
-                <tr className="border-b border-[#d0d4e4] bg-[#f5f6f8] text-[11px] font-semibold uppercase tracking-wider text-[#535768]">
+                <tr className="border-b border-slate-200/80 dark:border-slate-800/80 bg-slate-100/60 dark:bg-slate-800/60 text-[11px] font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300">
                   <th className="py-3 px-5">CDU</th>
                   <th className="py-3 px-5">Categoría</th>
                   <th className="py-3 px-5">Descripción</th>
@@ -609,10 +619,15 @@ export const AdminView: React.FC<AdminViewProps> = ({
             </button>
           </div>
 
-          <div className="overflow-x-auto">
+          <div
+            className="table-accessible-wrapper w-full focus:outline-none"
+            tabIndex={0}
+            role="region"
+            aria-label="Directorio de usuarios registrados"
+          >
             <table className="w-full text-left border-collapse text-xs">
               <thead>
-                <tr className="border-b border-[#d0d4e4] bg-[#f5f6f8] text-[11px] font-semibold uppercase tracking-wider text-[#535768]">
+                <tr className="border-b border-slate-200/80 dark:border-slate-800/80 bg-slate-100/60 dark:bg-slate-800/60 text-[11px] font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300">
                   <th className="py-3 px-5">Documento</th>
                   <th className="py-3 px-5">Nombre completo</th>
                   <th className="py-3 px-5">Correo</th>
@@ -696,7 +711,7 @@ export const AdminView: React.FC<AdminViewProps> = ({
           role="dialog"
           aria-modal="true"
         >
-          <div className="w-full max-w-2xl rounded-[24px] border border-[#d0d4e4] bg-[#ffffff] shadow-[0px_5px_45px_rgba(0,0,0,0.25)] overflow-hidden my-auto">
+          <div className="w-full max-w-2xl glass-modal rounded-[24px] border border-slate-200/90 dark:border-slate-700/80 shadow-2xl overflow-hidden my-auto max-h-[90vh] flex flex-col">
             <div className="flex items-center justify-between border-b border-[#d0d4e4] bg-[#ffffff] px-6 py-4">
               <h3 className="text-lg font-bold text-[#333333]">
                 {editingBook ? `Editar Libro: ${editingBook.titulo}` : 'Registrar Nuevo Libro'}
@@ -953,7 +968,7 @@ export const AdminView: React.FC<AdminViewProps> = ({
           role="dialog"
           aria-modal="true"
         >
-          <div className="w-full max-w-md rounded-[24px] border border-[#d0d4e4] bg-[#ffffff] shadow-[0px_5px_45px_rgba(0,0,0,0.25)] overflow-hidden">
+          <div className="w-full max-w-md glass-modal rounded-[24px] border border-slate-200/90 dark:border-slate-700/80 shadow-2xl overflow-hidden my-auto max-h-[90vh] flex flex-col">
             <div className="flex items-center justify-between border-b border-[#d0d4e4] bg-[#ffffff] px-6 py-4">
               <h3 className="text-lg font-bold text-[#333333]">
                 {editingCat ? `Editar Categoría: ${editingCat.nombre}` : 'Nueva Categoría'}
@@ -1070,7 +1085,7 @@ export const AdminView: React.FC<AdminViewProps> = ({
           role="dialog"
           aria-modal="true"
         >
-          <div className="w-full max-w-md rounded-[24px] border border-[#d0d4e4] bg-[#ffffff] shadow-[0px_5px_45px_rgba(0,0,0,0.25)] overflow-hidden">
+          <div className="w-full max-w-md glass-modal rounded-[24px] border border-slate-200/90 dark:border-slate-700/80 shadow-2xl overflow-hidden my-auto max-h-[90vh] flex flex-col">
             <div className="flex items-center justify-between border-b border-[#d0d4e4] bg-[#ffffff] px-6 py-4">
               <h3 className="text-lg font-bold text-[#333333]">
                 Registrar Nuevo Usuario
