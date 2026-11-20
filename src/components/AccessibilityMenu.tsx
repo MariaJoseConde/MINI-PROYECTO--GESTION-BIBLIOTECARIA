@@ -146,12 +146,12 @@ export const AccessibilityMenu: React.FC = () => {
           {/* Encabezado */}
           <div className="flex items-center justify-between pb-3 border-b border-slate-200/80 dark:border-slate-800/80">
             <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-lg bg-indigo-600/10 dark:bg-indigo-500/20 text-indigo-600 dark:text-indigo-400 flex items-center justify-center">
+              <div className="w-8 h-8 rounded-lg bg-[#287A65]/12 dark:bg-[#287A65]/25 text-[#287A65] dark:text-[#38a58a] flex items-center justify-center">
                 <Accessibility className="w-5 h-5" />
               </div>
               <h2
                 id="accessibility-title"
-                className="text-base font-bold text-slate-900 dark:text-white"
+                className="text-base font-bold text-[#183B4E] dark:text-white"
               >
                 Accesibilidad
               </h2>
@@ -163,7 +163,7 @@ export const AccessibilityMenu: React.FC = () => {
                 triggerButtonRef.current?.focus();
               }}
               aria-label="Cerrar panel de accesibilidad"
-              className="min-h-[44px] min-w-[44px] flex items-center justify-center rounded-lg text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-600"
+              className="min-h-[44px] min-w-[44px] flex items-center justify-center rounded-lg text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#287A65]"
             >
               <X className="w-5 h-5" />
             </button>
@@ -176,7 +176,7 @@ export const AccessibilityMenu: React.FC = () => {
                 id="font-scale-label"
                 className="block font-semibold text-slate-800 dark:text-slate-200 mb-2 flex items-center gap-1.5"
               >
-                <Type className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />
+                <Type className="w-4 h-4 text-[#287A65] dark:text-[#38a58a]" />
                 <span>Tamaño de texto</span>
               </label>
               <div
@@ -189,9 +189,9 @@ export const AccessibilityMenu: React.FC = () => {
                   role="radio"
                   aria-checked={fontScale === 'normal'}
                   onClick={() => setFontScale('normal')}
-                  className={`min-h-[44px] px-2 py-2 rounded-lg font-medium transition-all flex items-center justify-center gap-1 border cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-600 ${
+                  className={`min-h-[44px] px-2 py-2 rounded-lg font-medium transition-all flex items-center justify-center gap-1 border cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#287A65] ${
                     fontScale === 'normal'
-                      ? 'bg-indigo-600 text-white border-indigo-600 font-bold shadow-xs'
+                      ? 'bg-[#287A65] text-white border-[#287A65] font-bold shadow-xs'
                       : 'bg-white/60 dark:bg-slate-800/60 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700'
                   }`}
                 >
@@ -203,9 +203,9 @@ export const AccessibilityMenu: React.FC = () => {
                   role="radio"
                   aria-checked={fontScale === 'lg'}
                   onClick={() => setFontScale('lg')}
-                  className={`min-h-[44px] px-2 py-2 rounded-lg font-medium transition-all flex items-center justify-center gap-1 border cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-600 ${
+                  className={`min-h-[44px] px-2 py-2 rounded-lg font-medium transition-all flex items-center justify-center gap-1 border cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#287A65] ${
                     fontScale === 'lg'
-                      ? 'bg-indigo-600 text-white border-indigo-600 font-bold shadow-xs'
+                      ? 'bg-[#287A65] text-white border-[#287A65] font-bold shadow-xs'
                       : 'bg-white/60 dark:bg-slate-800/60 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700'
                   }`}
                 >
@@ -217,9 +217,9 @@ export const AccessibilityMenu: React.FC = () => {
                   role="radio"
                   aria-checked={fontScale === 'xl'}
                   onClick={() => setFontScale('xl')}
-                  className={`min-h-[44px] px-2 py-2 rounded-lg font-medium transition-all flex items-center justify-center gap-1 border cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-600 ${
+                  className={`min-h-[44px] px-2 py-2 rounded-lg font-medium transition-all flex items-center justify-center gap-1 border cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#287A65] ${
                     fontScale === 'xl'
-                      ? 'bg-indigo-600 text-white border-indigo-600 font-bold shadow-xs'
+                      ? 'bg-[#287A65] text-white border-[#287A65] font-bold shadow-xs'
                       : 'bg-white/60 dark:bg-slate-800/60 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700'
                   }`}
                 >
@@ -236,19 +236,19 @@ export const AccessibilityMenu: React.FC = () => {
                 role="switch"
                 aria-checked={highContrast}
                 onClick={() => setHighContrast((prev) => !prev)}
-                className={`w-full min-h-[44px] px-3 py-2 rounded-lg flex items-center justify-between border transition-all cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-600 ${
+                className={`w-full min-h-[44px] px-3 py-2 rounded-lg flex items-center justify-between border transition-all cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#287A65] ${
                   highContrast
-                    ? 'bg-indigo-50 dark:bg-indigo-950/80 border-indigo-500 text-indigo-900 dark:text-indigo-200 font-bold'
+                    ? 'bg-[#287A65]/12 dark:bg-[#287A65]/25 border-[#287A65] text-[#183B4E] dark:text-[#a3d9cb] font-bold'
                     : 'bg-white/60 dark:bg-slate-800/60 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300'
                 }`}
               >
                 <div className="flex items-center gap-2">
-                  <Eye className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />
+                  <Eye className="w-4 h-4 text-[#287A65] dark:text-[#38a58a]" />
                   <span>Alto contraste (WCAG AAA)</span>
                 </div>
                 <div
                   className={`w-9 h-5 rounded-full p-0.5 transition-colors ${
-                    highContrast ? 'bg-indigo-600' : 'bg-slate-300 dark:bg-slate-600'
+                    highContrast ? 'bg-[#287A65]' : 'bg-slate-300 dark:bg-slate-600'
                   }`}
                 >
                   <div
@@ -267,19 +267,19 @@ export const AccessibilityMenu: React.FC = () => {
                 role="switch"
                 aria-checked={reducedMotion}
                 onClick={() => setReducedMotion((prev) => !prev)}
-                className={`w-full min-h-[44px] px-3 py-2 rounded-lg flex items-center justify-between border transition-all cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-600 ${
+                className={`w-full min-h-[44px] px-3 py-2 rounded-lg flex items-center justify-between border transition-all cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#287A65] ${
                   reducedMotion
-                    ? 'bg-indigo-50 dark:bg-indigo-950/80 border-indigo-500 text-indigo-900 dark:text-indigo-200 font-bold'
+                    ? 'bg-[#287A65]/12 dark:bg-[#287A65]/25 border-[#287A65] text-[#183B4E] dark:text-[#a3d9cb] font-bold'
                     : 'bg-white/60 dark:bg-slate-800/60 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300'
                 }`}
               >
                 <div className="flex items-center gap-2">
-                  <ZapOff className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />
+                  <ZapOff className="w-4 h-4 text-[#287A65] dark:text-[#38a58a]" />
                   <span>Reducir animaciones</span>
                 </div>
                 <div
                   className={`w-9 h-5 rounded-full p-0.5 transition-colors ${
-                    reducedMotion ? 'bg-indigo-600' : 'bg-slate-300 dark:bg-slate-600'
+                    reducedMotion ? 'bg-[#287A65]' : 'bg-slate-300 dark:bg-slate-600'
                   }`}
                 >
                   <div
@@ -298,19 +298,19 @@ export const AccessibilityMenu: React.FC = () => {
                 role="switch"
                 aria-checked={readableFont}
                 onClick={() => setReadableFont((prev) => !prev)}
-                className={`w-full min-h-[44px] px-3 py-2 rounded-lg flex items-center justify-between border transition-all cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-600 ${
+                className={`w-full min-h-[44px] px-3 py-2 rounded-lg flex items-center justify-between border transition-all cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#287A65] ${
                   readableFont
-                    ? 'bg-indigo-50 dark:bg-indigo-950/80 border-indigo-500 text-indigo-900 dark:text-indigo-200 font-bold'
+                    ? 'bg-[#287A65]/12 dark:bg-[#287A65]/25 border-[#287A65] text-[#183B4E] dark:text-[#a3d9cb] font-bold'
                     : 'bg-white/60 dark:bg-slate-800/60 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300'
                 }`}
               >
                 <div className="flex items-center gap-2">
-                  <Minimize2 className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />
+                  <Minimize2 className="w-4 h-4 text-[#287A65] dark:text-[#38a58a]" />
                   <span>Lectura hiperlegible</span>
                 </div>
                 <div
                   className={`w-9 h-5 rounded-full p-0.5 transition-colors ${
-                    readableFont ? 'bg-indigo-600' : 'bg-slate-300 dark:bg-slate-600'
+                    readableFont ? 'bg-[#287A65]' : 'bg-slate-300 dark:bg-slate-600'
                   }`}
                 >
                   <div
@@ -328,7 +328,7 @@ export const AccessibilityMenu: React.FC = () => {
             <button
               type="button"
               onClick={resetAll}
-              className="min-h-[44px] px-3 text-xs font-medium text-slate-600 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 flex items-center gap-1.5 rounded-lg transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-600"
+              className="min-h-[44px] px-3 text-xs font-medium text-slate-600 dark:text-slate-400 hover:text-[#287A65] dark:hover:text-[#38a58a] flex items-center gap-1.5 rounded-lg transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#287A65]"
             >
               <RefreshCw className="w-3.5 h-3.5" />
               <span>Restablecer</span>
@@ -339,7 +339,7 @@ export const AccessibilityMenu: React.FC = () => {
                 setIsOpen(false);
                 triggerButtonRef.current?.focus();
               }}
-              className="min-h-[44px] px-4 rounded-lg bg-indigo-600 text-white font-semibold text-xs hover:bg-indigo-700 transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-600 shadow-xs"
+              className="min-h-[44px] px-4 rounded-lg bg-[#287A65] text-white font-semibold text-xs hover:bg-[#1f6352] transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#287A65] shadow-xs"
             >
               Listo
             </button>
@@ -357,7 +357,7 @@ export const AccessibilityMenu: React.FC = () => {
         aria-controls="accessibility-dialog"
         aria-label="Opciones de accesibilidad (tamaño de texto, contraste y animaciones)"
         title="Opciones de accesibilidad (clic para abrir)"
-        className="min-h-[48px] min-w-[48px] p-3 rounded-full glass-surface bg-white/90 dark:bg-slate-900/90 backdrop-blur-md text-indigo-600 dark:text-indigo-400 border border-indigo-200/90 dark:border-indigo-800/90 shadow-lg hover:shadow-xl hover:scale-105 active:scale-95 transition-all duration-200 flex items-center justify-center cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-600 focus-visible:ring-offset-2"
+        className="min-h-[48px] min-w-[48px] p-3 rounded-full glass-surface bg-white/90 dark:bg-slate-900/90 backdrop-blur-md text-[#287A65] dark:text-[#38a58a] border border-[#287A65]/40 dark:border-[#287A65]/50 shadow-lg hover:shadow-xl hover:scale-105 active:scale-95 transition-all duration-200 flex items-center justify-center cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#287A65] focus-visible:ring-offset-2"
       >
         <Accessibility className="w-6 h-6" />
       </button>

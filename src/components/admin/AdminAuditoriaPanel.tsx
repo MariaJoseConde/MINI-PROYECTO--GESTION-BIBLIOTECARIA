@@ -31,7 +31,7 @@ export const AdminAuditoriaPanel: React.FC<AdminAuditoriaPanelProps> = ({
           onClick={onTestFallback}
           className="btn-outline-pill text-xs py-2 px-4 cursor-pointer gap-2 disabled:opacity-60"
         >
-          <Activity className="w-3.5 h-3.5 text-[#6161ff]" />
+          <Activity className="w-3.5 h-3.5 text-[#287A65]" />
           {testingFallback ? 'Ejecutando prueba...' : 'Probar Fallback IA → FTS5'}
         </button>
       </div>
@@ -66,7 +66,7 @@ export const AdminAuditoriaPanel: React.FC<AdminAuditoriaPanelProps> = ({
                     #{log.id_log}
                   </td>
                   <td className="py-3 px-6 whitespace-nowrap">
-                    <span className="badge-monday bg-[#dbdbff] text-[#6161ff] font-semibold text-[11px]">
+                    <span className="badge-monday bg-[#287A65]/12 text-[#287A65] font-semibold text-[11px]">
                       {log.tipo_evento}
                     </span>
                   </td>

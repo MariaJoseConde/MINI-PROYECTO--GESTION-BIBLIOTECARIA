@@ -36,8 +36,8 @@ export const ToastBanner: React.FC<ToastBannerProps> = ({ toasts, onDismiss }) =
                 }
               : {
                   Icon: Info,
-                  badgeBg: 'bg-[#e7ecff] text-[#6161ff]',
-                  borderColor: 'border-[#dbdbff]',
+                  badgeBg: 'bg-[#287A65]/15 text-[#287A65]',
+                  borderColor: 'border-[#287A65]/30',
                 };
 
         const { Icon, badgeBg } = iconConfig;

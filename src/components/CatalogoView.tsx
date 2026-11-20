@@ -31,12 +31,12 @@ interface CatalogoViewProps {
 }
 
 const PASTEL_PALETTES = [
-  { bg: 'bg-[#eddff7] dark:bg-purple-950/40 dark:border-purple-800/40', text: 'text-[#333333] dark:text-purple-100', border: 'border-[#eddff7]', badge: 'bg-[#ffffff]/85 dark:bg-purple-900/60 text-[#333333] dark:text-purple-200' },
-  { bg: 'bg-[#abf0ff] dark:bg-cyan-950/40 dark:border-cyan-800/40', text: 'text-[#333333] dark:text-cyan-100', border: 'border-[#abf0ff]', badge: 'bg-[#ffffff]/85 dark:bg-cyan-900/60 text-[#333333] dark:text-cyan-200' },
-  { bg: 'bg-[#bcfe90] dark:bg-emerald-950/40 dark:border-emerald-800/40', text: 'text-[#333333] dark:text-emerald-100', border: 'border-[#bcfe90]', badge: 'bg-[#ffffff]/85 dark:bg-emerald-900/60 text-[#333333] dark:text-emerald-200' },
-  { bg: 'bg-[#e7ecff] dark:bg-indigo-950/40 dark:border-indigo-800/40', text: 'text-[#333333] dark:text-indigo-100', border: 'border-[#e7ecff]', badge: 'bg-[#ffffff]/85 dark:bg-indigo-900/60 text-[#333333] dark:text-indigo-200' },
-  { bg: 'bg-[#fcd0f8] dark:bg-pink-950/40 dark:border-pink-800/40', text: 'text-[#333333] dark:text-pink-100', border: 'border-[#fcd0f8]', badge: 'bg-[#ffffff]/85 dark:bg-pink-900/60 text-[#333333] dark:text-pink-200' },
-  { bg: 'bg-[#d1faff] dark:bg-sky-950/40 dark:border-sky-800/40', text: 'text-[#333333] dark:text-sky-100', border: 'border-[#d1faff]', badge: 'bg-[#ffffff]/85 dark:bg-sky-900/60 text-[#333333] dark:text-sky-200' },
+  { bg: 'bg-[#F3EBDD] dark:bg-[#132733]', text: 'text-[#183B4E] dark:text-slate-100', border: 'border-[#e3d5bf] dark:border-[#1e3c4f]', badge: 'bg-[#ffffff] dark:bg-[#1b3647] text-[#183B4E] dark:text-slate-200' },
+  { bg: 'bg-[#e6f4f0] dark:bg-[#0f2922]', text: 'text-[#183B4E] dark:text-emerald-100', border: 'border-[#bfe3d8] dark:border-[#1a4a3e]', badge: 'bg-[#ffffff] dark:bg-[#153e34] text-[#287A65] dark:text-emerald-200' },
+  { bg: 'bg-[#e8eff3] dark:bg-[#142e3d]', text: 'text-[#183B4E] dark:text-cyan-100', border: 'border-[#c5d8e2] dark:border-[#1f455b]', badge: 'bg-[#ffffff] dark:bg-[#1c3f53] text-[#183B4E] dark:text-cyan-200' },
+  { bg: 'bg-[#faf6ee] dark:bg-[#162b37]', text: 'text-[#183B4E] dark:text-slate-100', border: 'border-[#ebdcc9] dark:border-[#234559]', badge: 'bg-[#ffffff] dark:bg-[#1d3d4f] text-[#183B4E] dark:text-slate-200' },
+  { bg: 'bg-[#edf7f4] dark:bg-[#0d2620]', text: 'text-[#183B4E] dark:text-teal-100', border: 'border-[#cbebe0] dark:border-[#19483c]', badge: 'bg-[#ffffff] dark:bg-[#153d33] text-[#287A65] dark:text-teal-200' },
+  { bg: 'bg-[#f5efe4] dark:bg-[#132836]', text: 'text-[#183B4E] dark:text-slate-100', border: 'border-[#e3d5bf] dark:border-[#224458]', badge: 'bg-[#ffffff] dark:bg-[#1b3b4d] text-[#183B4E] dark:text-slate-200' },
 ];
 
 export const CatalogoView: React.FC<CatalogoViewProps> = ({
@@ -151,26 +151,26 @@ export const CatalogoView: React.FC<CatalogoViewProps> = ({
     <div className="space-y-10">
       {/* Hero Visual Glass Canvas con Búsqueda Integrada */}
       <section className="relative overflow-hidden card-monday p-8 sm:p-10 lg:p-12">
-        {/* Soft subtle ambient glow */}
+        {/* Soft subtle ambient glow - Azul Petróleo y Verde Esmeralda */}
         <div
-          className="absolute -top-24 -right-24 w-96 h-96 rounded-full bg-indigo-300/15 dark:bg-indigo-600/10 blur-3xl pointer-events-none"
+          className="absolute -top-24 -right-24 w-96 h-96 rounded-full bg-[#183B4E]/12 dark:bg-[#183B4E]/25 blur-3xl pointer-events-none"
           aria-hidden="true"
         />
         <div
-          className="absolute -bottom-24 -left-24 w-96 h-96 rounded-full bg-sky-300/15 dark:bg-sky-600/10 blur-3xl pointer-events-none"
+          className="absolute -bottom-24 -left-24 w-96 h-96 rounded-full bg-[#287A65]/12 dark:bg-[#287A65]/20 blur-3xl pointer-events-none"
           aria-hidden="true"
         />
 
         <div className="relative z-10 space-y-8">
           <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
             <div className="max-w-2xl">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-50/80 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 text-xs font-semibold uppercase tracking-wider mb-3 border border-indigo-200/80 dark:border-indigo-800/80 shadow-2xs">
+              <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-[#287A65]/12 dark:bg-[#287A65]/25 text-[#287A65] dark:text-[#38a58a] text-xs font-semibold uppercase tracking-wider mb-3 border border-[#287A65]/30 shadow-2xs">
                 <Sparkles className="w-3.5 h-3.5" />
                 <span>Acervo Bibliográfico Inteligente</span>
               </div>
-              <h1 className="font-bold text-3xl sm:text-4xl lg:text-[2.75rem] tracking-[-0.03em] leading-[1.15] text-slate-900 dark:text-white text-balance">
+              <h1 className="font-bold text-3xl sm:text-4xl lg:text-[2.75rem] tracking-[-0.03em] leading-[1.15] text-[#183B4E] dark:text-white text-balance">
                 Explora la colección con{' '}
-                <span className="text-indigo-600 dark:text-indigo-400 font-bold">inteligencia artificial</span>
+                <span className="text-[#287A65] dark:text-[#38a58a] font-bold">inteligencia artificial</span>
               </h1>
               <p className="mt-3 text-base font-normal text-slate-700 dark:text-slate-300 leading-relaxed max-w-xl">
                 Descubre obras por temática o lenguaje natural y consulta la disponibilidad física en sala al instante.
@@ -179,31 +179,31 @@ export const CatalogoView: React.FC<CatalogoViewProps> = ({
 
             {/* Metric counters glass pill style */}
             <div className="flex items-center gap-3 sm:gap-4 shrink-0 flex-wrap">
-              <div className="flex items-center gap-3 px-4 py-2.5 rounded-2xl bg-white/60 dark:bg-slate-800/50 backdrop-blur-md border border-slate-200/70 dark:border-slate-700/60 shadow-2xs">
-                <div className="w-2.5 h-2.5 rounded-full bg-indigo-600 shrink-0" />
+              <div className="flex items-center gap-3 px-4 py-2.5 rounded-2xl bg-white/80 dark:bg-slate-800/50 backdrop-blur-md border border-[#183B4E]/15 dark:border-slate-700/60 shadow-2xs">
+                <div className="w-2.5 h-2.5 rounded-full bg-[#183B4E] shrink-0" />
                 <div>
                   <div className="text-[11px] font-medium text-slate-600 dark:text-slate-400">Obras</div>
-                  <div className="font-mono text-xl font-bold tabular-nums text-slate-900 dark:text-white">
+                  <div className="font-mono text-xl font-bold tabular-nums text-[#183B4E] dark:text-white">
                     {libros.length}
                   </div>
                 </div>
               </div>
 
-              <div className="flex items-center gap-3 px-4 py-2.5 rounded-2xl bg-white/60 dark:bg-slate-800/50 backdrop-blur-md border border-slate-200/70 dark:border-slate-700/60 shadow-2xs">
-                <div className="w-2.5 h-2.5 rounded-full bg-sky-500 shrink-0" />
+              <div className="flex items-center gap-3 px-4 py-2.5 rounded-2xl bg-white/80 dark:bg-slate-800/50 backdrop-blur-md border border-[#183B4E]/15 dark:border-slate-700/60 shadow-2xs">
+                <div className="w-2.5 h-2.5 rounded-full bg-[#287A65] shrink-0" />
                 <div>
                   <div className="text-[11px] font-medium text-slate-600 dark:text-slate-400">Colecciones</div>
-                  <div className="font-mono text-xl font-bold tabular-nums text-slate-900 dark:text-white">
+                  <div className="font-mono text-xl font-bold tabular-nums text-[#183B4E] dark:text-white">
                     {categorias.length}
                   </div>
                 </div>
               </div>
 
-              <div className="flex items-center gap-3 px-4 py-2.5 rounded-2xl bg-white/60 dark:bg-slate-800/50 backdrop-blur-md border border-slate-200/70 dark:border-slate-700/60 shadow-2xs">
-                <div className="w-2.5 h-2.5 rounded-full bg-emerald-500 shrink-0" />
+              <div className="flex items-center gap-3 px-4 py-2.5 rounded-2xl bg-white/80 dark:bg-slate-800/50 backdrop-blur-md border border-[#183B4E]/15 dark:border-slate-700/60 shadow-2xs">
+                <div className="w-2.5 h-2.5 rounded-full bg-[#287A65] shrink-0" />
                 <div>
                   <div className="text-[11px] font-medium text-slate-600 dark:text-slate-400">Disponibles</div>
-                  <div className="font-mono text-xl font-bold tabular-nums text-emerald-700 dark:text-emerald-400">
+                  <div className="font-mono text-xl font-bold tabular-nums text-[#287A65] dark:text-emerald-400">
                     {disponiblesEnSala}
                   </div>
                 </div>
@@ -213,7 +213,7 @@ export const CatalogoView: React.FC<CatalogoViewProps> = ({
 
           {/* AI Prompt Search Card */}
           <form onSubmit={handleFormSubmit} className="pt-2">
-            <div className="flex flex-col md:flex-row gap-2.5 rounded-[160px] bg-white/70 dark:bg-slate-800/60 backdrop-blur-md border border-slate-200/80 dark:border-slate-700/70 p-2 shadow-xs focus-within:border-indigo-500 focus-within:ring-2 focus-within:ring-indigo-500/15 transition-all">
+            <div className="flex flex-col md:flex-row gap-2.5 rounded-[160px] bg-white/85 dark:bg-slate-800/60 backdrop-blur-md border border-[#183B4E]/18 dark:border-slate-700/70 p-2 shadow-xs focus-within:border-[#287A65] focus-within:ring-2 focus-within:ring-[#287A65]/20 transition-all">
               <div className="relative flex-1 flex items-center">
                 <Search className="w-4 h-4 text-slate-500 dark:text-slate-400 absolute left-4 pointer-events-none" />
                 <input
@@ -222,13 +222,13 @@ export const CatalogoView: React.FC<CatalogoViewProps> = ({
                   onChange={(e) => setQuery(e.target.value)}
                   placeholder="Busca por título, autor o temática conceptual (ej. distopías tecnológicas, cosmos, filosofía)..."
                   aria-label="Buscar libros por tema, título, autor o ISBN"
-                  className="w-full bg-transparent pl-11 pr-4 py-2.5 text-sm text-slate-900 dark:text-slate-100 placeholder:text-slate-500 dark:placeholder:text-slate-400 focus:outline-none"
+                  className="w-full bg-transparent pl-11 pr-4 py-2.5 text-sm text-[#183B4E] dark:text-slate-100 placeholder:text-slate-500 dark:placeholder:text-slate-400 focus:outline-none"
                 />
               </div>
 
               <div className="flex items-center gap-2 shrink-0 flex-wrap px-2 pb-1 md:p-0">
                 <div
-                  className="inline-flex rounded-[160px] bg-white/50 dark:bg-slate-900/50 backdrop-blur-xs p-1 border border-slate-200/60 dark:border-slate-800/60"
+                  className="inline-flex rounded-[160px] bg-white/60 dark:bg-slate-900/50 backdrop-blur-xs p-1 border border-[#183B4E]/15 dark:border-slate-800/60"
                   role="group"
                   aria-label="Modo de búsqueda"
                 >
@@ -237,8 +237,8 @@ export const CatalogoView: React.FC<CatalogoViewProps> = ({
                     onClick={() => setUseIa(true)}
                     className={`inline-flex items-center gap-1.5 rounded-[160px] px-3.5 py-1.5 text-xs font-semibold transition-all whitespace-nowrap shrink-0 cursor-pointer ${
                       useIa
-                        ? 'bg-indigo-600 text-white shadow-xs'
-                        : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                        ? 'bg-[#287A65] text-white shadow-xs'
+                        : 'text-slate-600 dark:text-slate-400 hover:text-[#183B4E] dark:hover:text-white'
                     }`}
                   >
                     <Sparkles className="w-3.5 h-3.5" />
@@ -249,8 +249,8 @@ export const CatalogoView: React.FC<CatalogoViewProps> = ({
                     onClick={() => setUseIa(false)}
                     className={`rounded-[160px] px-3.5 py-1.5 text-xs font-semibold transition-all whitespace-nowrap shrink-0 cursor-pointer ${
                       !useIa
-                        ? 'bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-xs'
-                        : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                        ? 'bg-white dark:bg-slate-800 text-[#183B4E] dark:text-white shadow-xs'
+                        : 'text-slate-600 dark:text-slate-400 hover:text-[#183B4E] dark:hover:text-white'
                     }`}
                   >
                     Local
@@ -283,9 +283,9 @@ export const CatalogoView: React.FC<CatalogoViewProps> = ({
             <div className="flex flex-wrap items-center justify-between gap-2 px-2 text-xs text-[#535768]">
               <div>
                 Mostrando <span className="font-mono tabular-nums font-semibold text-[#333333]">{displayedBooks.length}</span> resultados para{' '}
-                <span className="font-semibold text-[#6161ff]">“{searchResult.query}”</span>
+                <span className="font-semibold text-[#287A65]">“{searchResult.query}”</span>
               </div>
-              <span className="badge-monday bg-[#dbdbff] text-[#6161ff] font-mono tabular-nums">
+              <span className="badge-monday bg-[#183B4E]/10 dark:bg-[#183B4E]/30 text-[#183B4E] dark:text-[#a5c4d4] font-mono tabular-nums">
                 {searchResult.mode === 'ia' ? 'Motor IA' : 'Catálogo Local'} · {searchResult.latencyMs} ms
               </span>
             </div>
@@ -298,10 +298,10 @@ export const CatalogoView: React.FC<CatalogoViewProps> = ({
         <section aria-label="Salas y colecciones por categoría" className="space-y-4">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div className="flex items-baseline gap-3">
-              <h2 className="text-xl font-bold text-[#333333] tracking-tight">
+              <h2 className="text-xl font-bold text-[#183B4E] dark:text-white tracking-tight">
                 Salas y colecciones
               </h2>
-              <span className="badge-monday bg-[#dbdbff] text-[#6161ff] font-medium">
+              <span className="badge-monday bg-[#287A65]/12 text-[#287A65] font-medium">
                 {categorias.length} colecciones
               </span>
             </div>
@@ -341,10 +341,10 @@ export const CatalogoView: React.FC<CatalogoViewProps> = ({
 
                   <div className="mt-4">
                     <div className="flex items-center justify-between gap-2">
-                      <h3 className={`text-base font-semibold leading-snug ${palette.text} line-clamp-1 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors`}>
+                      <h3 className={`text-base font-semibold leading-snug ${palette.text} line-clamp-1 group-hover:text-[#287A65] dark:group-hover:text-[#38a58a] transition-colors`}>
                         {cat.nombre}
                       </h3>
-                      <ArrowRight className="w-4 h-4 text-slate-700 dark:text-slate-300 shrink-0 transition-transform group-hover:translate-x-1 group-hover:text-indigo-600" />
+                      <ArrowRight className="w-4 h-4 text-slate-700 dark:text-slate-300 shrink-0 transition-transform group-hover:translate-x-1 group-hover:text-[#287A65]" />
                     </div>
                     <p className="mt-1 text-xs text-[#535768] dark:text-slate-300 line-clamp-2 leading-relaxed">
                       {cat.descripcion}
@@ -379,7 +379,7 @@ export const CatalogoView: React.FC<CatalogoViewProps> = ({
             <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
               <div className="space-y-1.5">
                 <div className="flex flex-wrap items-center gap-2 text-xs font-mono text-[#535768]">
-                  <span className="badge-monday bg-[#dbdbff] text-[#6161ff] font-semibold">CDU {activeCategoryMeta.codigo_archivo}</span>
+                  <span className="badge-monday bg-[#183B4E]/10 dark:bg-[#183B4E]/30 text-[#183B4E] dark:text-[#a5c4d4] font-semibold">CDU {activeCategoryMeta.codigo_archivo}</span>
                   <span aria-hidden="true">·</span>
                   <span>{activeCategoryMeta.ubicacion_sala}</span>
                 </div>
@@ -420,10 +420,10 @@ export const CatalogoView: React.FC<CatalogoViewProps> = ({
         className="scroll-mt-24 flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-4 border-t border-[#d0d4e4]"
       >
         <div className="flex items-baseline gap-3">
-          <h2 className="text-xl font-bold text-[#333333] tracking-tight">
+          <h2 className="text-xl font-bold text-[#183B4E] dark:text-white tracking-tight">
             {activeCategoryMeta ? `Obras en ${activeCategoryMeta.nombre}` : 'Catálogo de obras'}
           </h2>
-          <span className="badge-monday bg-[#e7ecff] text-[#6161ff] font-mono tabular-nums">
+          <span className="badge-monday bg-[#287A65]/12 text-[#287A65] font-mono tabular-nums">
             {displayedBooks.length} {displayedBooks.length === 1 ? 'título' : 'títulos'}
           </span>
         </div>
@@ -439,7 +439,7 @@ export const CatalogoView: React.FC<CatalogoViewProps> = ({
               onClick={() => setAvailabilityFilter('all')}
               className={`rounded-[160px] px-3.5 py-1 text-xs font-medium transition-all whitespace-nowrap cursor-pointer ${
                 availabilityFilter === 'all'
-                  ? 'bg-indigo-600 text-white shadow-xs font-semibold'
+                  ? 'bg-[#287A65] text-white shadow-xs font-semibold'
                   : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
               }`}
             >
@@ -450,7 +450,7 @@ export const CatalogoView: React.FC<CatalogoViewProps> = ({
               onClick={() => setAvailabilityFilter('available')}
               className={`rounded-[160px] px-3.5 py-1 text-xs font-medium transition-all whitespace-nowrap cursor-pointer ${
                 availabilityFilter === 'available'
-                  ? 'bg-indigo-600 text-white shadow-xs font-semibold'
+                  ? 'bg-[#287A65] text-white shadow-xs font-semibold'
                   : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
               }`}
             >
@@ -462,7 +462,7 @@ export const CatalogoView: React.FC<CatalogoViewProps> = ({
             aria-label="Ordenar catálogo"
             value={sortBy}
             onChange={(e) => setSortBy(e.target.value as CatalogSortBy)}
-            className="rounded-xl border border-slate-200/80 dark:border-slate-700/70 bg-white/60 dark:bg-slate-800/60 backdrop-blur-md px-3 py-1.5 text-xs font-medium text-slate-800 dark:text-slate-200 focus:border-indigo-500 focus:outline-none cursor-pointer shadow-2xs"
+            className="rounded-xl border border-slate-200/80 dark:border-slate-700/70 bg-white/60 dark:bg-slate-800/60 backdrop-blur-md px-3 py-1.5 text-xs font-medium text-slate-800 dark:text-slate-200 focus:border-[#287A65] focus:outline-none cursor-pointer shadow-2xs"
           >
             <option value="recent">Orden: Recientes</option>
             <option value="title">Orden: Título (A–Z)</option>
@@ -530,7 +530,7 @@ export const CatalogoView: React.FC<CatalogoViewProps> = ({
                   <BookCover libro={libro} size="card" />
 
                   <div className="p-5 space-y-2">
-                    <h3 className="text-lg font-bold leading-snug text-[#333333] dark:text-white line-clamp-2 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
+                    <h3 className="text-lg font-bold leading-snug text-[#183B4E] dark:text-white line-clamp-2 group-hover:text-[#287A65] dark:group-hover:text-[#38a58a] transition-colors">
                       {libro.titulo}
                     </h3>
 
@@ -562,7 +562,7 @@ export const CatalogoView: React.FC<CatalogoViewProps> = ({
                     )}
                   </div>
 
-                  <span className="inline-flex items-center gap-1 text-xs font-semibold text-[#6161ff] group-hover:translate-x-1 transition-transform whitespace-nowrap shrink-0">
+                  <span className="inline-flex items-center gap-1 text-xs font-semibold text-[#287A65] dark:text-[#38a58a] group-hover:translate-x-1 transition-transform whitespace-nowrap shrink-0">
                     Ver ficha
                     <ArrowRight className="w-3.5 h-3.5" />
                   </span>

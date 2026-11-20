@@ -36,15 +36,15 @@ export const MisPrestamosView: React.FC<MisPrestamosViewProps> = ({ user }) => {
     <div className="space-y-8">
       <div className="card-monday p-8 flex flex-col sm:flex-row sm:items-center justify-between gap-6">
         <div>
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-[6px] bg-[#e7ecff] text-[#6161ff] text-xs font-semibold uppercase tracking-wider mb-2.5">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-[6px] bg-[#287A65]/12 text-[#287A65] text-xs font-semibold uppercase tracking-wider mb-2.5">
             <BookCheck className="w-3.5 h-3.5" />
             <span>Estado de Cuenta y Circulación</span>
           </div>
-          <h1 className="text-3xl font-bold tracking-tight text-[#333333]">
+          <h1 className="text-3xl font-bold tracking-tight text-[#183B4E] dark:text-white">
             {user.nombre_completo}
           </h1>
           <p className="mt-1 text-xs font-mono text-[#535768] tabular-nums">
-            Documento {user.numero_documento} · Rol <span className="badge-monday bg-[#dbdbff] text-[#6161ff] font-semibold text-[10px] ml-1">{user.rol}</span>
+            Documento {user.numero_documento} · Rol <span className="badge-monday bg-[#287A65]/12 text-[#287A65] font-semibold text-[10px] ml-1">{user.rol}</span>
           </p>
         </div>
 
@@ -89,11 +89,11 @@ export const MisPrestamosView: React.FC<MisPrestamosViewProps> = ({ user }) => {
               >
                 <div>
                   <div className="flex items-center gap-2 text-xs font-mono text-[#535768]">
-                    <span className="badge-monday bg-[#dbdbff] text-[#6161ff] font-bold">Folio #{p.id_prestamo}</span>
+                    <span className="badge-monday bg-[#183B4E]/10 dark:bg-[#183B4E]/30 text-[#183B4E] dark:text-[#a5c4d4] font-bold">Folio #{p.id_prestamo}</span>
                     <span>·</span>
                     <span>ISBN {p.libro_isbn}</span>
                   </div>
-                  <h3 className="text-base font-bold text-[#333333] mt-1">
+                  <h3 className="text-base font-bold text-[#183B4E] dark:text-white mt-1">
                     {p.libro_titulo}
                   </h3>
                 </div>
@@ -152,7 +152,7 @@ export const MisPrestamosView: React.FC<MisPrestamosViewProps> = ({ user }) => {
               <tbody className="divide-y divide-[#f5f6f8]">
                 {historial.map((p) => (
                   <tr key={p.id_prestamo} className="hover:bg-[#f5f6f8]/80 transition-colors">
-                    <td className="py-3.5 px-6 font-mono font-bold text-[#6161ff] tabular-nums">#{p.id_prestamo}</td>
+                    <td className="py-3.5 px-6 font-mono font-bold text-[#287A65] dark:text-[#38a58a] tabular-nums">#{p.id_prestamo}</td>
                     <td className="py-3.5 px-6 font-semibold text-[#333333]">{p.libro_titulo}</td>
                     <td className="py-3.5 px-6 font-mono tabular-nums text-[#535768]">
                       {p.fecha_prestamo}

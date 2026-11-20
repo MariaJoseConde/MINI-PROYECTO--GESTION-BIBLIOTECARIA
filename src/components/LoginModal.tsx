@@ -14,14 +14,14 @@ const DEMO_ACCOUNTS = [
     role: 'ADMIN',
     email: 'admin@sgbi.edu',
     desc: 'Mostrador, inventario CRUD, usuarios y auditoría',
-    badgeBg: 'bg-[#dbdbff] text-[#6161ff]',
+    badgeBg: 'bg-[#183B4E]/10 text-[#183B4E]',
   },
   {
     label: 'Docente',
     role: 'DOCENTE',
     email: 'docente@sgbi.edu',
     desc: 'Generar pruebas de lectura con IA y claves docentes',
-    badgeBg: 'bg-[#eddff7] text-[#6161ff]',
+    badgeBg: 'bg-[#287A65]/12 text-[#287A65]',
   },
   {
     label: 'Lectora Activa',

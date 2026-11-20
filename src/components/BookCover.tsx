@@ -9,12 +9,12 @@ interface BookCoverProps {
 }
 
 const EDITION_PALETTES = [
-  { bg: 'bg-[#6161ff]', accent: 'border-[#dbdbff]/40', text: 'text-[#ffffff]', sub: 'text-[#e7ecff]' },
+  { bg: 'bg-[#183B4E]', accent: 'border-[#287A65]/40', text: 'text-[#ffffff]', sub: 'text-[#e6f4f0]' },
+  { bg: 'bg-[#287A65]', accent: 'border-[#F3EBDD]/40', text: 'text-[#ffffff]', sub: 'text-[#F3EBDD]' },
   { bg: 'bg-[#2b2d42]', accent: 'border-[#abf0ff]/40', text: 'text-[#ffffff]', sub: 'text-[#abf0ff]' },
   { bg: 'bg-[#1e1b4b]', accent: 'border-[#eddff7]/40', text: 'text-[#ffffff]', sub: 'text-[#eddff7]' },
   { bg: 'bg-[#0f3d3e]', accent: 'border-[#bcfe90]/40', text: 'text-[#ffffff]', sub: 'text-[#bcfe90]' },
-  { bg: 'bg-[#4a0e4e]', accent: 'border-[#fcd0f8]/40', text: 'text-[#ffffff]', sub: 'text-[#fcd0f8]' },
-  { bg: 'bg-[#1a2332]', accent: 'border-[#d0d4e4]/40', text: 'text-[#ffffff]', sub: 'text-[#d0d4e4]' },
+  { bg: 'bg-[#183B4E]', accent: 'border-[#d0d4e4]/40', text: 'text-[#ffffff]', sub: 'text-[#d0d4e4]' },
 ];
 
 export const BookCover: React.FC<BookCoverProps> = ({ libro, size = 'md' }) => {

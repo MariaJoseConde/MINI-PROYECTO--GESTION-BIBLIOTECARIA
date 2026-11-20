@@ -122,14 +122,14 @@ export const LibroDetalleModal: React.FC<LibroDetalleModalProps> = ({
         {/* Cabecera del Modal (oculta en impresión cuando hay prueba activa) */}
         <div className="no-print flex items-center justify-between border-b border-slate-200/60 dark:border-slate-800/60 bg-transparent px-6 py-4 shrink-0 min-h-16">
           <div className="flex items-center gap-2.5">
-            <span className="inline-flex items-center px-3 py-1 rounded-full bg-indigo-50/80 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 font-semibold text-xs border border-indigo-200/80 dark:border-indigo-800/80 shadow-2xs">
+            <span className="inline-flex items-center px-3 py-1 rounded-full bg-[#287A65]/12 dark:bg-[#287A65]/25 text-[#287A65] dark:text-[#38a58a] font-semibold text-xs border border-[#287A65]/30 shadow-2xs">
               Ficha Bibliográfica · Folio #{libro.id_libro}
             </span>
           </div>
           <button
             type="button"
             onClick={onClose}
-            className="min-h-[44px] min-w-[44px] flex items-center justify-center rounded-xl text-slate-700 dark:text-slate-300 hover:bg-white/60 dark:hover:bg-slate-800/60 transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-600"
+            className="min-h-[44px] min-w-[44px] flex items-center justify-center rounded-xl text-slate-700 dark:text-slate-300 hover:bg-white/60 dark:hover:bg-slate-800/60 transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#287A65]"
             aria-label="Cerrar ficha del libro"
           >
             <X className="w-5 h-5" />
@@ -146,17 +146,17 @@ export const LibroDetalleModal: React.FC<LibroDetalleModalProps> = ({
 
               <div className="space-y-4">
                 <div>
-                  <span className="inline-flex items-center px-2.5 py-1 rounded-full bg-indigo-50/80 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 font-semibold text-xs border border-indigo-200/80 dark:border-indigo-800/80 shadow-2xs">
+                  <span className="inline-flex items-center px-2.5 py-1 rounded-full bg-[#287A65]/12 dark:bg-[#287A65]/25 text-[#287A65] dark:text-[#38a58a] font-semibold text-xs border border-[#287A65]/30 shadow-2xs">
                     {libro.categoria}
                     {categoriaMeta ? ` · CDU ${categoriaMeta.codigo_archivo}` : ''}
                   </span>
                   <h2
                     id="libro-detalle-title"
-                    className="mt-2 text-2xl sm:text-3xl font-bold text-slate-900 leading-tight tracking-tight text-left"
+                    className="mt-2 text-2xl sm:text-3xl font-bold text-[#183B4E] dark:text-white leading-tight tracking-tight text-left"
                   >
                     {libro.titulo}
                   </h2>
-                  <p className="mt-1 text-sm font-medium text-slate-700 text-left">{autoresTexto}</p>
+                  <p className="mt-1 text-sm font-medium text-[#183B4E]/80 dark:text-slate-300 text-left">{autoresTexto}</p>
                 </div>
 
                 {/* Tabla de metadatos bibliográficos ampliada */}

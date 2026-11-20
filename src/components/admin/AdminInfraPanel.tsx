@@ -59,9 +59,9 @@ export const AdminInfraPanel: React.FC<AdminInfraPanelProps> = ({
         {metrics ? (
           <div className="mt-6 space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div className="rounded-[18px] border border-[#d0d4e4] bg-[#e7ecff]/40 p-5 space-y-3">
-                <div className="flex items-center gap-2 text-xs font-bold text-[#333333]">
-                  <Server className="w-4 h-4 text-[#6161ff]" />
+              <div className="rounded-[18px] border border-[#d0d4e4] bg-[#e6f4f0]/60 p-5 space-y-3">
+                <div className="flex items-center gap-2 text-xs font-bold text-[#183B4E]">
+                  <Server className="w-4 h-4 text-[#287A65]" />
                   <span>Servidor y API</span>
                 </div>
                 <dl className="grid grid-cols-2 gap-2 text-xs">
@@ -140,7 +140,7 @@ export const AdminInfraPanel: React.FC<AdminInfraPanelProps> = ({
                   <button
                     type="button"
                     onClick={onClearCache}
-                    className="text-[11px] font-semibold text-[#6161ff] hover:underline cursor-pointer"
+                    className="text-[11px] font-semibold text-[#287A65] hover:underline cursor-pointer"
                   >
                     Limpiar caché
                   </button>
@@ -148,7 +148,7 @@ export const AdminInfraPanel: React.FC<AdminInfraPanelProps> = ({
                 <dl className="grid grid-cols-2 gap-2 text-xs">
                   <div>
                     <dt className="text-[#808080]">Tasa de aciertos</dt>
-                    <dd className="font-mono font-bold tabular-nums text-[#6161ff]">
+                    <dd className="font-mono font-bold tabular-nums text-[#287A65]">
                       {metrics.iaCache.hitRatePct}%
                     </dd>
                   </div>
@@ -196,7 +196,7 @@ export const AdminInfraPanel: React.FC<AdminInfraPanelProps> = ({
                   <tbody className="divide-y divide-[#f5f6f8]">
                     {metrics.api.recentTraces.slice(0, 10).map((t, i) => (
                       <tr key={`${t.timestamp}-${i}`} className="hover:bg-[#f5f6f8]/70 transition-colors">
-                        <td className="py-2.5 px-6 font-mono font-semibold text-[#6161ff]">
+                        <td className="py-2.5 px-6 font-mono font-semibold text-[#287A65]">
                           {t.method}
                         </td>
                         <td className="py-2.5 px-6 font-mono text-[#333333]">{t.path}</td>

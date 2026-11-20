@@ -401,19 +401,19 @@ export const AdminView: React.FC<AdminViewProps> = ({
     <div className="space-y-8">
       <div className="card-monday p-8 flex flex-col xl:flex-row xl:items-end justify-between gap-6">
         <div>
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-indigo-50/80 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 text-xs font-semibold uppercase tracking-wider mb-2.5 border border-indigo-200/80 dark:border-indigo-800/80 shadow-2xs">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#287A65]/12 dark:bg-[#287A65]/25 text-[#287A65] dark:text-[#38a58a] text-xs font-semibold uppercase tracking-wider mb-2.5 border border-[#287A65]/30 shadow-2xs">
             <ShieldCheck className="w-3.5 h-3.5" />
             <span>Consola de Administración</span>
           </div>
-          <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-slate-900 dark:text-white text-balance">
-            Gestión de <span className="text-indigo-600 dark:text-indigo-400 font-bold">inventario, roles y sistema</span>
+          <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-[#183B4E] dark:text-white text-balance">
+            Gestión de <span className="text-[#287A65] dark:text-[#38a58a] font-bold">inventario, roles y sistema</span>
           </h1>
           <p className="mt-2 text-sm text-slate-700 dark:text-slate-300">
             Administración centralizada de títulos, clasificaciones CDU, permisos RBAC, infraestructura y auditoría transaccional.
           </p>
         </div>
 
-        <div className="inline-flex flex-wrap rounded-[160px] border border-slate-200/80 dark:border-slate-700/70 bg-white/60 dark:bg-slate-800/60 backdrop-blur-md p-1 shadow-2xs self-start">
+        <div className="inline-flex flex-wrap rounded-[160px] border border-[#183B4E]/15 dark:border-slate-700/70 bg-white/70 dark:bg-slate-800/60 backdrop-blur-md p-1 shadow-2xs self-start">
           {(
             [
               ['inventario', 'Catálogo'],
@@ -432,8 +432,8 @@ export const AdminView: React.FC<AdminViewProps> = ({
               }}
               className={`px-3.5 py-1.5 text-xs font-medium rounded-[160px] transition-all whitespace-nowrap cursor-pointer ${
                 tab === key
-                  ? 'bg-[#6161ff] text-white shadow-xs font-semibold'
-                  : 'text-[#535768] hover:text-[#333333]'
+                  ? 'bg-[#287A65] text-white shadow-xs font-semibold'
+                  : 'text-[#183B4E] dark:text-slate-300 hover:text-[#287A65] dark:hover:text-white'
               }`}
             >
               {label}
@@ -493,7 +493,7 @@ export const AdminView: React.FC<AdminViewProps> = ({
                       </div>
                     </td>
                     <td className="py-3.5 px-5">
-                      <span className="badge-monday bg-[#e7ecff] text-[#6161ff] font-medium">{l.categoria}</span>
+                      <span className="badge-monday bg-[#287A65]/12 text-[#287A65] font-medium">{l.categoria}</span>
                     </td>
                     <td className="py-3.5 px-5 text-right font-mono tabular-nums font-semibold">
                       <span className={`badge-monday ${l.copias_disp === 0 ? 'bg-[#fcd0f8] text-[#991B1B]' : 'bg-[#bcfe90] text-[#2a5c4e]'}`}>
@@ -570,7 +570,7 @@ export const AdminView: React.FC<AdminViewProps> = ({
                 {categorias.map((c) => (
                   <tr key={c.id_categoria} className="hover:bg-[#f5f6f8]/80 transition-colors">
                     <td className="py-3.5 px-5 font-mono tabular-nums text-[#535768] whitespace-nowrap">
-                      <span className="badge-monday bg-[#dbdbff] text-[#6161ff] font-bold">CDU {c.codigo_archivo}</span>
+                      <span className="badge-monday bg-[#183B4E]/10 dark:bg-[#183B4E]/30 text-[#183B4E] dark:text-[#a5c4d4] font-bold">CDU {c.codigo_archivo}</span>
                     </td>
                     <td className="py-3.5 px-5 font-bold text-[#333333] whitespace-nowrap">
                       {c.nombre}
@@ -645,7 +645,7 @@ export const AdminView: React.FC<AdminViewProps> = ({
                     <td className="py-3.5 px-5 font-bold text-[#333333]">{u.nombre_completo}</td>
                     <td className="py-3.5 px-5 font-mono text-[#535768]">{u.email}</td>
                     <td className="py-3.5 px-5">
-                      <span className="badge-monday bg-[#dbdbff] text-[#6161ff] font-bold">{u.rol}</span>
+                      <span className="badge-monday bg-[#287A65]/12 text-[#287A65] font-bold">{u.rol}</span>
                     </td>
                     <td className="py-3.5 px-5 font-semibold">
                       {u.estado === 'SANCIONADO' ? (
@@ -894,7 +894,7 @@ export const AdminView: React.FC<AdminViewProps> = ({
                         type="checkbox"
                         checked={selectedAutores.includes(a.id_autor)}
                         onChange={() => toggleAutorSelection(a.id_autor)}
-                        className="rounded text-[#6161ff] focus:ring-[#6161ff]"
+                        className="rounded text-[#287A65] focus:ring-[#287A65]"
                       />
                       <span className="truncate">{a.nombre}</span>
                     </label>

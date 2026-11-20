@@ -238,12 +238,12 @@ export const MostradorView: React.FC<MostradorViewProps> = ({
       {/* Encabezado de Mostrador */}
       <div className="no-print card-monday p-8 flex flex-col sm:flex-row sm:items-end justify-between gap-6">
         <div>
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-[6px] bg-[#e7ecff] text-[#6161ff] text-xs font-semibold uppercase tracking-wider mb-2.5">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-[6px] bg-[#287A65]/12 text-[#287A65] text-xs font-semibold uppercase tracking-wider mb-2.5">
             <ArrowRightLeft className="w-3.5 h-3.5" />
             <span>Circulación Transaccional</span>
           </div>
-          <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-slate-900 text-balance">
-            Mostrador de <span className="text-indigo-600 font-bold">préstamos y devoluciones</span>
+          <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-[#183B4E] dark:text-white text-balance">
+            Mostrador de <span className="text-[#287A65] dark:text-[#38a58a] font-bold">préstamos y devoluciones</span>
           </h1>
           <p className="mt-2 text-sm text-[#535768]">
             Operaciones atómicas con verificación de solvencia del lector, descuento de inventario y cálculo automático de 8 días hábiles.
@@ -266,15 +266,15 @@ export const MostradorView: React.FC<MostradorViewProps> = ({
       {/* Formulario de Nuevo Préstamo */}
       <section className="no-print card-monday bg-[#ffffff] p-6 sm:p-8 space-y-6">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-[#d0d4e4]">
-          <h2 className="text-xl font-bold text-[#333333] tracking-tight">
+          <h2 className="text-xl font-bold text-[#183B4E] dark:text-white tracking-tight">
             Registrar Salida de Ejemplar
           </h2>
           {fechaPreview && (
-            <div className="badge-monday bg-[#dbdbff] text-[#6161ff] font-mono text-xs py-1 px-3">
+            <div className="badge-monday bg-[#183B4E]/10 dark:bg-[#183B4E]/30 text-[#183B4E] dark:text-[#a5c4d4] font-mono text-xs py-1 px-3">
               <Calendar className="w-3.5 h-3.5 mr-1.5" />
               <span>
                 Salida: {fechaPreview.fecha_prestamo} → Límite (+8 días):{' '}
-                <strong className="text-[#333333]">{fechaPreview.fecha_limite}</strong>
+                <strong className="text-[#183B4E] dark:text-white">{fechaPreview.fecha_limite}</strong>
               </span>
             </div>
           )}
@@ -500,7 +500,7 @@ export const MostradorView: React.FC<MostradorViewProps> = ({
           </div>
 
           <div className="flex flex-wrap items-center gap-3">
-            <div className="inline-flex rounded-[160px] border border-[#dddfeb] bg-[#f5f6f8] p-1 shadow-2xs">
+            <div className="inline-flex rounded-[160px] border border-[#183B4E]/15 dark:border-slate-700/70 bg-white/70 dark:bg-slate-800/60 p-1 shadow-2xs">
               {(
                 [
                   ['pendientes', 'Pendientes / Mora'],
@@ -514,8 +514,8 @@ export const MostradorView: React.FC<MostradorViewProps> = ({
                   onClick={() => setLoanFilter(key)}
                   className={`px-3.5 py-1.5 text-xs font-medium rounded-[160px] transition-all cursor-pointer whitespace-nowrap ${
                     loanFilter === key
-                      ? 'bg-[#6161ff] text-white shadow-xs font-semibold'
-                      : 'text-[#535768] hover:text-[#333333]'
+                      ? 'bg-[#287A65] text-white shadow-xs font-semibold'
+                      : 'text-[#183B4E] dark:text-slate-300 hover:text-[#287A65]'
                   }`}
                 >
                   {label}
@@ -584,7 +584,7 @@ export const MostradorView: React.FC<MostradorViewProps> = ({
                         isReturning ? 'opacity-60 animate-pulse' : ''
                       }`}
                     >
-                      <td className="py-3.5 px-5 font-mono font-bold tabular-nums text-[#6161ff]">
+                      <td className="py-3.5 px-5 font-mono font-bold tabular-nums text-[#287A65] dark:text-[#38a58a]">
                         #{p.id_prestamo}
                       </td>
                       <td className="py-3.5 px-5">
@@ -615,7 +615,7 @@ export const MostradorView: React.FC<MostradorViewProps> = ({
                             DEVUELTO ({p.fecha_entrega})
                           </span>
                         ) : (
-                          <span className="badge-monday bg-[#dbdbff] text-[#6161ff] font-semibold">
+                          <span className="badge-monday bg-[#287A65]/12 text-[#287A65] font-semibold">
                             ACTIVO
                           </span>
                         )}
@@ -626,7 +626,7 @@ export const MostradorView: React.FC<MostradorViewProps> = ({
                             type="button"
                             disabled={isReturning}
                             onClick={() => handleReturnLoan(p)}
-                            className="btn-outline-pill text-xs py-1.5 px-3.5 whitespace-nowrap cursor-pointer hover:bg-[#6161ff] hover:text-white hover:border-[#6161ff]"
+                            className="btn-outline-pill text-xs py-1.5 px-3.5 whitespace-nowrap cursor-pointer hover:bg-[#287A65] hover:text-white hover:border-[#287A65]"
                           >
                             {isReturning ? 'Procesando...' : 'Registrar Devolución'}
                           </button>
@@ -634,7 +634,7 @@ export const MostradorView: React.FC<MostradorViewProps> = ({
                           <button
                             type="button"
                             onClick={() => setTicketPrestamo(p)}
-                            className="btn-pill text-xs text-[#6161ff] hover:underline cursor-pointer"
+                            className="btn-pill text-xs text-[#287A65] hover:underline cursor-pointer"
                           >
                             Ver ticket
                           </button>
@@ -685,7 +685,7 @@ export const MostradorView: React.FC<MostradorViewProps> = ({
                 <p className="text-[11px] text-[#535768] mt-0.5">
                   COMPROBANTE OFICIAL DE CIRCULACIÓN
                 </p>
-                <p className="mt-1 font-bold text-sm text-[#6161ff]">FOLIO #{ticketPrestamo.id_prestamo}</p>
+                <p className="mt-1 font-bold text-sm text-[#287A65]">FOLIO #{ticketPrestamo.id_prestamo}</p>
               </div>
 
               <dl className="space-y-2">
@@ -711,7 +711,7 @@ export const MostradorView: React.FC<MostradorViewProps> = ({
                 </div>
                 <div className="flex justify-between gap-2">
                   <dt className="text-[#535768]">Fecha límite (+8d háb.):</dt>
-                  <dd className="text-right font-bold text-[#6161ff] tabular-nums">{ticketPrestamo.fecha_limite}</dd>
+                  <dd className="text-right font-bold text-[#287A65] tabular-nums">{ticketPrestamo.fecha_limite}</dd>
                 </div>
                 <div className="flex justify-between gap-2">
                   <dt className="text-[#535768]">Estado:</dt>

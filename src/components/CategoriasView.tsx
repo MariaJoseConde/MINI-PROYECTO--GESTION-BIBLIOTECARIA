@@ -10,12 +10,12 @@ interface CategoriasViewProps {
 }
 
 const CATEGORY_PASTELS = [
-  { bg: 'bg-[#eddff7]/40', badge: 'bg-[#eddff7] text-[#6161ff]', border: 'border-[#eddff7]' },
-  { bg: 'bg-[#abf0ff]/30', badge: 'bg-[#abf0ff] text-[#2a5c4e]', border: 'border-[#abf0ff]' },
-  { bg: 'bg-[#bcfe90]/35', badge: 'bg-[#bcfe90] text-[#2a5c4e]', border: 'border-[#bcfe90]' },
-  { bg: 'bg-[#e7ecff]/50', badge: 'bg-[#e7ecff] text-[#6161ff]', border: 'border-[#e7ecff]' },
-  { bg: 'bg-[#fcd0f8]/35', badge: 'bg-[#fcd0f8] text-[#9450fd]', border: 'border-[#fcd0f8]' },
-  { bg: 'bg-[#d1faff]/40', badge: 'bg-[#d1faff] text-[#2a5c4e]', border: 'border-[#d1faff]' },
+  { bg: 'bg-[#F3EBDD]/60 dark:bg-[#132733]', badge: 'bg-[#F3EBDD] text-[#183B4E]', border: 'border-[#e3d5bf]' },
+  { bg: 'bg-[#e6f4f0]/70 dark:bg-[#0f2922]', badge: 'bg-[#e6f4f0] text-[#287A65]', border: 'border-[#bfe3d8]' },
+  { bg: 'bg-[#e8eff3]/70 dark:bg-[#142e3d]', badge: 'bg-[#e8eff3] text-[#183B4E]', border: 'border-[#c5d8e2]' },
+  { bg: 'bg-[#faf6ee]/70 dark:bg-[#162b37]', badge: 'bg-[#faf6ee] text-[#183B4E]', border: 'border-[#ebdcc9]' },
+  { bg: 'bg-[#edf7f4]/70 dark:bg-[#0d2620]', badge: 'bg-[#edf7f4] text-[#287A65]', border: 'border-[#cbebe0]' },
+  { bg: 'bg-[#f5efe4]/70 dark:bg-[#132836]', badge: 'bg-[#f5efe4] text-[#183B4E]', border: 'border-[#e3d5bf]' },
 ];
 
 export const CategoriasView: React.FC<CategoriasViewProps> = ({
@@ -26,18 +26,18 @@ export const CategoriasView: React.FC<CategoriasViewProps> = ({
     <div className="space-y-8">
       <div className="card-monday p-8 flex flex-col sm:flex-row sm:items-end justify-between gap-6">
         <div className="max-w-2xl">
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-indigo-50/80 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 text-xs font-semibold uppercase tracking-wider mb-2.5 border border-indigo-200/80 dark:border-indigo-800/80 shadow-2xs">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#287A65]/12 dark:bg-[#287A65]/25 text-[#287A65] dark:text-[#38a58a] text-xs font-semibold uppercase tracking-wider mb-2.5 border border-[#287A65]/30 shadow-2xs">
             <span>Clasificación Temática</span>
           </div>
-          <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-slate-900 dark:text-white text-balance">
-            Categorías y <span className="text-indigo-600 dark:text-indigo-400 font-bold">colecciones bibliográficas</span>
+          <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-[#183B4E] dark:text-white text-balance">
+            Categorías y <span className="text-[#287A65] dark:text-[#38a58a] font-bold">colecciones bibliográficas</span>
           </h1>
           <p className="mt-2.5 text-sm text-slate-700 dark:text-slate-300 leading-relaxed">
             Explora la descripción curatorial, ubicación física en sala, público recomendado y enfoque de lectura de cada colección del catálogo.
           </p>
         </div>
 
-        <div className="badge-monday bg-indigo-50/80 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 font-medium text-xs px-3 py-1.5 shrink-0">
+        <div className="badge-monday bg-[#287A65]/12 dark:bg-[#287A65]/25 text-[#287A65] dark:text-[#38a58a] font-medium text-xs px-3 py-1.5 shrink-0">
           {categorias.length} colecciones catalogadas
         </div>
       </div>

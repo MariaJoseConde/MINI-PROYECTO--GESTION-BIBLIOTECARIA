@@ -244,13 +244,13 @@ export const EvaluacionesView: React.FC<EvaluacionesViewProps> = ({
         {/* Encabezado contextual y selector explícito de tema */}
         <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 pt-2 border-t border-slate-200/80 dark:border-slate-800/80">
           <div className="space-y-2 max-w-2xl">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-indigo-50/80 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 text-xs font-semibold uppercase tracking-wider border border-indigo-200/80 dark:border-indigo-800/80">
-              <Sparkles className="w-4 h-4 text-indigo-600 dark:text-indigo-400 shrink-0" />
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-[#287A65]/12 dark:bg-[#287A65]/25 text-[#287A65] dark:text-[#38a58a] text-xs font-semibold uppercase tracking-wider border border-[#287A65]/30">
+              <Sparkles className="w-4 h-4 text-[#287A65] dark:text-[#38a58a] shrink-0" />
               <span>Módulo de Estudio Guiado e Inteligencia Artificial</span>
             </div>
             <h1
               id="zona-contexto-heading"
-              className="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900 dark:text-white text-left"
+              className="text-2xl sm:text-3xl font-bold tracking-tight text-[#183B4E] dark:text-white text-left"
             >
               {activeBook?.titulo || 'Sesión de Comprensión y Aprendizaje'}
             </h1>
@@ -263,7 +263,7 @@ export const EvaluacionesView: React.FC<EvaluacionesViewProps> = ({
           <div className="shrink-0 w-full lg:w-80 space-y-2">
             <label
               htmlFor="selector-obra-estudio"
-              className="block text-sm font-medium text-slate-900 dark:text-slate-100 text-left"
+              className="block text-sm font-medium text-[#183B4E] dark:text-slate-100 text-left"
             >
               Seleccionar tema u obra para estudiar:
             </label>
@@ -271,7 +271,7 @@ export const EvaluacionesView: React.FC<EvaluacionesViewProps> = ({
               id="selector-obra-estudio"
               value={selectedBookId || ''}
               onChange={(e) => handleSelectBookChange(Number(e.target.value))}
-              className="w-full min-h-[44px] px-3.5 py-2 rounded-lg border border-slate-300/80 dark:border-slate-700/80 bg-white/70 dark:bg-slate-800/70 text-slate-900 dark:text-slate-100 font-medium text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-600 cursor-pointer shadow-2xs"
+              className="w-full min-h-[44px] px-3.5 py-2 rounded-lg border border-[#183B4E]/20 dark:border-slate-700/80 bg-white/80 dark:bg-slate-800/70 text-[#183B4E] dark:text-slate-100 font-medium text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#287A65] cursor-pointer shadow-2xs"
             >
               {libros.map((l) => (
                 <option key={l.id_libro} value={l.id_libro} className="bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100">
@@ -354,10 +354,10 @@ export const EvaluacionesView: React.FC<EvaluacionesViewProps> = ({
           {/* Bloque 1: Definición y Concepto Clave */}
           <article className="card-monday p-6 sm:p-7 flex flex-col justify-between space-y-4">
             <div className="space-y-3">
-              <div className="w-10 h-10 rounded-xl bg-indigo-50/80 dark:bg-indigo-950/60 border border-indigo-200/80 dark:border-indigo-800/80 text-indigo-700 dark:text-indigo-300 flex items-center justify-center shrink-0">
+              <div className="w-10 h-10 rounded-xl bg-[#287A65]/12 dark:bg-[#287A65]/25 border border-[#287A65]/30 text-[#287A65] dark:text-[#38a58a] flex items-center justify-center shrink-0">
                 <BookOpen className="w-5 h-5" />
               </div>
-              <h3 className="text-lg font-bold text-slate-900 dark:text-white text-left">
+              <h3 className="text-lg font-bold text-[#183B4E] dark:text-white text-left">
                 1. Concepto y Definición
               </h3>
               <p className="text-base font-normal text-slate-800 dark:text-slate-200 leading-relaxed max-w-prose text-left">
@@ -373,10 +373,10 @@ export const EvaluacionesView: React.FC<EvaluacionesViewProps> = ({
           {/* Bloque 2: Ejemplo Práctico y Bloque de Código / Cita Técnica */}
           <article className="card-monday p-6 sm:p-7 flex flex-col justify-between space-y-4">
             <div className="space-y-3">
-              <div className="w-10 h-10 rounded-xl bg-indigo-50/80 dark:bg-indigo-950/60 border border-indigo-200/80 dark:border-indigo-800/80 text-indigo-700 dark:text-indigo-300 flex items-center justify-center shrink-0">
+              <div className="w-10 h-10 rounded-xl bg-[#287A65]/12 dark:bg-[#287A65]/25 border border-[#287A65]/30 text-[#287A65] dark:text-[#38a58a] flex items-center justify-center shrink-0">
                 <Code className="w-5 h-5" />
               </div>
-              <h3 className="text-lg font-bold text-slate-900 dark:text-white text-left">
+              <h3 className="text-lg font-bold text-[#183B4E] dark:text-white text-left">
                 2. Aplicación Práctica y Estructura
               </h3>
               <p className="text-base font-normal text-slate-800 dark:text-slate-200 leading-relaxed max-w-prose text-left">
@@ -392,7 +392,7 @@ export const EvaluacionesView: React.FC<EvaluacionesViewProps> = ({
                   <button
                     type="button"
                     onClick={() => handleCopyCode(technicalExampleCode)}
-                    className="min-h-[44px] min-w-[44px] px-3 rounded-lg bg-slate-800 text-slate-200 hover:bg-slate-700 hover:text-white transition-colors flex items-center gap-1.5 text-xs font-medium cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400"
+                    className="min-h-[44px] min-w-[44px] px-3 rounded-lg bg-slate-800 text-slate-200 hover:bg-slate-700 hover:text-white transition-colors flex items-center gap-1.5 text-xs font-medium cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#287A65]"
                     aria-label="Copiar código al portapapeles"
                   >
                     {copiedCode ? (
@@ -421,10 +421,10 @@ export const EvaluacionesView: React.FC<EvaluacionesViewProps> = ({
           {/* Bloque 3: Resumen Clave y Puntos de Retención */}
           <article className="card-monday p-6 sm:p-7 flex flex-col justify-between space-y-4">
             <div className="space-y-3">
-              <div className="w-10 h-10 rounded-xl bg-indigo-50/80 dark:bg-indigo-950/60 border border-indigo-200/80 dark:border-indigo-800/80 text-indigo-700 dark:text-indigo-300 flex items-center justify-center shrink-0">
+              <div className="w-10 h-10 rounded-xl bg-[#287A65]/12 dark:bg-[#287A65]/25 border border-[#287A65]/30 text-[#287A65] dark:text-[#38a58a] flex items-center justify-center shrink-0">
                 <Sparkles className="w-5 h-5" />
               </div>
-              <h3 className="text-lg font-bold text-slate-900 dark:text-white text-left">
+              <h3 className="text-lg font-bold text-[#183B4E] dark:text-white text-left">
                 3. Resumen Clave para Estudio
               </h3>
               <ul className="space-y-2.5 text-base font-normal text-slate-800 dark:text-slate-200 leading-relaxed text-left max-w-prose">

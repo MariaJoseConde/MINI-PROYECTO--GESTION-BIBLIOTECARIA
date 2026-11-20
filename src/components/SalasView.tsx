@@ -183,14 +183,14 @@ export const SalasView: React.FC<SalasViewProps> = ({
       {/* Cabecera */}
       <div className="card-monday bg-[#ffffff] dark:bg-slate-900/60 p-8 flex flex-col lg:flex-row lg:items-end justify-between gap-6">
         <div className="max-w-2xl">
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-[6px] bg-[#e7ecff] dark:bg-indigo-950/60 text-[#6161ff] dark:text-indigo-300 text-xs font-semibold uppercase tracking-wider mb-2.5 border border-indigo-200/80 dark:border-indigo-800/80">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-[6px] bg-[#287A65]/12 dark:bg-[#287A65]/25 text-[#287A65] dark:text-[#38a58a] text-xs font-semibold uppercase tracking-wider mb-2.5 border border-[#287A65]/30">
             <Compass className="w-3.5 h-3.5" />
             <span>Orientación Espacial</span>
           </div>
-          <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-slate-900 dark:text-white text-balance">
-            Organización de salas, <span className="text-indigo-600 dark:text-indigo-400 font-bold">pasillos y estanterías</span>
+          <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-[#183B4E] dark:text-white text-balance">
+            Organización de salas, <span className="text-[#287A65] dark:text-[#38a58a] font-bold">pasillos y estanterías</span>
           </h1>
-          <p className="mt-2.5 text-sm text-[#535768] dark:text-slate-300 leading-relaxed">
+          <p className="mt-2.5 text-sm text-[#183B4E]/80 dark:text-slate-300 leading-relaxed">
             Ubica físicamente cada colección dentro del edificio, explora la distribución de pasillos y consulta en qué estante se encuentra cada obra.
           </p>
         </div>
@@ -251,13 +251,13 @@ export const SalasView: React.FC<SalasViewProps> = ({
                   style={{ top: s.meta.pinPosition.top, left: s.meta.pinPosition.left }}
                   className={`absolute -translate-x-1/2 -translate-y-1/2 inline-flex items-center gap-1.5 rounded-[160px] px-3 py-1.5 text-xs font-semibold shadow-md transition-all cursor-pointer whitespace-nowrap ${
                     isSelected
-                      ? 'bg-[#6161ff] text-white ring-2 ring-white scale-105'
-                      : 'bg-[#333333]/90 text-white hover:bg-[#6161ff] hover:scale-105'
+                      ? 'bg-[#287A65] text-white ring-2 ring-white scale-105'
+                      : 'bg-[#183B4E]/90 text-white hover:bg-[#287A65] hover:scale-105'
                   }`}
                 >
                   <MapPin className="w-3.5 h-3.5 shrink-0" />
                   <span>{s.sala}</span>
-                  <span className="font-mono text-[10px] text-slate-700 font-semibold tabular-nums">
+                  <span className="font-mono text-[10px] text-white/80 font-semibold tabular-nums">
                     ({s.pasillos.length})
                   </span>
                 </button>
@@ -267,14 +267,14 @@ export const SalasView: React.FC<SalasViewProps> = ({
         </div>
 
         {/* Selector rápido de Salas (Pills) */}
-        <div className="px-6 py-4 border-t border-[#d0d4e4] dark:border-slate-800/80 bg-[#ffffff] dark:bg-slate-900/60 flex flex-wrap items-center gap-2">
+        <div className="px-6 py-4 border-t border-[#183B4E]/12 dark:border-slate-800/80 bg-[#ffffff] dark:bg-slate-900/60 flex flex-wrap items-center gap-2">
           <button
             type="button"
             onClick={() => setSelectedSala('Todas')}
             className={`px-3.5 py-1.5 rounded-[160px] text-xs font-medium transition-all cursor-pointer whitespace-nowrap ${
               selectedSala === 'Todas'
-                ? 'bg-[#6161ff] dark:bg-indigo-600 text-white shadow-xs font-semibold'
-                : 'bg-[#f5f6f8] dark:bg-slate-800/60 text-[#535768] dark:text-slate-300 hover:text-[#333333] dark:hover:text-white hover:bg-[#e7ecff] dark:hover:bg-indigo-950/60'
+                ? 'bg-[#287A65] text-white shadow-xs font-semibold'
+                : 'bg-[#F3EBDD] dark:bg-slate-800/60 text-[#183B4E] dark:text-slate-300 hover:text-[#287A65] dark:hover:text-white hover:bg-[#287A65]/15'
             }`}
           >
             Todas las salas ({salasAgrupadas.length})
@@ -287,8 +287,8 @@ export const SalasView: React.FC<SalasViewProps> = ({
               onClick={() => setSelectedSala(s.sala)}
               className={`px-3.5 py-1.5 rounded-[160px] text-xs font-medium transition-all cursor-pointer whitespace-nowrap ${
                 selectedSala === s.sala
-                  ? 'bg-[#6161ff] dark:bg-indigo-600 text-white shadow-xs font-semibold'
-                  : 'bg-[#f5f6f8] dark:bg-slate-800/60 text-[#535768] dark:text-slate-300 hover:text-[#333333] dark:hover:text-white hover:bg-[#e7ecff] dark:hover:bg-indigo-950/60'
+                  ? 'bg-[#287A65] text-white shadow-xs font-semibold'
+                  : 'bg-[#F3EBDD] dark:bg-slate-800/60 text-[#183B4E] dark:text-slate-300 hover:text-[#287A65] dark:hover:text-white hover:bg-[#287A65]/15'
               }`}
             >
               {s.sala} · {s.pasillos.length} {s.pasillos.length === 1 ? 'pasillo' : 'pasillos'}
@@ -320,10 +320,10 @@ export const SalasView: React.FC<SalasViewProps> = ({
             >
               <div className="px-6 py-5 border-b border-[#d0d4e4] bg-[#f5f6f8] flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                 <div>
-                  <div className="badge-monday bg-[#dbdbff] text-[#6161ff] font-semibold text-[10px] mb-1">
+                  <div className="badge-monday bg-[#183B4E]/10 dark:bg-[#183B4E]/30 text-[#183B4E] dark:text-[#a5c4d4] font-semibold text-[10px] mb-1">
                     {grupo.meta.nivel}
                   </div>
-                  <h2 className="text-2xl font-bold text-[#333333] tracking-tight">
+                  <h2 className="text-2xl font-bold text-[#183B4E] dark:text-white tracking-tight">
                     {grupo.sala}
                   </h2>
                   <p className="text-xs text-[#535768] mt-0.5">{grupo.meta.subtitulo}</p>
@@ -345,7 +345,7 @@ export const SalasView: React.FC<SalasViewProps> = ({
                 {grupo.pasillos.map(({ categoria, pasilloLabel, libros: librosPasillo }) => (
                   <article
                     key={categoria.id_categoria}
-                    className="rounded-[16px] border border-[#d0d4e4] bg-[#ffffff] overflow-hidden flex flex-col justify-between shadow-xs hover:border-[#6161ff]/40 transition-colors"
+                    className="rounded-[16px] border border-[#d0d4e4] bg-[#ffffff] overflow-hidden flex flex-col justify-between shadow-xs hover:border-[#287A65]/50 transition-colors"
                   >
                     <div>
                       <div className="flex gap-4 p-4 bg-[#f5f6f8] border-b border-[#d0d4e4]">
@@ -359,13 +359,13 @@ export const SalasView: React.FC<SalasViewProps> = ({
                         </div>
 
                         <div className="flex-1 min-w-0">
-                          <div className="flex items-center justify-between gap-2 text-[11px] font-mono text-[#6161ff] font-semibold">
+                          <div className="flex items-center justify-between gap-2 text-[11px] font-mono text-[#287A65] dark:text-[#38a58a] font-semibold">
                             <span className="truncate">{pasilloLabel}</span>
                             <span className="badge-monday bg-[#ffffff] text-[#535768] shrink-0">
                               CDU {categoria.codigo_archivo}
                             </span>
                           </div>
-                          <h3 className="mt-1 text-base font-bold text-[#333333] truncate">
+                          <h3 className="mt-1 text-base font-bold text-[#183B4E] dark:text-white truncate">
                             {categoria.nombre}
                           </h3>
                           <p className="mt-0.5 text-xs text-[#535768] line-clamp-2">
@@ -394,7 +394,7 @@ export const SalasView: React.FC<SalasViewProps> = ({
                                   className="w-full text-left group flex items-start justify-between gap-3 cursor-pointer"
                                 >
                                   <div className="min-w-0">
-                                    <div className="text-xs font-semibold text-[#333333] group-hover:text-[#6161ff] group-hover:underline underline-offset-2 truncate">
+                                    <div className="text-xs font-semibold text-[#333333] dark:text-slate-200 group-hover:text-[#287A65] dark:group-hover:text-[#38a58a] group-hover:underline underline-offset-2 truncate">
                                       {libro.titulo}
                                     </div>
                                     <div className="text-[11px] font-mono text-[#535768] truncate">
