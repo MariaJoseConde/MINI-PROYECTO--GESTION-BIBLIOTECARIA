@@ -242,19 +242,19 @@ export const EvaluacionesView: React.FC<EvaluacionesViewProps> = ({
         </nav>
 
         {/* Encabezado contextual y selector explícito de tema */}
-        <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 pt-2 border-t border-slate-200">
+        <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 pt-2 border-t border-slate-200/80 dark:border-slate-800/80">
           <div className="space-y-2 max-w-2xl">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-indigo-50 text-indigo-700 text-xs font-semibold uppercase tracking-wider border border-indigo-200">
-              <Sparkles className="w-4 h-4 text-indigo-600 shrink-0" />
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-indigo-50/80 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 text-xs font-semibold uppercase tracking-wider border border-indigo-200/80 dark:border-indigo-800/80">
+              <Sparkles className="w-4 h-4 text-indigo-600 dark:text-indigo-400 shrink-0" />
               <span>Módulo de Estudio Guiado e Inteligencia Artificial</span>
             </div>
             <h1
               id="zona-contexto-heading"
-              className="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900 text-left"
+              className="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900 dark:text-white text-left"
             >
               {activeBook?.titulo || 'Sesión de Comprensión y Aprendizaje'}
             </h1>
-            <p className="text-base font-normal text-slate-800 max-w-prose text-left leading-relaxed">
+            <p className="text-base font-normal text-slate-800 dark:text-slate-200 max-w-prose text-left leading-relaxed">
               Analiza los conceptos clave estructurados por IA, examina ejemplos aplicados y consolida tu comprensión con preguntas de verificación inmediata.
             </p>
           </div>
@@ -263,7 +263,7 @@ export const EvaluacionesView: React.FC<EvaluacionesViewProps> = ({
           <div className="shrink-0 w-full lg:w-80 space-y-2">
             <label
               htmlFor="selector-obra-estudio"
-              className="block text-sm font-medium text-slate-900 text-left"
+              className="block text-sm font-medium text-slate-900 dark:text-slate-100 text-left"
             >
               Seleccionar tema u obra para estudiar:
             </label>
@@ -271,10 +271,10 @@ export const EvaluacionesView: React.FC<EvaluacionesViewProps> = ({
               id="selector-obra-estudio"
               value={selectedBookId || ''}
               onChange={(e) => handleSelectBookChange(Number(e.target.value))}
-              className="w-full min-h-[44px] px-3.5 py-2 rounded-lg border border-slate-300 bg-white text-slate-900 font-medium text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-600 cursor-pointer"
+              className="w-full min-h-[44px] px-3.5 py-2 rounded-lg border border-slate-300/80 dark:border-slate-700/80 bg-white/70 dark:bg-slate-800/70 text-slate-900 dark:text-slate-100 font-medium text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-600 cursor-pointer shadow-2xs"
             >
               {libros.map((l) => (
-                <option key={l.id_libro} value={l.id_libro}>
+                <option key={l.id_libro} value={l.id_libro} className="bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100">
                   {l.titulo} ({l.categoria})
                 </option>
               ))}
@@ -284,29 +284,29 @@ export const EvaluacionesView: React.FC<EvaluacionesViewProps> = ({
 
         {/* Metadatos del tema y barra de progreso de la sesión */}
         {activeBook && (
-          <div className="pt-4 border-t border-slate-200 flex flex-wrap items-center justify-between gap-4 text-sm font-medium text-slate-600">
+          <div className="pt-4 border-t border-slate-200/80 dark:border-slate-800/80 flex flex-wrap items-center justify-between gap-4 text-sm font-medium text-slate-600 dark:text-slate-400">
             <div className="flex flex-wrap items-center gap-4">
               <span>
-                Colección: <strong className="text-slate-900 font-semibold">{activeBook.categoria}</strong>
+                Colección: <strong className="text-slate-900 dark:text-slate-100 font-semibold">{activeBook.categoria}</strong>
               </span>
               <span>·</span>
               <span>
-                Autor(es): <strong className="text-slate-900 font-semibold">{activeBook.autores.map((a) => a.nombre).join(', ') || 'Equipo editorial'}</strong>
+                Autor(es): <strong className="text-slate-900 dark:text-slate-100 font-semibold">{activeBook.autores.map((a) => a.nombre).join(', ') || 'Equipo editorial'}</strong>
               </span>
               <span>·</span>
               <span>
-                Ubicación: <span className="font-mono text-slate-800">{activeBook.ubicacion_estante || 'Sala General'}</span>
+                Ubicación: <span className="font-mono text-slate-800 dark:text-slate-200">{activeBook.ubicacion_estante || 'Sala General'}</span>
               </span>
             </div>
 
             {totalQuestions > 0 && (
               <div className="flex items-center gap-2">
-                <span className="text-slate-700">Progreso de la sesión:</span>
-                <span className="inline-flex items-center px-2.5 py-0.5 rounded text-xs font-semibold bg-indigo-50 text-indigo-700 border border-indigo-200">
+                <span className="text-slate-700 dark:text-slate-300">Progreso de la sesión:</span>
+                <span className="inline-flex items-center px-2.5 py-0.5 rounded text-xs font-semibold bg-indigo-50/80 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 border border-indigo-200/80 dark:border-indigo-800/80">
                   {answeredCount}/{totalQuestions} respondidas
                 </span>
                 {answeredCount > 0 && (
-                  <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-semibold bg-emerald-50 text-emerald-800 border border-emerald-300">
+                  <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-semibold bg-emerald-50/80 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 border border-emerald-300/80 dark:border-emerald-800/80">
                     {correctCount} aciertos
                   </span>
                 )}
@@ -497,8 +497,8 @@ export const EvaluacionesView: React.FC<EvaluacionesViewProps> = ({
                       currentQuestionIndex === qIdx
                         ? 'bg-indigo-600 text-white shadow-xs'
                         : userAnswers[qIdx] !== undefined
-                        ? 'bg-slate-100 text-slate-900 border border-slate-300 hover:bg-slate-200'
-                        : 'bg-white text-slate-700 border border-slate-200 hover:bg-slate-100'
+                        ? 'bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-slate-100 border border-slate-300 dark:border-slate-700 hover:bg-slate-200 dark:hover:bg-slate-700'
+                        : 'bg-white dark:bg-slate-900/60 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800'
                     }`}
                   >
                     {qIdx + 1}
@@ -508,8 +508,8 @@ export const EvaluacionesView: React.FC<EvaluacionesViewProps> = ({
             </div>
 
             {/* Enunciado */}
-            <div className="bg-slate-50 border border-slate-200 rounded-lg p-5">
-              <p className="text-base sm:text-lg font-bold text-slate-900 text-left leading-relaxed max-w-prose">
+            <div className="bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-800 rounded-lg p-5">
+              <p className="text-base sm:text-lg font-bold text-slate-900 dark:text-white text-left leading-relaxed max-w-prose">
                 {currentQuestion.pregunta}
               </p>
             </div>
@@ -522,14 +522,14 @@ export const EvaluacionesView: React.FC<EvaluacionesViewProps> = ({
                 const isOptionCorrect = currentQuestion.respuesta_correcta === letra;
 
                 let btnStyles =
-                  'bg-white border-slate-300 text-slate-800 hover:bg-slate-50 hover:border-slate-400';
+                  'bg-white dark:bg-slate-800/60 border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700/50 hover:border-slate-400 dark:hover:border-slate-600';
                 if (isAnswered) {
                   if (isOptionCorrect) {
-                    btnStyles = 'bg-emerald-50 border-emerald-500 text-emerald-900 font-semibold';
+                    btnStyles = 'bg-emerald-50 dark:bg-emerald-950/60 border-emerald-500 dark:border-emerald-600 text-emerald-900 dark:text-emerald-200 font-semibold';
                   } else if (isOptionSelected) {
-                    btnStyles = 'bg-rose-50 border-rose-500 text-rose-900 font-semibold';
+                    btnStyles = 'bg-rose-50 dark:bg-rose-950/60 border-rose-500 dark:border-rose-600 text-rose-900 dark:text-rose-200 font-semibold';
                   } else {
-                    btnStyles = 'bg-slate-50 border-slate-200 text-slate-600';
+                    btnStyles = 'bg-slate-50 dark:bg-slate-900/40 border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400';
                   }
                 }
 
@@ -546,7 +546,7 @@ export const EvaluacionesView: React.FC<EvaluacionesViewProps> = ({
                           ? 'bg-emerald-600 text-white'
                           : isAnswered && isOptionSelected
                           ? 'bg-rose-600 text-white'
-                          : 'bg-slate-100 text-slate-800 border border-slate-300'
+                          : 'bg-slate-100 dark:bg-slate-700 text-slate-800 dark:text-slate-200 border border-slate-300 dark:border-slate-600'
                       }`}
                     >
                       {letra}
@@ -555,10 +555,10 @@ export const EvaluacionesView: React.FC<EvaluacionesViewProps> = ({
                       {currentQuestion.opciones[letra]}
                     </span>
                     {isAnswered && isOptionCorrect && (
-                      <CheckCircle2 className="w-5 h-5 text-emerald-700 shrink-0 mt-0.5" />
+                      <CheckCircle2 className="w-5 h-5 text-emerald-700 dark:text-emerald-400 shrink-0 mt-0.5" />
                     )}
                     {isAnswered && isOptionSelected && !isOptionCorrect && (
-                      <XCircle className="w-5 h-5 text-rose-700 shrink-0 mt-0.5" />
+                      <XCircle className="w-5 h-5 text-rose-700 dark:text-rose-400 shrink-0 mt-0.5" />
                     )}
                   </button>
                 );
@@ -570,28 +570,28 @@ export const EvaluacionesView: React.FC<EvaluacionesViewProps> = ({
               <div
                 role="region"
                 aria-live="polite"
-                className="bg-amber-50 border border-amber-300 rounded-lg p-5 space-y-2"
+                className="bg-amber-50 dark:bg-amber-950/40 border border-amber-300 dark:border-amber-800/70 rounded-lg p-5 space-y-2"
               >
-                <div className="flex items-center gap-2 text-sm font-bold text-amber-900">
-                  <Lightbulb className="w-5 h-5 text-amber-800 shrink-0" />
+                <div className="flex items-center gap-2 text-sm font-bold text-amber-900 dark:text-amber-200">
+                  <Lightbulb className="w-5 h-5 text-amber-800 dark:text-amber-300 shrink-0" />
                   <span>Justificación Pedagógica y Pista de la IA</span>
                 </div>
-                <p className="text-sm font-medium text-amber-900 leading-relaxed text-left max-w-prose">
+                <p className="text-sm font-medium text-amber-900 dark:text-amber-200 leading-relaxed text-left max-w-prose">
                   {currentQuestion.justificacion}
                 </p>
-                <div className="text-xs font-semibold text-amber-800 pt-1 text-left">
+                <div className="text-xs font-semibold text-amber-800 dark:text-amber-300 pt-1 text-left">
                   Opción correcta identificada: ({currentQuestion.respuesta_correcta})
                 </div>
               </div>
             )}
 
             {/* Paginación de preguntas */}
-            <div className="flex flex-wrap items-center justify-between gap-4 pt-4 border-t border-slate-200">
+            <div className="flex flex-wrap items-center justify-between gap-4 pt-4 border-t border-slate-200/80 dark:border-slate-800/80">
               <button
                 type="button"
                 disabled={currentQuestionIndex === 0}
                 onClick={() => setCurrentQuestionIndex((prev) => Math.max(0, prev - 1))}
-                className="min-h-[44px] px-4 rounded-lg bg-white border border-slate-300 text-slate-800 hover:bg-slate-100 font-medium text-sm flex items-center gap-2 transition-colors cursor-pointer disabled:bg-slate-100 disabled:text-slate-400 disabled:border-slate-200 disabled:cursor-not-allowed focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-600"
+                className="min-h-[44px] px-4 rounded-lg bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 font-medium text-sm flex items-center gap-2 transition-colors cursor-pointer disabled:bg-slate-100 dark:disabled:bg-slate-800/40 disabled:text-slate-400 dark:disabled:text-slate-600 disabled:border-slate-200 dark:disabled:border-slate-800 disabled:cursor-not-allowed focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-600"
               >
                 <ChevronLeft className="w-4 h-4" />
                 <span>Pregunta anterior</span>
@@ -601,7 +601,7 @@ export const EvaluacionesView: React.FC<EvaluacionesViewProps> = ({
                 <button
                   type="button"
                   onClick={handleResetAnswers}
-                  className="min-h-[44px] px-4 rounded-lg bg-white border border-slate-300 text-slate-800 hover:bg-slate-100 font-medium text-sm flex items-center gap-2 transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-600"
+                  className="min-h-[44px] px-4 rounded-lg bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 font-medium text-sm flex items-center gap-2 transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-600"
                 >
                   <RotateCcw className="w-4 h-4" />
                   <span>Reiniciar sesión</span>
@@ -617,7 +617,7 @@ export const EvaluacionesView: React.FC<EvaluacionesViewProps> = ({
                     <ChevronRight className="w-4 h-4" />
                   </button>
                 ) : (
-                  <div className="inline-flex items-center px-4 py-2.5 rounded-lg bg-emerald-50 text-emerald-800 font-semibold text-sm border border-emerald-300">
+                  <div className="inline-flex items-center px-4 py-2.5 rounded-lg bg-emerald-50 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 font-semibold text-sm border border-emerald-300 dark:border-emerald-800">
                     ¡Evaluación completada! ({correctCount}/{totalQuestions})
                   </div>
                 )}
@@ -626,7 +626,7 @@ export const EvaluacionesView: React.FC<EvaluacionesViewProps> = ({
           </article>
         ) : (
           <article className="card-monday p-8 text-center space-y-4">
-            <HelpCircle className="w-12 h-12 text-slate-400 mx-auto" />
+            <HelpCircle className="w-12 h-12 text-slate-400 dark:text-slate-500 mx-auto" />
             <h3 className="text-lg font-bold text-slate-900 dark:text-white">
               No hay cuestionario activo para esta obra
             </h3>
@@ -639,11 +639,11 @@ export const EvaluacionesView: React.FC<EvaluacionesViewProps> = ({
         {/* Zona de Consulta y Ampliación con el Tutor IA (Reserva de espacio Anti-CLS) */}
         <article className="card-monday p-6 sm:p-8 space-y-6">
           <div className="space-y-1">
-            <h3 className="text-lg font-bold text-slate-900 text-left flex items-center gap-2">
-              <MessageSquare className="w-5 h-5 text-indigo-600" />
+            <h3 className="text-lg font-bold text-slate-900 dark:text-white text-left flex items-center gap-2">
+              <MessageSquare className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
               <span>Consulta Abierta con el Tutor Pedagógico IA</span>
             </h3>
-            <p className="text-sm font-normal text-slate-700 text-left max-w-prose leading-relaxed">
+            <p className="text-sm font-normal text-slate-700 dark:text-slate-300 text-left max-w-prose leading-relaxed">
               Escribe una pregunta sobre el tema, solicita un ejemplo adicional o pide clarificación sobre cualquier pasaje de la obra.
             </p>
           </div>
@@ -652,7 +652,7 @@ export const EvaluacionesView: React.FC<EvaluacionesViewProps> = ({
           <form onSubmit={handleAskTutor} className="space-y-3">
             <label
               htmlFor="ai-inquiry-input"
-              className="block text-sm font-medium text-slate-900 text-left"
+              className="block text-sm font-medium text-slate-900 dark:text-slate-100 text-left"
             >
               ¿Qué deseas consultar o profundizar con la IA?
             </label>
@@ -663,12 +663,12 @@ export const EvaluacionesView: React.FC<EvaluacionesViewProps> = ({
                 value={inquiryText}
                 onChange={(e) => setInquiryText(e.target.value)}
                 placeholder="Ej. Explica la metáfora central del capítulo o dame otro ejemplo práctico..."
-                className="flex-1 min-h-[44px] px-4 rounded-lg border border-slate-300 bg-white text-slate-900 text-sm font-normal transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-600"
+                className="flex-1 min-h-[44px] px-4 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 text-sm font-normal transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-600"
               />
               <button
                 type="submit"
                 disabled={isAiGenerating || !inquiryText.trim()}
-                className="min-h-[44px] min-w-[44px] px-5 rounded-lg bg-indigo-600 text-white hover:bg-indigo-700 font-medium text-sm flex items-center justify-center gap-2 shadow-xs transition-colors cursor-pointer disabled:bg-slate-200 disabled:text-slate-500 disabled:cursor-not-allowed focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-600 shrink-0"
+                className="min-h-[44px] min-w-[44px] px-5 rounded-lg bg-indigo-600 text-white hover:bg-indigo-700 font-medium text-sm flex items-center justify-center gap-2 shadow-xs transition-colors cursor-pointer disabled:bg-slate-200 dark:disabled:bg-slate-800/40 disabled:text-slate-500 dark:disabled:text-slate-600 disabled:cursor-not-allowed focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-600 shrink-0"
               >
                 <Send className="w-4 h-4" />
                 <span>Consultar</span>
@@ -677,47 +677,47 @@ export const EvaluacionesView: React.FC<EvaluacionesViewProps> = ({
           </form>
 
           {/* Contenedor reservado para evitar Cumulative Layout Shift (CLS) */}
-          <div className="min-h-[140px] rounded-lg border border-dashed border-slate-200 bg-slate-50 p-6 flex items-center justify-center">
+          <div className="min-h-[140px] rounded-lg border border-dashed border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/40 p-6 flex items-center justify-center">
             {isAiGenerating ? (
               <div
                 role="status"
                 aria-live="polite"
                 className="flex flex-col items-center justify-center gap-3 text-center"
               >
-                <div className="w-6 h-6 rounded-full border-2 border-indigo-600 border-t-transparent animate-spin" />
-                <span className="text-sm font-medium text-indigo-700">
+                <div className="w-6 h-6 rounded-full border-2 border-indigo-600 dark:border-indigo-400 border-t-transparent animate-spin" />
+                <span className="text-sm font-medium text-indigo-700 dark:text-indigo-300">
                   Analizando tu consulta y sintetizando la respuesta pedagógica...
                 </span>
-                <span className="text-xs font-normal text-slate-500">
+                <span className="text-xs font-normal text-slate-500 dark:text-slate-400">
                   Espacio reservado para evitar saltos bruscos en el diseño (Anti-CLS)
                 </span>
               </div>
             ) : aiTutorResponse ? (
               <div className="w-full text-left space-y-3">
-                <div className="flex items-center justify-between gap-2 border-b border-slate-200 pb-2">
-                  <span className="text-xs font-semibold uppercase tracking-wider text-indigo-700">
+                <div className="flex items-center justify-between gap-2 border-b border-slate-200 dark:border-slate-800 pb-2">
+                  <span className="text-xs font-semibold uppercase tracking-wider text-indigo-700 dark:text-indigo-300">
                     Respuesta del Tutor IA · {aiTutorResponse.timestamp}
                   </span>
-                  <span className="text-xs font-medium text-slate-500 truncate max-w-xs">
+                  <span className="text-xs font-medium text-slate-500 dark:text-slate-400 truncate max-w-xs">
                     Consulta: &ldquo;{aiTutorResponse.pregunta}&rdquo;
                   </span>
                 </div>
-                <p className="text-base font-normal text-slate-800 leading-relaxed max-w-prose">
+                <p className="text-base font-normal text-slate-800 dark:text-slate-200 leading-relaxed max-w-prose">
                   {aiTutorResponse.respuesta.concepto}
                 </p>
                 <div className="rounded-md bg-slate-900 text-slate-100 p-3 font-mono text-xs overflow-x-auto">
                   <pre>{aiTutorResponse.respuesta.ejemplo}</pre>
                 </div>
-                <p className="text-sm font-medium text-slate-700 leading-relaxed">
+                <p className="text-sm font-medium text-slate-700 dark:text-slate-300 leading-relaxed">
                   {aiTutorResponse.respuesta.resumen}
                 </p>
               </div>
             ) : (
               <div className="text-center space-y-1">
-                <span className="text-sm font-medium text-slate-600 block">
+                <span className="text-sm font-medium text-slate-600 dark:text-slate-300 block">
                   El área de respuesta del Tutor IA está lista para tu consulta.
                 </span>
-                <span className="text-xs font-normal text-slate-500 block">
+                <span className="text-xs font-normal text-slate-500 dark:text-slate-400 block">
                   El espacio se mantiene reservado para garantizar estabilidad visual y prevenir fatiga de lectura.
                 </span>
               </div>

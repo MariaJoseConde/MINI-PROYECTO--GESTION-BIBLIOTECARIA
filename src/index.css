@@ -75,14 +75,19 @@
   color-scheme: dark;
   --color-canvas: #0b1120;
   --color-surface: #1e293b;
+  --color-text-main: #f8fafc;
+  --color-text-body: #f1f5f9;
+  --color-text-muted: #cbd5e1;
+  --color-border-subtle: rgba(255, 255, 255, 0.08);
+  --color-border-strong: rgba(255, 255, 255, 0.16);
 
   /* Glassmorphism Design Tokens (Dark Mode) */
-  --glass-bg: rgba(15, 23, 42, 0.72);
-  --glass-bg-subtle: rgba(15, 23, 42, 0.48);
-  --glass-bg-elevated: rgba(30, 41, 59, 0.82);
-  --glass-border: rgba(255, 255, 255, 0.08);
-  --glass-border-subtle: rgba(255, 255, 255, 0.05);
-  --glass-border-highlight: rgba(255, 255, 255, 0.14);
+  --glass-bg: rgba(15, 23, 42, 0.75);
+  --glass-bg-subtle: rgba(15, 23, 42, 0.52);
+  --glass-bg-elevated: rgba(30, 41, 59, 0.85);
+  --glass-border: rgba(255, 255, 255, 0.09);
+  --glass-border-subtle: rgba(255, 255, 255, 0.06);
+  --glass-border-highlight: rgba(255, 255, 255, 0.16);
   --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.45), 0 2px 8px 0 rgba(0, 0, 0, 0.3);
   --glass-shadow-hover: 0 16px 44px -4px rgba(0, 0, 0, 0.6), 0 6px 16px -2px rgba(0, 0, 0, 0.4);
   --glass-shadow-modal: 0 28px 72px -12px rgba(0, 0, 0, 0.8), 0 12px 32px -4px rgba(0, 0, 0, 0.6);
@@ -413,21 +418,105 @@ html.dark .btn-outline:hover {
   color: #ffffff;
 }
 
-/* Modales y superficies de alto contraste en modo oscuro */
+/* ========================================================= */
+/* MODO OSCURO: CONTRASTE Y ACCESIBILIDAD UNIVERSAL (WCAG AA)*/
+/* ========================================================= */
+
+/* Superficies y contenedores semitransparentes en modo oscuro */
 html.dark .bg-\[\#ffffff\] {
   background-color: var(--glass-bg) !important;
 }
-html.dark .text-\[\#333333\] {
+html.dark .bg-\[\#f5f6f8\] {
+  background-color: rgba(30, 41, 59, 0.6) !important;
+}
+html.dark .bg-\[\#f5f6f8\]\/40,
+html.dark .bg-\[\#f5f6f8\]\/80 {
+  background-color: rgba(30, 41, 59, 0.45) !important;
+}
+
+/* Títulos y textos principales en modo oscuro (WCAG AAA >= 10:1) */
+html.dark .text-\[\#333333\],
+html.dark .text-\[\#1e293b\],
+html.dark .text-\[\#0f172a\] {
   color: #f8fafc !important;
 }
+
+/* Textos secundarios y metadatos en modo oscuro (WCAG AA >= 7:1) */
 html.dark .text-\[\#535768\],
 html.dark .text-\[\#676879\] {
+  color: #cbd5e1 !important;
+}
+
+/* Textos terciarios y leyendas auxiliares */
+html.dark .text-\[\#808080\],
+html.dark .text-\[\#cacbcd\] {
   color: #94a3b8 !important;
 }
+
+/* Enlaces y acentos azul índigo en modo oscuro (Alto contraste >= 7:1) */
+html.dark .text-\[\#6161ff\] {
+  color: #a5b4fc !important;
+}
+html.dark .hover\:text-\[\#6161ff\]:hover,
+html.dark .group:hover .group-hover\:text-\[\#6161ff\] {
+  color: #c7d2fe !important;
+}
+
+/* Bordes y divisores finos de bajo contraste en modo oscuro */
 html.dark .border-\[\#d0d4e4\],
+html.dark .border-\[\#dddfeb\],
 html.dark .border-\[\#e5e7eb\],
-html.dark .border-\[\#e2e8f0\] {
+html.dark .border-\[\#e2e8f0\],
+html.dark .border-\[\#f5f6f8\] {
   border-color: var(--glass-border) !important;
+}
+
+html.dark .divide-\[\#f5f6f8\] > :not([hidden]) ~ :not([hidden]) {
+  border-color: var(--glass-border) !important;
+}
+
+/* Badges y Pastillas de estado en modo oscuro con fondos difusos y texto legible */
+html.dark .badge-monday.bg-\[\#dbdbff\],
+html.dark .badge-monday.bg-\[\#e7ecff\],
+html.dark .bg-\[\#dbdbff\],
+html.dark .bg-\[\#e7ecff\] {
+  background-color: rgba(99, 102, 241, 0.22) !important;
+  color: #c7d2fe !important;
+  border: 1px solid rgba(129, 140, 248, 0.3) !important;
+}
+
+html.dark .badge-monday.bg-\[\#bcfe90\],
+html.dark .bg-\[\#bcfe90\] {
+  background-color: rgba(16, 185, 129, 0.2) !important;
+  color: #6ee7b7 !important;
+  border: 1px solid rgba(52, 211, 153, 0.3) !important;
+}
+
+html.dark .badge-monday.bg-\[\#fcd0f8\],
+html.dark .bg-\[\#fcd0f8\] {
+  background-color: rgba(244, 63, 94, 0.22) !important;
+  color: #fda4af !important;
+  border: 1px solid rgba(251, 113, 133, 0.3) !important;
+}
+
+html.dark .badge-monday.bg-\[\#ff8940\]\/20,
+html.dark .bg-\[\#ff8940\]\/20 {
+  background-color: rgba(249, 115, 22, 0.2) !important;
+  color: #fdba74 !important;
+  border: 1px solid rgba(251, 146, 60, 0.3) !important;
+}
+
+/* Interacción de tablas y listas en modo oscuro */
+html.dark tbody tr:hover,
+html.dark .hover\:bg-\[\#f5f6f8\]\/80:hover,
+html.dark .hover\:bg-\[\#f5f6f8\]:hover {
+  background-color: rgba(255, 255, 255, 0.04) !important;
+}
+
+/* Formularios nativos y selects en modo oscuro */
+html.dark select option {
+  background-color: #0f172a;
+  color: #f8fafc;
 }
 
 /* Respaldo para navegadores antiguos que NO soportan backdrop-filter */
