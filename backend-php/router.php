@@ -71,6 +71,9 @@ if (str_starts_with($uri, '/api')) {
     if ($path === '/auth/login' && $method === 'POST') {
         (new AuthController())->login();
     }
+    if ($path === '/auth/register' && $method === 'POST') {
+        (new AuthController())->register();
+    }
     if ($path === '/auth/me' && $method === 'GET') {
         (new AuthController())->me();
     }
@@ -154,7 +157,9 @@ if (str_starts_with($uri, '/api')) {
     if (preg_match('#^/prestamos/(\d+)$#', $path, $m)) {
         $id = (int)$m[1];
         if ($method === 'GET') (new CirculacionController())->getPrestamo($id);
-        Response::methodNotAllowed(['GET']);
+        if ($method === 'PUT' || $method === 'PATCH') (new CirculacionController())->updatePrestamo($id);
+        if ($method === 'DELETE') (new CirculacionController())->deletePrestamo($id);
+        Response::methodNotAllowed(['GET', 'PUT', 'PATCH', 'DELETE']);
     }
     if (preg_match('#^/prestamos/(\d+)/devolver$#', $path, $m) && $method === 'POST') {
         (new CirculacionController())->devolverPrestamo((int)$m[1]);
@@ -177,14 +182,14 @@ if (str_starts_with($uri, '/api')) {
         Response::methodNotAllowed(['GET', 'DELETE']);
     }
 
-    // --- Administración y Auditoría ---
-    if ($path === '/admin/usuarios' && $method === 'GET') {
+    // --- Usuarios y Administración (Convención REST Plural /usuarios y alias /admin/usuarios) ---
+    if (($path === '/usuarios' || $path === '/admin/usuarios') && $method === 'GET') {
         (new AdminController())->listUsuarios();
     }
-    if ($path === '/admin/usuarios' && $method === 'POST') {
+    if (($path === '/usuarios' || $path === '/admin/usuarios') && $method === 'POST') {
         (new AdminController())->createUsuario();
     }
-    if (preg_match('#^/admin/usuarios/(\d+)$#', $path, $m)) {
+    if (preg_match('#^/(?:admin/)?usuarios/(\d+)$#', $path, $m)) {
         $id = (int)$m[1];
         if ($method === 'GET') (new AdminController())->getUsuario($id);
         if ($method === 'PUT' || $method === 'PATCH') (new AdminController())->updateUsuario($id);

@@ -300,5 +300,69 @@ class CirculacionController {
             Response::error('Error transaccional al registrar la devolución: ' . $e->getMessage(), 500);
         }
     }
+
+    public function updatePrestamo(int $id): void {
+        $admin = Auth::requireRole('ADMIN');
+        $body = Response::getBody();
+        $db = Database::getConnection();
+
+        $stmt = $db->prepare('SELECT * FROM prestamos WHERE id_prestamo = ?');
+        $stmt->execute([$id]);
+        $existing = $stmt->fetch();
+
+        if (!$existing) {
+            Response::error('Préstamo no encontrado.', 404, 'LOAN_NOT_FOUND');
+        }
+
+        $fechaLimite = trim($body['fecha_limite'] ?? $existing['fecha_limite']);
+        $estado = trim($body['estado'] ?? $existing['estado']);
+        $multa = isset($body['multa_calculada']) ? (float)$body['multa_calculada'] : (float)$existing['multa_calculada'];
+
+        if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $fechaLimite)) {
+            Response::error('El formato de fecha_limite debe ser YYYY-MM-DD.', 422, 'INVALID_DATE_FORMAT');
+        }
+
+        if (!in_array($estado, ['ACTIVO', 'DEVUELTO', 'MORA'], true)) {
+            Response::error('Estado de préstamo inválido. Valores permitidos: ACTIVO, DEVUELTO, MORA.', 422, 'INVALID_STATUS');
+        }
+
+        $stmtUpdate = $db->prepare('UPDATE prestamos SET fecha_limite = ?, estado = ?, multa_calculada = ? WHERE id_prestamo = ?');
+        $stmtUpdate->execute([$fechaLimite, $estado, $multa, $id]);
+
+        Database::logEvent('PRESTAMO_ACTUALIZADO', "Préstamo #{$id} actualizado (Estado: {$estado}, Límite: {$fechaLimite}).", (int)$admin['id_usuario']);
+
+        $this->getPrestamo($id);
+    }
+
+    public function deletePrestamo(int $id): void {
+        $admin = Auth::requireRole('ADMIN');
+        $db = Database::getConnection();
+
+        $stmt = $db->prepare('SELECT * FROM prestamos WHERE id_prestamo = ?');
+        $stmt->execute([$id]);
+        $prestamo = $stmt->fetch();
+
+        if (!$prestamo) {
+            Response::error('Préstamo no encontrado.', 404, 'LOAN_NOT_FOUND');
+        }
+
+        $db->beginTransaction();
+        try {
+            // Si el préstamo estaba ACTIVO o en MORA y sin devolver, reponer el stock disponible
+            if (empty($prestamo['fecha_entrega']) && in_array($prestamo['estado'], ['ACTIVO', 'MORA'], true)) {
+                $db->prepare('UPDATE libros SET copias_disp = copias_disp + 1 WHERE id_libro = ?')->execute([(int)$prestamo['id_libro']]);
+            }
+
+            $db->prepare('DELETE FROM prestamos WHERE id_prestamo = ?')->execute([$id]);
+
+            Database::logEvent('PRESTAMO_ELIMINADO', "Préstamo #{$id} eliminado por administración.", (int)$admin['id_usuario']);
+
+            $db->commit();
+            Response::json(['ok' => true, 'mensaje' => "Préstamo #{$id} eliminado exitosamente.", 'deleted_id' => $id]);
+        } catch (Exception $e) {
+            $db->rollBack();
+            Response::error('Error al eliminar el préstamo: ' . $e->getMessage(), 500);
+        }
+    }
 }
 

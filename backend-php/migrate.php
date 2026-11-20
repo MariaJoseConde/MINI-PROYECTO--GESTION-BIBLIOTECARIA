@@ -160,6 +160,196 @@ try {
 
 } catch (Exception $e) {
     echo "\n[AVISO MYSQL] " . $e->getMessage() . "\n";
-    echo "[INFO] El servidor funcionará normalmente utilizando la base de datos local SQLite (data/sgbi.db).\n";
-    echo "[INFO] Para habilitar MySQL en 127.0.0.1:3306, inicia el módulo MySQL desde el panel de control de XAMPP.\n";
+    echo "[INFO] Conmutando a verificación y migración en base de datos local SQLite (data/sgbi.db)...\n";
+    echo "--------------------------------------------------------\n";
+
+    $dbPath = dirname(__DIR__) . '/data/sgbi.db';
+    if (!is_dir(dirname($dbPath))) {
+        mkdir(dirname($dbPath), 0777, true);
+    }
+
+    $pdoSqlite = new PDO('sqlite:' . $dbPath, null, null, [
+        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+    ]);
+    $pdoSqlite->exec('PRAGMA foreign_keys = ON;');
+    $pdoSqlite->exec('PRAGMA journal_mode = WAL;');
+
+    // Crear tablas en SQLite si no existen
+    $pdoSqlite->exec("
+        CREATE TABLE IF NOT EXISTS autores (
+          id_autor INTEGER PRIMARY KEY AUTOINCREMENT,
+          nombre TEXT NOT NULL,
+          nacionalidad TEXT NULL,
+          created_at TEXT NOT NULL DEFAULT (datetime('now'))
+        );
+
+        CREATE TABLE IF NOT EXISTS categorias (
+          id_categoria INTEGER PRIMARY KEY AUTOINCREMENT,
+          nombre TEXT NOT NULL UNIQUE,
+          codigo_archivo TEXT NOT NULL DEFAULT '000',
+          descripcion TEXT NOT NULL,
+          ubicacion_sala TEXT NOT NULL DEFAULT 'Sala General',
+          publico_recomendado TEXT NOT NULL DEFAULT 'Público general',
+          enfoque_lector TEXT NOT NULL DEFAULT 'Lectura integral',
+          created_at TEXT NOT NULL DEFAULT (datetime('now'))
+        );
+
+        CREATE TABLE IF NOT EXISTS salas (
+          id_sala INTEGER PRIMARY KEY AUTOINCREMENT,
+          nombre TEXT NOT NULL UNIQUE,
+          descripcion TEXT NULL,
+          capacidad INTEGER NOT NULL DEFAULT 30,
+          created_at TEXT NOT NULL DEFAULT (datetime('now'))
+        );
+
+        CREATE TABLE IF NOT EXISTS libros (
+          id_libro INTEGER PRIMARY KEY AUTOINCREMENT,
+          isbn TEXT NOT NULL UNIQUE,
+          titulo TEXT NOT NULL,
+          sinopsis TEXT NULL,
+          categoria TEXT NOT NULL DEFAULT 'Literatura General',
+          anio_publicacion INTEGER NULL,
+          editorial TEXT NULL,
+          idioma TEXT NOT NULL DEFAULT 'Español',
+          paginas INTEGER NULL,
+          ubicacion_estante TEXT NULL,
+          temas_clave TEXT NULL,
+          copias_totales INTEGER NOT NULL DEFAULT 1,
+          copias_disp INTEGER NOT NULL DEFAULT 1,
+          created_at TEXT NOT NULL DEFAULT (datetime('now')),
+          CHECK (copias_disp >= 0 AND copias_disp <= copias_totales AND copias_totales >= 1)
+        );
+
+        CREATE TABLE IF NOT EXISTS libro_autor (
+          id_libro INTEGER NOT NULL,
+          id_autor INTEGER NOT NULL,
+          PRIMARY KEY (id_libro, id_autor),
+          FOREIGN KEY (id_libro) REFERENCES libros (id_libro) ON DELETE CASCADE,
+          FOREIGN KEY (id_autor) REFERENCES autores (id_autor) ON DELETE RESTRICT
+        );
+
+        CREATE TABLE IF NOT EXISTS usuarios (
+          id_usuario INTEGER PRIMARY KEY AUTOINCREMENT,
+          numero_documento TEXT NOT NULL UNIQUE,
+          nombre_completo TEXT NOT NULL,
+          email TEXT NOT NULL UNIQUE,
+          password_hash TEXT NOT NULL,
+          rol TEXT NOT NULL DEFAULT 'LECTOR' CHECK (rol IN ('ADMIN', 'DOCENTE', 'LECTOR')),
+          estado TEXT NOT NULL DEFAULT 'ACTIVO' CHECK (estado IN ('ACTIVO', 'SANCIONADO', 'INACTIVO')),
+          created_at TEXT NOT NULL DEFAULT (datetime('now'))
+        );
+
+        CREATE TABLE IF NOT EXISTS prestamos (
+          id_prestamo INTEGER PRIMARY KEY AUTOINCREMENT,
+          id_libro INTEGER NOT NULL,
+          id_usuario INTEGER NOT NULL,
+          fecha_prestamo TEXT NOT NULL,
+          fecha_limite TEXT NOT NULL,
+          fecha_entrega TEXT NULL,
+          estado TEXT NOT NULL DEFAULT 'ACTIVO' CHECK (estado IN ('ACTIVO', 'DEVUELTO', 'MORA')),
+          multa_calculada REAL NOT NULL DEFAULT 0.0,
+          created_at TEXT NOT NULL DEFAULT (datetime('now')),
+          FOREIGN KEY (id_libro) REFERENCES libros (id_libro) ON DELETE RESTRICT,
+          FOREIGN KEY (id_usuario) REFERENCES usuarios (id_usuario) ON DELETE RESTRICT
+        );
+
+        CREATE TABLE IF NOT EXISTS pruebas_lectura (
+          id_prueba INTEGER PRIMARY KEY AUTOINCREMENT,
+          id_libro INTEGER NOT NULL,
+          id_docente INTEGER NOT NULL,
+          contenido_json TEXT NOT NULL,
+          created_at TEXT NOT NULL DEFAULT (datetime('now')),
+          FOREIGN KEY (id_libro) REFERENCES libros (id_libro) ON DELETE CASCADE,
+          FOREIGN KEY (id_docente) REFERENCES usuarios (id_usuario) ON DELETE RESTRICT
+        );
+
+        CREATE TABLE IF NOT EXISTS logs_sistema (
+          id_log INTEGER PRIMARY KEY AUTOINCREMENT,
+          tipo_evento TEXT NOT NULL,
+          mensaje TEXT NOT NULL,
+          id_usuario INTEGER NULL,
+          ip_origen TEXT NULL,
+          created_at TEXT NOT NULL DEFAULT (datetime('now'))
+        );
+
+        CREATE TABLE IF NOT EXISTS schema_migrations (
+          id_migration INTEGER PRIMARY KEY AUTOINCREMENT,
+          version TEXT NOT NULL UNIQUE,
+          description TEXT NOT NULL,
+          applied_at TEXT NOT NULL DEFAULT (datetime('now'))
+        );
+    ");
+
+    // Índices SQLite
+    $pdoSqlite->exec("
+        CREATE INDEX IF NOT EXISTS idx_libros_categoria ON libros (categoria);
+        CREATE INDEX IF NOT EXISTS idx_libros_titulo ON libros (titulo);
+        CREATE INDEX IF NOT EXISTS idx_usuarios_email ON usuarios (email);
+        CREATE INDEX IF NOT EXISTS idx_usuarios_documento ON usuarios (numero_documento);
+        CREATE INDEX IF NOT EXISTS idx_prestamos_usuario ON prestamos (id_usuario, estado);
+        CREATE INDEX IF NOT EXISTS idx_prestamos_libro ON prestamos (id_libro);
+    ");
+
+    if ((int)$pdoSqlite->query('SELECT COUNT(*) FROM salas')->fetchColumn() === 0) {
+        $pdoSqlite->exec("
+            INSERT OR IGNORE INTO salas (nombre, descripcion, capacidad) VALUES
+              ('Sala General', 'Área principal de lectura y préstamo general', 50),
+              ('Sala A · Pasillo 1', 'Colección de literatura, distopía y política', 25),
+              ('Sala B · Humanidades', 'Fondo de realismo mágico, cuento y filosofía', 30),
+              ('Sala C · Ciencias Exactas', 'Divulgación científica y textos STEM', 20),
+              ('Sala D · Ciencias Sociales', 'Historia, antropología y teoría política', 25),
+              ('Sala Central · Estantería Noble', 'Clásicos universales y libros de referencia', 40);
+        ");
+    }
+
+    echo "[OK] Esquema relacional SQLite validado e indexado.\n";
+    echo "--------------------------------------------------------\n";
+    echo " Resumen de tablas y conteo de datos (SQLite):\n";
+    echo "--------------------------------------------------------\n";
+
+    $tables = ['libros', 'autores', 'categorias', 'salas', 'usuarios', 'prestamos', 'pruebas_lectura', 'logs_sistema'];
+    foreach ($tables as $t) {
+        try {
+            $count = (int)$pdoSqlite->query("SELECT COUNT(*) FROM `{$t}`")->fetchColumn();
+            echo sprintf("  %-18s: %d registros\n", $t, $count);
+        } catch (Exception $ex) {
+            echo sprintf("  %-18s: [ERROR: %s]\n", $t, $ex->getMessage());
+        }
+    }
+
+    $testQuery = $pdoSqlite->query("
+        SELECT 
+            l.id_libro, 
+            l.titulo, 
+            l.isbn,
+            l.copias_totales,
+            l.copias_disp,
+            GROUP_CONCAT(a.nombre, ', ') AS autores,
+            (SELECT COUNT(*) FROM prestamos p WHERE p.id_libro = l.id_libro AND p.estado = 'ACTIVO') AS prestamos_activos
+        FROM libros l
+        LEFT JOIN libro_autor la ON la.id_libro = l.id_libro
+        LEFT JOIN autores a ON a.id_autor = la.id_autor
+        GROUP BY l.id_libro
+        ORDER BY l.id_libro ASC
+        LIMIT 3
+    ")->fetchAll();
+
+    echo "--------------------------------------------------------\n";
+    echo " Consulta de comprobación relacional (primeros 3 libros):\n";
+    foreach ($testQuery as $row) {
+        echo sprintf("  - [#%d] \"%s\" | ISBN: %s | Stock: %d/%d | Autores: %s | Préstamos activos: %d\n",
+            $row['id_libro'],
+            $row['titulo'],
+            $row['isbn'],
+            $row['copias_disp'],
+            $row['copias_totales'],
+            $row['autores'] ?? 'Sin autor',
+            $row['prestamos_activos']
+        );
+    }
+
+    echo "========================================================\n";
+    echo "[EXITO] Base de datos relacional verificada y operativa al 100%.\n";
+    echo "========================================================\n";
 }

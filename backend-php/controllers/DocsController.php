@@ -49,6 +49,35 @@ class DocsController {
                         ],
                     ],
                 ],
+                '/auth/register' => [
+                    'post' => [
+                        'tags' => ['Autenticación'],
+                        'summary' => 'Registrar un nuevo usuario lector en la biblioteca',
+                        'requestBody' => [
+                            'required' => true,
+                            'content' => [
+                                'application/json' => [
+                                    'schema' => [
+                                        'type' => 'object',
+                                        'required' => ['numero_documento', 'nombre_completo', 'email', 'password'],
+                                        'properties' => [
+                                            'numero_documento' => ['type' => 'string', 'example' => '1020304050'],
+                                            'nombre_completo' => ['type' => 'string', 'example' => 'Laura Marcela Gómez'],
+                                            'email' => ['type' => 'string', 'example' => 'laura.gomez@sgbi.edu'],
+                                            'password' => ['type' => 'string', 'example' => 'claveSegura123'],
+                                        ],
+                                    ],
+                                ],
+                            ],
+                        ],
+                        'responses' => [
+                            '201' => ['description' => 'Usuario registrado exitosamente.'],
+                            '400' => ['description' => 'Campos obligatorios faltantes.'],
+                            '409' => ['description' => 'Documento o correo electrónico ya registrado.'],
+                            '422' => ['description' => 'Formato de correo inválido o contraseña menor a 6 caracteres.'],
+                        ],
+                    ],
+                ],
                 '/auth/login' => [
                     'post' => [
                         'tags' => ['Autenticación'],
@@ -315,6 +344,40 @@ class DocsController {
                         'parameters' => [['name' => 'id', 'in' => 'path', 'required' => true, 'schema' => ['type' => 'integer']]],
                         'responses' => ['200' => ['description' => 'Detalle del préstamo.']],
                     ],
+                    'put' => [
+                        'tags' => ['Circulación y Préstamos'],
+                        'summary' => 'Actualizar plazo, estado o multa de un préstamo (Requiere ADMIN)',
+                        'parameters' => [['name' => 'id', 'in' => 'path', 'required' => true, 'schema' => ['type' => 'integer']]],
+                        'requestBody' => [
+                            'required' => true,
+                            'content' => [
+                                'application/json' => [
+                                    'schema' => [
+                                        'type' => 'object',
+                                        'properties' => [
+                                            'fecha_limite' => ['type' => 'string', 'format' => 'date', 'example' => '2026-12-05'],
+                                            'estado' => ['type' => 'string', 'enum' => ['ACTIVO', 'DEVUELTO', 'MORA'], 'example' => 'ACTIVO'],
+                                            'multa_calculada' => ['type' => 'number', 'example' => 0.0],
+                                        ],
+                                    ],
+                                ],
+                            ],
+                        ],
+                        'responses' => [
+                            '200' => ['description' => 'Préstamo actualizado exitosamente.'],
+                            '404' => ['description' => 'Préstamo no encontrado.'],
+                            '422' => ['description' => 'Formato de fecha o estado inválido.'],
+                        ],
+                    ],
+                    'delete' => [
+                        'tags' => ['Circulación y Préstamos'],
+                        'summary' => 'Eliminar o cancelar un préstamo, reintegrando stock si estaba activo (Requiere ADMIN)',
+                        'parameters' => [['name' => 'id', 'in' => 'path', 'required' => true, 'schema' => ['type' => 'integer']]],
+                        'responses' => [
+                            '200' => ['description' => 'Préstamo eliminado y stock restaurado si aplicaba.'],
+                            '404' => ['description' => 'Préstamo no encontrado.'],
+                        ],
+                    ],
                 ],
                 '/prestamos/{id}/devolver' => [
                     'post' => [
@@ -322,6 +385,68 @@ class DocsController {
                         'summary' => 'Registrar devolución de un libro con cálculo de mora si aplica (Requiere ADMIN)',
                         'parameters' => [['name' => 'id', 'in' => 'path', 'required' => true, 'schema' => ['type' => 'integer']]],
                         'responses' => ['200' => ['description' => 'Devolución procesada y stock restaurado en MySQL.']],
+                    ],
+                ],
+                '/usuarios' => [
+                    'get' => [
+                        'tags' => ['Usuarios'],
+                        'summary' => 'Listar usuarios del sistema con filtro opcional de documento/nombre (Requiere ADMIN)',
+                        'parameters' => [
+                            ['name' => 'documento', 'in' => 'query', 'schema' => ['type' => 'string'], 'description' => 'Buscar por número de documento o nombre'],
+                        ],
+                        'responses' => ['200' => ['description' => 'Lista de usuarios.']],
+                    ],
+                    'post' => [
+                        'tags' => ['Usuarios'],
+                        'summary' => 'Crear un usuario con rol RBAC asignado (Requiere ADMIN)',
+                        'requestBody' => [
+                            'required' => true,
+                            'content' => [
+                                'application/json' => [
+                                    'schema' => [
+                                        'type' => 'object',
+                                        'required' => ['numero_documento', 'nombre_completo', 'email', 'password', 'rol'],
+                                        'properties' => [
+                                            'numero_documento' => ['type' => 'string', 'example' => '1099887766'],
+                                            'nombre_completo' => ['type' => 'string', 'example' => 'Carlos Alberto Ruiz'],
+                                            'email' => ['type' => 'string', 'example' => 'carlos.ruiz@sgbi.edu'],
+                                            'password' => ['type' => 'string', 'example' => 'clave123'],
+                                            'rol' => ['type' => 'string', 'enum' => ['ADMIN', 'DOCENTE', 'LECTOR'], 'example' => 'LECTOR'],
+                                        ],
+                                    ],
+                                ],
+                            ],
+                        ],
+                        'responses' => [
+                            '201' => ['description' => 'Usuario creado exitosamente.'],
+                            '409' => ['description' => 'Documento o email ya registrado.'],
+                        ],
+                    ],
+                ],
+                '/usuarios/{id}' => [
+                    'get' => [
+                        'tags' => ['Usuarios'],
+                        'summary' => 'Consultar usuario por su ID (Requiere ADMIN)',
+                        'parameters' => [['name' => 'id', 'in' => 'path', 'required' => true, 'schema' => ['type' => 'integer']]],
+                        'responses' => [
+                            '200' => ['description' => 'Detalle del usuario.'],
+                            '404' => ['description' => 'Usuario no encontrado.'],
+                        ],
+                    ],
+                    'put' => [
+                        'tags' => ['Usuarios'],
+                        'summary' => 'Actualizar datos, rol o estado de un usuario (Requiere ADMIN)',
+                        'parameters' => [['name' => 'id', 'in' => 'path', 'required' => true, 'schema' => ['type' => 'integer']]],
+                        'responses' => ['200' => ['description' => 'Usuario actualizado.']],
+                    ],
+                    'delete' => [
+                        'tags' => ['Usuarios'],
+                        'summary' => 'Eliminar usuario si no tiene préstamos activos o desactivarlo preventivamente (Requiere ADMIN)',
+                        'parameters' => [['name' => 'id', 'in' => 'path', 'required' => true, 'schema' => ['type' => 'integer']]],
+                        'responses' => [
+                            '200' => ['description' => 'Usuario eliminado o desactivado.'],
+                            '409' => ['description' => 'No se puede eliminar un usuario con préstamos vigentes o la propia cuenta admin.'],
+                        ],
                     ],
                 ],
                 '/ia/buscar' => [
