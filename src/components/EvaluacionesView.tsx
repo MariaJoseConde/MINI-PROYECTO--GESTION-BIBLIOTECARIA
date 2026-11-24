@@ -16,6 +16,7 @@ import {
   Sparkles,
   XCircle,
 } from 'lucide-react';
+import { apiClient, ApiRequestError } from '../lib/apiClient.ts';
 import type { Libro, PruebaLectura, Usuario } from '../types/sgbi.ts';
 
 interface EvaluacionesViewProps {
@@ -57,9 +58,7 @@ export const EvaluacionesView: React.FC<EvaluacionesViewProps> = ({
     async function loadPruebas() {
       setLoading(true);
       try {
-        const res = await fetch('/api/pruebas');
-        if (!res.ok) return;
-        const data = (await res.json()) as { pruebas: PruebaLectura[] };
+        const data = await apiClient.get<{ pruebas: PruebaLectura[] }>('/api/pruebas');
         if (!cancelled && data.pruebas) {
           setPruebas(data.pruebas);
           if (data.pruebas.length > 0) {
@@ -68,6 +67,16 @@ export const EvaluacionesView: React.FC<EvaluacionesViewProps> = ({
           } else if (libros.length > 0) {
             setSelectedBookId(libros[0].id_libro);
           }
+        }
+      } catch (err) {
+        if (!cancelled) {
+          setActionMessage({
+            type: 'error',
+            text:
+              err instanceof ApiRequestError
+                ? err.message
+                : 'No fue posible cargar las evaluaciones.',
+          });
         }
       } finally {
         if (!cancelled) setLoading(false);
@@ -156,13 +165,11 @@ export const EvaluacionesView: React.FC<EvaluacionesViewProps> = ({
     setActionMessage(null);
 
     try {
-      const res = await fetch('/api/ia/generar-prueba', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id_libro: activeBook.id_libro }),
-      });
-      const data = (await res.json()) as { prueba?: PruebaLectura; error?: string };
-      if (!res.ok || !data.prueba) {
+      const data = await apiClient.post<{ prueba?: PruebaLectura; error?: string }>(
+        '/api/ia/generar-prueba',
+        { id_libro: activeBook.id_libro },
+      );
+      if (!data.prueba) {
         setActionMessage({
           type: 'error',
           text: data.error || 'No fue posible estructurar la prueba pedagógica.',
@@ -177,10 +184,11 @@ export const EvaluacionesView: React.FC<EvaluacionesViewProps> = ({
         type: 'success',
         text: `Evaluación pedagógica generada exitosamente para "${activeBook.titulo}".`,
       });
-    } catch {
+    } catch (err) {
       setActionMessage({
         type: 'error',
-        text: 'Error de conexión con el motor de IA.',
+        text:
+          err instanceof ApiRequestError ? err.message : 'Error de conexión con el motor de IA.',
       });
     } finally {
       setIsAiGenerating(false);
@@ -202,7 +210,7 @@ export const EvaluacionesView: React.FC<EvaluacionesViewProps> = ({
 
   // Ejemplo de código / cita técnica para la tarjeta de chunking 2
   const technicalExampleCode = activeBook
-    ? `// Ficha técnica del modelo de estudio SGBI · IA\nconst moduloEstudio = {\n  isbn: "${activeBook.isbn}",\n  titulo: "${activeBook.titulo}",\n  clasificacionCDU: "${activeBook.categoria}",\n  nivelComprension: "Avanzado",\n  progresoActual: "${answeredCount}/${totalQuestions || 4} preguntas respondidas"\n};\n\nexport default moduloEstudio;`
+    ? `// Ficha técnica del modelo de estudio biblioSmart · IA\nconst moduloEstudio = {\n  isbn: "${activeBook.isbn}",\n  titulo: "${activeBook.titulo}",\n  clasificacionCDU: "${activeBook.categoria}",\n  nivelComprension: "Avanzado",\n  progresoActual: "${answeredCount}/${totalQuestions || 4} preguntas respondidas"\n};\n\nexport default moduloEstudio;`
     : `// Sesión de comprensión con IA activa`;
 
   return (

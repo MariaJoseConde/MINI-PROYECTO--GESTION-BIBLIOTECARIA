@@ -11,6 +11,7 @@ import {
   X,
   XCircle,
 } from 'lucide-react';
+import { apiClient, ApiRequestError } from '../lib/apiClient.ts';
 import type { Libro, Prestamo, Usuario } from '../types/sgbi.ts';
 
 interface MostradorViewProps {
@@ -27,6 +28,7 @@ export const MostradorView: React.FC<MostradorViewProps> = ({
   const [usuarios, setUsuarios] = useState<Usuario[]>([]);
   const [prestamos, setPrestamos] = useState<Prestamo[]>([]);
   const [loadingPrestamos, setLoadingPrestamos] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
 
   // Inputs de nuevo préstamo
   const [docQuery, setDocQuery] = useState('');
@@ -52,28 +54,25 @@ export const MostradorView: React.FC<MostradorViewProps> = ({
 
   async function loadOperationalData() {
     setLoadingPrestamos(true);
+    setLoadError(null);
     try {
-      const [uRes, pRes, fRes] = await Promise.all([
-        fetch('/api/usuarios'),
-        fetch('/api/prestamos'),
-        fetch('/api/prestamos/calcular-fecha'),
+      const [uData, pData, fData] = await Promise.all([
+        apiClient.get<{ usuarios: Usuario[] }>('/api/usuarios'),
+        apiClient.get<{ prestamos: Prestamo[] }>('/api/prestamos'),
+        apiClient.get<{ fecha_prestamo: string; fecha_limite: string; dias_habiles: number }>(
+          '/api/prestamos/calcular-fecha',
+        ),
       ]);
-      if (uRes.ok) {
-        const uData = (await uRes.json()) as { usuarios: Usuario[] };
-        setUsuarios(uData.usuarios);
-      }
-      if (pRes.ok) {
-        const pData = (await pRes.json()) as { prestamos: Prestamo[] };
-        setPrestamos(pData.prestamos);
-      }
-      if (fRes.ok) {
-        const fData = (await fRes.json()) as {
-          fecha_prestamo: string;
-          fecha_limite: string;
-          dias_habiles: number;
-        };
-        setFechaPreview(fData);
-      }
+      setUsuarios(uData.usuarios ?? []);
+      setPrestamos(pData.prestamos ?? []);
+      setFechaPreview(fData);
+    } catch (err) {
+      const msg =
+        err instanceof ApiRequestError
+          ? err.message
+          : 'Error al cargar los datos operativos del mostrador.';
+      setLoadError(msg);
+      onNotify('error', msg);
     } finally {
       setLoadingPrestamos(false);
     }
@@ -154,16 +153,11 @@ export const MostradorView: React.FC<MostradorViewProps> = ({
     if (!selectedUser || !selectedBook) return;
     setSubmittingLoan(true);
     try {
-      const res = await fetch('/api/prestamos', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          id_libro: selectedBook.id_libro,
-          id_usuario: selectedUser.id_usuario,
-        }),
+      const data = await apiClient.post<{ prestamo?: Prestamo; error?: string }>('/api/prestamos', {
+        id_libro: selectedBook.id_libro,
+        id_usuario: selectedUser.id_usuario,
       });
-      const data = (await res.json()) as { prestamo?: Prestamo; error?: string };
-      if (!res.ok || !data.prestamo) {
+      if (!data.prestamo) {
         onNotify('error', data.error || 'No fue posible registrar el préstamo.');
         await Promise.all([loadOperationalData(), Promise.resolve(onRefreshCatalog())]);
         return;
@@ -175,8 +169,11 @@ export const MostradorView: React.FC<MostradorViewProps> = ({
         `Préstamo #${data.prestamo.id_prestamo} confirmado. Stock descontado (-1).`,
       );
       await Promise.all([loadOperationalData(), Promise.resolve(onRefreshCatalog())]);
-    } catch {
-      onNotify('error', 'Error de conexión al registrar el préstamo.');
+    } catch (err) {
+      onNotify(
+        'error',
+        err instanceof ApiRequestError ? err.message : 'Error de conexión al registrar el préstamo.',
+      );
     } finally {
       setSubmittingLoan(false);
     }
@@ -185,34 +182,42 @@ export const MostradorView: React.FC<MostradorViewProps> = ({
   async function handleReturnLoan(prestamo: Prestamo) {
     setReturningId(prestamo.id_prestamo);
     try {
-      const res = await fetch(`/api/prestamos/${prestamo.id_prestamo}/devolver`, {
-        method: 'POST',
-      });
-      const data = (await res.json()) as {
+      const data = await apiClient.post<{
+        ok?: boolean;
         prestamo?: Prestamo;
         enMora?: boolean;
-        usuarioSancionado?: boolean;
+        dias_retraso?: number;
+        multa_total?: number;
+        mensaje?: string;
         error?: string;
-      };
-      if (!res.ok || !data.prestamo) {
+      }>(`/api/prestamos/${prestamo.id_prestamo}/devolver`);
+
+      if (!data.ok && !data.prestamo) {
         onNotify('error', data.error || 'Error al registrar la devolución. Operación abortada.');
         return;
       }
 
-      if (data.enMora) {
+      const hasMora = Boolean(data.enMora) || (data.dias_retraso ?? 0) > 0;
+      if (hasMora) {
         onNotify(
           'info',
-          `Devolución tardía registrada (+1 stock). El préstamo pasó a MORA y el lector quedó SANCIONADO.`,
+          data.mensaje ||
+            `Devolución tardía registrada (+1 stock). Retraso: ${data.dias_retraso ?? 0} días.`,
         );
       } else {
         onNotify(
           'success',
-          'Devolución registrada. Ejemplar reintegrado al inventario (+1 disponible).',
+          data.mensaje || 'Devolución registrada. Ejemplar reintegrado al inventario (+1 disponible).',
         );
       }
       await Promise.all([loadOperationalData(), Promise.resolve(onRefreshCatalog())]);
-    } catch {
-      onNotify('error', 'Error al registrar la devolución. Operación abortada.');
+    } catch (err) {
+      onNotify(
+        'error',
+        err instanceof ApiRequestError
+          ? err.message
+          : 'Error al registrar la devolución. Operación abortada.',
+      );
     } finally {
       setReturningId(null);
     }
@@ -262,6 +267,22 @@ export const MostradorView: React.FC<MostradorViewProps> = ({
           Actualizar mostrador
         </button>
       </div>
+
+      {loadError && (
+        <div
+          role="alert"
+          className="no-print rounded-2xl border border-rose-300/70 bg-rose-50/80 dark:bg-rose-950/40 px-5 py-3.5 flex flex-wrap items-center justify-between gap-3"
+        >
+          <span className="text-xs font-medium text-rose-800 dark:text-rose-200">{loadError}</span>
+          <button
+            type="button"
+            onClick={loadOperationalData}
+            className="btn-outline-pill text-xs py-1 px-3 cursor-pointer"
+          >
+            Reintentar
+          </button>
+        </div>
+      )}
 
       {/* Formulario de Nuevo Préstamo */}
       <section className="no-print card-monday bg-[#ffffff] p-6 sm:p-8 space-y-6">
@@ -680,7 +701,7 @@ export const MostradorView: React.FC<MostradorViewProps> = ({
               <div className="text-center border-b border-dashed border-[#d0d4e4] pb-4">
                 <div className="w-7 h-7 rounded-full prism-mark-circle mx-auto mb-2" />
                 <h3 id="ticket-title" className="text-base font-bold text-[#333333]">
-                  SGBI · BIBLIOTECA CENTRAL
+                  biblioSmart · BIBLIOTECA CENTRAL
                 </h3>
                 <p className="text-[11px] text-[#535768] mt-0.5">
                   COMPROBANTE OFICIAL DE CIRCULACIÓN

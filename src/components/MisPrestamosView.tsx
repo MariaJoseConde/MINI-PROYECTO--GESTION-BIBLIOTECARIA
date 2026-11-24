@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { AlertTriangle, BookCheck, CheckCircle2, Clock } from 'lucide-react';
+import { apiClient, ApiRequestError } from '../lib/apiClient.ts';
 import type { Prestamo, Usuario } from '../types/sgbi.ts';
 
 interface MisPrestamosViewProps {
@@ -9,25 +10,28 @@ interface MisPrestamosViewProps {
 export const MisPrestamosView: React.FC<MisPrestamosViewProps> = ({ user }) => {
   const [prestamos, setPrestamos] = useState<Prestamo[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const loadPrestamos = useCallback(async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const data = await apiClient.get<{ prestamos: Prestamo[] }>('/api/prestamos');
+      setPrestamos(data.prestamos ?? []);
+    } catch (err) {
+      setError(
+        err instanceof ApiRequestError
+          ? err.message
+          : 'No se pudo cargar tu historial de préstamos.',
+      );
+    } finally {
+      setLoading(false);
+    }
+  }, []);
 
   useEffect(() => {
-    let cancelled = false;
-    async function load() {
-      setLoading(true);
-      try {
-        const res = await fetch('/api/prestamos');
-        if (!res.ok) return;
-        const data = (await res.json()) as { prestamos: Prestamo[] };
-        if (!cancelled) setPrestamos(data.prestamos);
-      } finally {
-        if (!cancelled) setLoading(false);
-      }
-    }
-    load();
-    return () => {
-      cancelled = true;
-    };
-  }, [user.id_usuario]);
+    loadPrestamos();
+  }, [user.id_usuario, loadPrestamos]);
 
   const activos = prestamos.filter((p) => p.fecha_entrega === null);
   const historial = prestamos.filter((p) => p.fecha_entrega !== null);
@@ -72,6 +76,17 @@ export const MisPrestamosView: React.FC<MisPrestamosViewProps> = ({ user }) => {
 
         {loading ? (
           <div className="p-8 text-center text-sm text-[#808080]">Cargando historial...</div>
+        ) : error ? (
+          <div className="p-8 text-center space-y-3" role="alert">
+            <p className="text-sm font-medium text-rose-700">{error}</p>
+            <button
+              type="button"
+              onClick={loadPrestamos}
+              className="btn-outline-pill text-xs py-1.5 px-4 cursor-pointer"
+            >
+              Reintentar
+            </button>
+          </div>
         ) : activos.length === 0 ? (
           <div className="p-12 text-center">
             <BookCheck className="w-8 h-8 text-[#2a5c4e] mx-auto mb-2.5" />

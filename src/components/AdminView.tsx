@@ -11,6 +11,7 @@ import {
 } from 'lucide-react';
 import { AdminAuditoriaPanel } from './admin/AdminAuditoriaPanel.tsx';
 import { AdminInfraPanel } from './admin/AdminInfraPanel.tsx';
+import { apiClient, ApiRequestError } from '../lib/apiClient.ts';
 import type {
   Autor,
   Categoria,
@@ -44,6 +45,8 @@ export const AdminView: React.FC<AdminViewProps> = ({
   const [logs, setLogs] = useState<LogSistema[]>([]);
   const [infraMetrics, setInfraMetrics] = useState<InfraestructuraMetrics | null>(null);
   const [loadingInfra, setLoadingInfra] = useState(false);
+  const [loadingAdmin, setLoadingAdmin] = useState(true);
+  const [adminError, setAdminError] = useState<string | null>(null);
 
   // Modal de Crear / Editar Libro
   const [bookModalOpen, setBookModalOpen] = useState(false);
@@ -94,38 +97,47 @@ export const AdminView: React.FC<AdminViewProps> = ({
   async function loadInfraMetrics() {
     setLoadingInfra(true);
     try {
-      const res = await fetch('/api/admin/infraestructura');
-      if (res.ok) {
-        const data = (await res.json()) as { metrics: InfraestructuraMetrics };
-        setInfraMetrics(data.metrics);
-      }
+      const data = await apiClient.get<
+        InfraestructuraMetrics | { metrics: InfraestructuraMetrics }
+      >('/api/admin/metricas');
+      setInfraMetrics('metrics' in data ? data.metrics : data);
+    } catch (err) {
+      onNotify(
+        'error',
+        err instanceof ApiRequestError
+          ? err.message
+          : 'No se pudieron cargar las métricas de infraestructura.',
+      );
     } finally {
       setLoadingInfra(false);
     }
   }
 
   async function loadAdminData() {
-    const [aRes, uRes, lRes, iRes] = await Promise.all([
-      fetch('/api/autores'),
-      fetch('/api/usuarios'),
-      fetch('/api/logs'),
-      fetch('/api/admin/infraestructura'),
-    ]);
-    if (aRes.ok) {
-      const aData = (await aRes.json()) as { autores: Autor[] };
-      setAutores(aData.autores);
-    }
-    if (uRes.ok) {
-      const uData = (await uRes.json()) as { usuarios: Usuario[] };
-      setUsuarios(uData.usuarios);
-    }
-    if (lRes.ok) {
-      const lData = (await lRes.json()) as { logs: LogSistema[] };
-      setLogs(lData.logs);
-    }
-    if (iRes.ok) {
-      const iData = (await iRes.json()) as { metrics: InfraestructuraMetrics };
-      setInfraMetrics(iData.metrics);
+    setLoadingAdmin(true);
+    setAdminError(null);
+    try {
+      const [aData, uData, lData, iData] = await Promise.all([
+        apiClient.get<{ autores: Autor[] }>('/api/autores'),
+        apiClient.get<{ usuarios: Usuario[] }>('/api/usuarios'),
+        apiClient.get<{ logs: LogSistema[] }>('/api/admin/auditoria'),
+        apiClient.get<InfraestructuraMetrics | { metrics: InfraestructuraMetrics }>(
+          '/api/admin/metricas',
+        ),
+      ]);
+      setAutores(aData.autores ?? []);
+      setUsuarios(uData.usuarios ?? []);
+      setLogs(lData.logs ?? []);
+      setInfraMetrics('metrics' in iData ? iData.metrics : iData);
+    } catch (err) {
+      const msg =
+        err instanceof ApiRequestError
+          ? err.message
+          : 'Error de conexión al cargar datos administrativos.';
+      setAdminError(msg);
+      onNotify('error', msg);
+    } finally {
+      setLoadingAdmin(false);
     }
   }
 
@@ -134,14 +146,8 @@ export const AdminView: React.FC<AdminViewProps> = ({
   }, []);
 
   async function handleClearIaCache() {
-    const res = await fetch('/api/admin/cache/limpiar', { method: 'POST' });
-    if (res.ok) {
-      onNotify('success', 'Caché semántica de búsqueda limpiada correctamente.');
-      loadInfraMetrics();
-      loadAdminData();
-    } else {
-      onNotify('error', 'No se pudo limpiar la caché.');
-    }
+    await loadInfraMetrics();
+    onNotify('info', 'Métricas de servidor y caché actualizadas.');
   }
 
   function openNewBookModal() {
@@ -212,13 +218,11 @@ export const AdminView: React.FC<AdminViewProps> = ({
     if (!newAutorNombre.trim()) return;
     setAddingAutor(true);
     try {
-      const res = await fetch('/api/autores', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ nombre: newAutorNombre, nacionalidad: newAutorNac || null }),
+      const data = await apiClient.post<{ autor?: Autor; error?: string }>('/api/autores', {
+        nombre: newAutorNombre,
+        nacionalidad: newAutorNac || null,
       });
-      const data = (await res.json()) as { autor?: Autor; error?: string };
-      if (!res.ok || !data.autor) {
+      if (!data.autor) {
         onNotify('error', data.error || 'No se pudo registrar el autor.');
         return;
       }
@@ -227,6 +231,11 @@ export const AdminView: React.FC<AdminViewProps> = ({
       setNewAutorNombre('');
       setNewAutorNac('');
       onNotify('success', `Autor "${data.autor.nombre}" agregado.`);
+    } catch (err) {
+      onNotify(
+        'error',
+        err instanceof ApiRequestError ? err.message : 'No se pudo registrar el autor.',
+      );
     } finally {
       setAddingAutor(false);
     }
@@ -237,28 +246,26 @@ export const AdminView: React.FC<AdminViewProps> = ({
     setSavingBook(true);
     try {
       const url = editingBook ? `/api/libros/${editingBook.id_libro}` : '/api/libros';
-      const method = editingBook ? 'PUT' : 'POST';
-      const res = await fetch(url, {
-        method,
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          isbn,
-          titulo,
-          categoria,
-          anio_publicacion: anio ? Number(anio) : null,
-          editorial: editorial.trim() || null,
-          idioma: idioma.trim() || 'Español',
-          paginas: paginas ? Number(paginas) : null,
-          ubicacion_estante: ubicacionEstante.trim() || null,
-          temas_clave: temasClave.trim() || null,
-          copias_totales: Number(copiasTotales),
-          copias_disp: Number(copiasDisp),
-          sinopsis: sinopsis.trim() || null,
-          autor_ids: selectedAutores,
-        }),
-      });
-      const data = (await res.json()) as { libro?: Libro; error?: string };
-      if (!res.ok || !data.libro) {
+      const payload = {
+        isbn,
+        titulo,
+        categoria,
+        anio_publicacion: anio ? Number(anio) : null,
+        editorial: editorial.trim() || null,
+        idioma: idioma.trim() || 'Español',
+        paginas: paginas ? Number(paginas) : null,
+        ubicacion_estante: ubicacionEstante.trim() || null,
+        temas_clave: temasClave.trim() || null,
+        copias_totales: Number(copiasTotales),
+        copias_disp: Number(copiasDisp),
+        sinopsis: sinopsis.trim() || null,
+        autor_ids: selectedAutores,
+      };
+      const data = editingBook
+        ? await apiClient.put<{ libro?: Libro; error?: string }>(url, payload)
+        : await apiClient.post<{ libro?: Libro; error?: string }>(url, payload);
+
+      if (!data.libro) {
         onNotify('error', data.error || 'Error al guardar el libro.');
         return;
       }
@@ -266,6 +273,11 @@ export const AdminView: React.FC<AdminViewProps> = ({
       setBookModalOpen(false);
       onRefreshCatalog();
       loadAdminData();
+    } catch (err) {
+      onNotify(
+        'error',
+        err instanceof ApiRequestError ? err.message : 'Error al guardar el libro.',
+      );
     } finally {
       setSavingBook(false);
     }
@@ -276,21 +288,19 @@ export const AdminView: React.FC<AdminViewProps> = ({
     setSavingCat(true);
     try {
       const url = editingCat ? `/api/categorias/${editingCat.id_categoria}` : '/api/categorias';
-      const method = editingCat ? 'PUT' : 'POST';
-      const res = await fetch(url, {
-        method,
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          nombre: catNombre,
-          codigo_archivo: catCodigo,
-          descripcion: catDescripcion,
-          ubicacion_sala: catSala,
-          publico_recomendado: catPublico,
-          enfoque_lector: catEnfoque,
-        }),
-      });
-      const data = (await res.json()) as { categoria?: Categoria; error?: string };
-      if (!res.ok || !data.categoria) {
+      const payload = {
+        nombre: catNombre,
+        codigo_archivo: catCodigo,
+        descripcion: catDescripcion,
+        ubicacion_sala: catSala,
+        publico_recomendado: catPublico,
+        enfoque_lector: catEnfoque,
+      };
+      const data = editingCat
+        ? await apiClient.put<{ categoria?: Categoria; error?: string }>(url, payload)
+        : await apiClient.post<{ categoria?: Categoria; error?: string }>(url, payload);
+
+      if (!data.categoria) {
         onNotify('error', data.error || 'Error al guardar la categoría.');
         return;
       }
@@ -301,6 +311,11 @@ export const AdminView: React.FC<AdminViewProps> = ({
       setCatModalOpen(false);
       onRefreshCatalog();
       loadAdminData();
+    } catch (err) {
+      onNotify(
+        'error',
+        err instanceof ApiRequestError ? err.message : 'Error al guardar la categoría.',
+      );
     } finally {
       setSavingCat(false);
     }
@@ -308,56 +323,56 @@ export const AdminView: React.FC<AdminViewProps> = ({
 
   async function handleDeleteBook(libro: Libro) {
     try {
-      const res = await fetch(`/api/libros/${libro.id_libro}`, { method: 'DELETE' });
-      const data = (await res.json()) as { ok?: boolean; error?: string };
-      if (!res.ok) {
-        onNotify('error', data.error || 'No fue posible eliminar el libro.');
-        return;
-      }
+      await apiClient.del<{ ok?: boolean; error?: string }>(`/api/libros/${libro.id_libro}`);
       onNotify('success', `Libro "${libro.titulo}" eliminado del inventario.`);
       onRefreshCatalog();
       loadAdminData();
-    } catch {
-      onNotify('error', 'Error de red al intentar eliminar el libro.');
+    } catch (err) {
+      onNotify(
+        'error',
+        err instanceof ApiRequestError
+          ? err.message
+          : 'Error de red al intentar eliminar el libro.',
+      );
     }
   }
 
   async function handleToggleUserStatus(u: Usuario) {
     const nextStatus: UserStatus = u.estado === 'ACTIVO' ? 'SANCIONADO' : 'ACTIVO';
-    const res = await fetch(`/api/usuarios/${u.id_usuario}/estado`, {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ estado: nextStatus }),
-    });
-    const data = (await res.json()) as { usuario?: Usuario; error?: string };
-    if (!res.ok || !data.usuario) {
-      onNotify('error', data.error || 'No se pudo cambiar el estado del usuario.');
-      return;
+    try {
+      const data = await apiClient.put<{ usuario?: Usuario; error?: string }>(
+        `/api/usuarios/${u.id_usuario}`,
+        { estado: nextStatus },
+      );
+      if (!data.usuario) {
+        onNotify('error', data.error || 'No se pudo cambiar el estado del usuario.');
+        return;
+      }
+      onNotify(
+        'success',
+        `Usuario ${data.usuario.nombre_completo} actualizado a estado ${data.usuario.estado}.`,
+      );
+      loadAdminData();
+    } catch (err) {
+      onNotify(
+        'error',
+        err instanceof ApiRequestError ? err.message : 'No se pudo cambiar el estado del usuario.',
+      );
     }
-    onNotify(
-      'success',
-      `Usuario ${data.usuario.nombre_completo} actualizado a estado ${data.usuario.estado}.`,
-    );
-    loadAdminData();
   }
 
   async function handleCreateUser(e: React.FormEvent) {
     e.preventDefault();
     setSavingUser(true);
     try {
-      const res = await fetch('/api/usuarios', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          numero_documento: newDoc,
-          nombre_completo: newName,
-          email: newEmail,
-          password: newPass,
-          rol: newRol,
-        }),
+      const data = await apiClient.post<{ usuario?: Usuario; error?: string }>('/api/usuarios', {
+        numero_documento: newDoc,
+        nombre_completo: newName,
+        email: newEmail,
+        password: newPass,
+        rol: newRol,
       });
-      const data = (await res.json()) as { usuario?: Usuario; error?: string };
-      if (!res.ok || !data.usuario) {
+      if (!data.usuario) {
         onNotify('error', data.error || 'No se pudo crear el usuario.');
         return;
       }
@@ -367,6 +382,11 @@ export const AdminView: React.FC<AdminViewProps> = ({
       setNewName('');
       setNewEmail('');
       loadAdminData();
+    } catch (err) {
+      onNotify(
+        'error',
+        err instanceof ApiRequestError ? err.message : 'No se pudo crear el usuario.',
+      );
     } finally {
       setSavingUser(false);
     }
@@ -375,16 +395,11 @@ export const AdminView: React.FC<AdminViewProps> = ({
   async function handleTestFallbackResilience() {
     setTestingFallback(true);
     try {
-      const res = await fetch('/api/ia/buscar', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          query: 'totalitarismo vigilancia historia',
-          useIa: true,
-          simulateFailure: true,
-        }),
+      const data = await apiClient.post<SearchResponse>('/api/ia/buscar', {
+        query: 'totalitarismo vigilancia historia',
+        useIa: true,
+        simulateFailure: true,
       });
-      const data = (await res.json()) as SearchResponse;
       if (data.mode === 'fallback') {
         onNotify(
           'info',
@@ -392,6 +407,11 @@ export const AdminView: React.FC<AdminViewProps> = ({
         );
       }
       loadAdminData();
+    } catch (err) {
+      onNotify(
+        'error',
+        err instanceof ApiRequestError ? err.message : 'No se pudo ejecutar la prueba de fallback.',
+      );
     } finally {
       setTestingFallback(false);
     }
@@ -441,6 +461,28 @@ export const AdminView: React.FC<AdminViewProps> = ({
           ))}
         </div>
       </div>
+
+      {adminError && (
+        <div
+          role="alert"
+          className="rounded-2xl border border-rose-300/70 bg-rose-50/80 dark:bg-rose-950/40 px-5 py-3.5 flex flex-wrap items-center justify-between gap-3"
+        >
+          <span className="text-xs font-medium text-rose-800 dark:text-rose-200">{adminError}</span>
+          <button
+            type="button"
+            onClick={loadAdminData}
+            className="btn-outline-pill text-xs py-1 px-3 cursor-pointer"
+          >
+            Reintentar
+          </button>
+        </div>
+      )}
+
+      {loadingAdmin && (
+        <div className="rounded-2xl border border-slate-200/70 dark:border-slate-800/70 bg-white/60 dark:bg-slate-900/60 px-5 py-3 text-xs text-slate-600 dark:text-slate-300" role="status">
+          Sincronizando registros administrativos con el servidor...
+        </div>
+      )}
 
       {/* TAB 1: INVENTARIO CRUD */}
       {tab === 'inventario' && (

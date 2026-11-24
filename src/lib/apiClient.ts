@@ -1,3 +1,25 @@
+const AUTH_TOKEN_KEY = 'bibliosmart_auth_token';
+
+export function getAuthToken(): string | null {
+  try {
+    return localStorage.getItem(AUTH_TOKEN_KEY);
+  } catch {
+    return null;
+  }
+}
+
+export function setAuthToken(token: string | null): void {
+  try {
+    if (token) {
+      localStorage.setItem(AUTH_TOKEN_KEY, token);
+    } else {
+      localStorage.removeItem(AUTH_TOKEN_KEY);
+    }
+  } catch {
+    // Ignore storage quota / privacy mode errors
+  }
+}
+
 export class ApiRequestError extends Error {
   status: number;
   code?: string;
@@ -16,13 +38,16 @@ async function requestJson<T>(
 ): Promise<T> {
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), timeoutMs);
+  const token = getAuthToken();
 
   try {
     const res = await fetch(url, {
       ...options,
+      credentials: 'include',
       signal: controller.signal,
       headers: {
         ...(options.body ? { 'Content-Type': 'application/json' } : {}),
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
         ...(options.headers || {}),
       },
     });
@@ -41,7 +66,11 @@ async function requestJson<T>(
       const msg =
         typeof parsed.error === 'string'
           ? parsed.error
-          : `Error HTTP ${res.status} al consultar ${url}`;
+          : typeof parsed.mensaje === 'string'
+            ? parsed.mensaje
+            : typeof parsed.message === 'string'
+              ? parsed.message
+              : `Error HTTP ${res.status} al consultar ${url}`;
       const code = typeof parsed.code === 'string' ? parsed.code : undefined;
       throw new ApiRequestError(msg, res.status, code);
     }

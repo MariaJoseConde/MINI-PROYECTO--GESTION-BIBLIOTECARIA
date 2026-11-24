@@ -1,6 +1,14 @@
 export type UserRole = 'ADMIN' | 'DOCENTE' | 'LECTOR';
-export type UserStatus = 'ACTIVO' | 'SANCIONADO';
+export type UserStatus = 'ACTIVO' | 'SANCIONADO' | 'INACTIVO';
 export type LoanStatus = 'ACTIVO' | 'DEVUELTO' | 'MORA';
+
+export interface Sala {
+  id_sala: number;
+  nombre: string;
+  descripcion: string | null;
+  capacidad: number;
+  created_at: string;
+}
 
 export interface Autor {
   id_autor: number;
@@ -59,6 +67,7 @@ export interface Prestamo {
   fecha_limite: string;
   fecha_entrega: string | null;
   estado: LoanStatus;
+  multa_calculada?: number;
   created_at: string;
   libro_titulo?: string;
   libro_isbn?: string;
@@ -136,6 +145,9 @@ export interface InfraestructuraMetrics {
     }>;
   };
   database: {
+    engine?: string;
+    is_mysql?: boolean;
+    is_fallback_sqlite?: boolean;
     journalMode: string;
     foreignKeys: boolean;
     integrityOk: boolean;
@@ -146,10 +158,13 @@ export interface InfraestructuraMetrics {
       libros: number;
       autores: number;
       categorias: number;
+      salas?: number;
       usuarios: number;
       prestamos: number;
-      pruebas_lectura: number;
-      logs_sistema: number;
+      pruebas_lectura?: number;
+      pruebas?: number;
+      logs_sistema?: number;
+      logs?: number;
     };
   };
   iaCache: {

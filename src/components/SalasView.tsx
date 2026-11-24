@@ -1,18 +1,24 @@
-import React, { useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   ArrowRight,
   BookOpen,
   Compass,
   MapPin,
+  Plus,
   Search,
+  Trash2,
+  Users,
 } from 'lucide-react';
 import { motion } from 'motion/react';
+import { apiClient, ApiRequestError } from '../lib/apiClient.ts';
 import { LIBRARY_MEDIA, resolveCategoryBannerArt } from '../lib/mediaAssets.ts';
-import type { Categoria, Libro } from '../types/sgbi.ts';
+import type { Categoria, Libro, Sala, Usuario } from '../types/sgbi.ts';
 
 interface SalasViewProps {
   categorias: Categoria[];
   libros: Libro[];
+  user?: Usuario | null;
+  onNotify?: (type: 'success' | 'error' | 'info', text: string) => void;
   onExploreCategory: (categoriaNombre: string) => void;
   onSelectLibro: (libro: Libro) => void;
 }
@@ -80,12 +86,81 @@ function extractPasilloLabel(ubicacion: string): string {
 export const SalasView: React.FC<SalasViewProps> = ({
   categorias,
   libros,
+  user,
+  onNotify,
   onExploreCategory,
   onSelectLibro,
 }) => {
   const [selectedSala, setSelectedSala] = useState<string>('Todas');
   const [filterText, setFilterText] = useState('');
   const [planImgFailed, setPlanImgFailed] = useState(false);
+
+  const [salasApi, setSalasApi] = useState<Sala[]>([]);
+  const [loadingSalas, setLoadingSalas] = useState(true);
+  const [salasError, setSalasError] = useState<string | null>(null);
+  const [newSalaNombre, setNewSalaNombre] = useState('');
+  const [newSalaDesc, setNewSalaDesc] = useState('');
+  const [newSalaCap, setNewSalaCap] = useState(30);
+  const [savingSala, setSavingSala] = useState(false);
+
+  const loadSalas = useCallback(async () => {
+    setLoadingSalas(true);
+    setSalasError(null);
+    try {
+      const data = await apiClient.get<{ salas: Sala[] }>('/api/salas');
+      setSalasApi(data.salas ?? []);
+    } catch (err) {
+      setSalasError(
+        err instanceof ApiRequestError ? err.message : 'No se pudieron cargar las salas.',
+      );
+    } finally {
+      setLoadingSalas(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    loadSalas();
+  }, [loadSalas]);
+
+  async function handleCreateSala(e: React.FormEvent) {
+    e.preventDefault();
+    if (!newSalaNombre.trim()) return;
+    setSavingSala(true);
+    try {
+      const data = await apiClient.post<{ sala?: Sala }>('/api/salas', {
+        nombre: newSalaNombre.trim(),
+        descripcion: newSalaDesc.trim() || null,
+        capacidad: Number(newSalaCap) || 30,
+      });
+      if (data.sala) {
+        setSalasApi((prev) => [...prev, data.sala!].sort((a, b) => a.nombre.localeCompare(b.nombre)));
+        setNewSalaNombre('');
+        setNewSalaDesc('');
+        setNewSalaCap(30);
+        onNotify?.('success', `Sala "${data.sala.nombre}" registrada.`);
+      }
+    } catch (err) {
+      onNotify?.(
+        'error',
+        err instanceof ApiRequestError ? err.message : 'Error al registrar la sala.',
+      );
+    } finally {
+      setSavingSala(false);
+    }
+  }
+
+  async function handleDeleteSala(sala: Sala) {
+    try {
+      await apiClient.del(`/api/salas/${sala.id_sala}`);
+      setSalasApi((prev) => prev.filter((s) => s.id_sala !== sala.id_sala));
+      onNotify?.('success', `Sala "${sala.nombre}" eliminada.`);
+    } catch (err) {
+      onNotify?.(
+        'error',
+        err instanceof ApiRequestError ? err.message : 'No se pudo eliminar la sala.',
+      );
+    }
+  }
 
   const salasAgrupadas = useMemo(() => {
     const map = new Map<
@@ -437,6 +512,132 @@ export const SalasView: React.FC<SalasViewProps> = ({
           ))}
         </div>
       )}
+
+      {/* Sección Salas Físicas conectada a /api/salas */}
+      <section className="card-monday p-6 sm:p-8 space-y-5">
+        <div className="flex flex-wrap items-center justify-between gap-4 border-b border-[#d0d4e4] pb-4">
+          <div>
+            <h2 className="text-lg font-bold text-[#183B4E] dark:text-white tracking-tight">
+              Directorio de Salas de Lectura ({salasApi.length})
+            </h2>
+            <p className="text-xs text-[#535768] dark:text-slate-400">
+              Aforos y áreas físicas sincronizadas en tiempo real con la base de datos de biblioSmart.
+            </p>
+          </div>
+          {salasError && (
+            <button
+              type="button"
+              onClick={loadSalas}
+              className="btn-outline-pill text-xs py-1.5 px-3.5 cursor-pointer"
+            >
+              Reintentar
+            </button>
+          )}
+        </div>
+
+        {loadingSalas ? (
+          <div className="py-6 text-center text-xs text-slate-600 dark:text-slate-400" role="status">
+            Cargando salas registradas...
+          </div>
+        ) : salasError ? (
+          <div className="rounded-xl border border-rose-300/70 bg-rose-50/70 px-4 py-3 text-xs text-rose-800" role="alert">
+            {salasError}
+          </div>
+        ) : salasApi.length === 0 ? (
+          <div className="py-6 text-center text-xs text-slate-600 dark:text-slate-400">
+            No hay salas registradas en el sistema.
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {salasApi.map((s) => (
+              <div
+                key={s.id_sala}
+                className="rounded-2xl border border-[#d0d4e4]/80 dark:border-slate-700/70 bg-white/70 dark:bg-slate-800/50 p-4 flex flex-col justify-between gap-3"
+              >
+                <div>
+                  <div className="flex items-start justify-between gap-2">
+                    <h3 className="text-sm font-bold text-[#183B4E] dark:text-white">{s.nombre}</h3>
+                    <span className="badge-monday bg-[#287A65]/12 text-[#287A65] text-[10px] font-mono shrink-0">
+                      <Users className="w-3 h-3 mr-1" />
+                      {s.capacidad} cupos
+                    </span>
+                  </div>
+                  <p className="text-xs text-slate-600 dark:text-slate-300 mt-1.5">
+                    {s.descripcion || 'Sala disponible para lectura y consulta.'}
+                  </p>
+                </div>
+                {user?.rol === 'ADMIN' && (
+                  <div className="pt-2 border-t border-slate-200/60 dark:border-slate-700/60 flex justify-end">
+                    <button
+                      type="button"
+                      onClick={() => handleDeleteSala(s)}
+                      className="inline-flex items-center gap-1 text-[11px] font-medium text-rose-700 hover:underline cursor-pointer"
+                    >
+                      <Trash2 className="w-3 h-3" />
+                      Eliminar
+                    </button>
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
+
+        {user?.rol === 'ADMIN' && (
+          <form onSubmit={handleCreateSala} className="pt-4 border-t border-[#d0d4e4] grid grid-cols-1 sm:grid-cols-4 gap-3 items-end">
+            <div>
+              <label htmlFor="new-sala-name" className="block text-[11px] font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                Nueva sala
+              </label>
+              <input
+                id="new-sala-name"
+                type="text"
+                required
+                value={newSalaNombre}
+                onChange={(e) => setNewSalaNombre(e.target.value)}
+                placeholder="Ej. Sala E · Posgrado"
+                className="input-monday w-full text-xs"
+              />
+            </div>
+            <div className="sm:col-span-2">
+              <label htmlFor="new-sala-desc" className="block text-[11px] font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                Descripción
+              </label>
+              <input
+                id="new-sala-desc"
+                type="text"
+                value={newSalaDesc}
+                onChange={(e) => setNewSalaDesc(e.target.value)}
+                placeholder="Área de estudio silencioso..."
+                className="input-monday w-full text-xs"
+              />
+            </div>
+            <div className="flex gap-2 items-end">
+              <div className="w-20">
+                <label htmlFor="new-sala-cap" className="block text-[11px] font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                  Aforo
+                </label>
+                <input
+                  id="new-sala-cap"
+                  type="number"
+                  min={1}
+                  value={newSalaCap}
+                  onChange={(e) => setNewSalaCap(Number(e.target.value))}
+                  className="input-monday w-full text-xs"
+                />
+              </div>
+              <button
+                type="submit"
+                disabled={savingSala}
+                className="btn-primary-pill text-xs py-2 px-3.5 cursor-pointer shrink-0 disabled:opacity-60"
+              >
+                <Plus className="w-3.5 h-3.5" />
+                {savingSala ? 'Guardando...' : 'Agregar'}
+              </button>
+            </div>
+          </form>
+        )}
+      </section>
     </div>
   );
 };

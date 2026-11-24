@@ -11,6 +11,7 @@ import {
   X,
 } from 'lucide-react';
 import { BookCover } from './BookCover.tsx';
+import { apiClient, ApiRequestError } from '../lib/apiClient.ts';
 import type { Categoria, Libro, PruebaLectura, Usuario } from '../types/sgbi.ts';
 
 interface LibroDetalleModalProps {
@@ -49,13 +50,15 @@ export const LibroDetalleModal: React.FC<LibroDetalleModalProps> = ({
     async function loadDetail() {
       setLoadingPruebas(true);
       try {
-        const res = await fetch(`/api/libros/${libro!.id_libro}`);
-        if (!res.ok) return;
-        const data = (await res.json()) as { pruebas?: PruebaLectura[] };
+        const data = await apiClient.get<{ pruebas?: PruebaLectura[] }>(
+          `/api/libros/${libro!.id_libro}`,
+        );
         if (!cancelled && data.pruebas) {
           setPruebas(data.pruebas);
           setActivePrueba(data.pruebas[0] ?? null);
         }
+      } catch {
+        // Silent fallback when detail tests are unavailable
       } finally {
         if (!cancelled) setLoadingPruebas(false);
       }
@@ -72,13 +75,11 @@ export const LibroDetalleModal: React.FC<LibroDetalleModalProps> = ({
     if (!libro || !hasSinopsis) return;
     setGenerating(true);
     try {
-      const res = await fetch('/api/ia/generar-prueba', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id_libro: libro.id_libro }),
-      });
-      const data = (await res.json()) as { prueba?: PruebaLectura; error?: string };
-      if (!res.ok || !data.prueba) {
+      const data = await apiClient.post<{ prueba?: PruebaLectura; error?: string }>(
+        '/api/ia/generar-prueba',
+        { id_libro: libro.id_libro },
+      );
+      if (!data.prueba) {
         onNotify(
           'error',
           data.error ||
@@ -91,10 +92,12 @@ export const LibroDetalleModal: React.FC<LibroDetalleModalProps> = ({
       setViewMode('docente');
       onNotify('success', 'Evaluación pedagógica generada y guardada en base de datos.');
       onPruebaCreated?.();
-    } catch {
+    } catch (err) {
       onNotify(
         'error',
-        'No fue posible generar la prueba. Verifique la conexión e intente de nuevo.',
+        err instanceof ApiRequestError
+          ? err.message
+          : 'No fue posible generar la prueba. Verifique la conexión e intente de nuevo.',
       );
     } finally {
       setGenerating(false);

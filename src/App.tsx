@@ -25,7 +25,7 @@ import { AccessibilityMenu } from './components/AccessibilityMenu.tsx';
 import { CatalogoView } from './components/CatalogoView.tsx';
 import { ErrorBoundary } from './components/ErrorBoundary.tsx';
 import { ToastBanner, type ToastMessage } from './components/ToastBanner.tsx';
-import { apiClient } from './lib/apiClient.ts';
+import { apiClient, ApiRequestError, setAuthToken } from './lib/apiClient.ts';
 import type { Categoria, Libro, Usuario } from './types/sgbi.ts';
 
 // Carga perezosa (Lazy loading) de vistas pesadas para optimizar la carga en la intranet
@@ -126,6 +126,7 @@ export default function App() {
   const [libros, setLibros] = useState<Libro[]>([]);
   const [categorias, setCategorias] = useState<Categoria[]>([]);
   const [loadingLibros, setLoadingLibros] = useState(true);
+  const [catalogError, setCatalogError] = useState<string | null>(null);
   const [route, setRoute] = useState<ActiveRoute>(initialHash.route);
   const [selectedCategory, setSelectedCategory] = useState<string>(initialHash.category);
   const [homeResetKey, setHomeResetKey] = useState(0);
@@ -148,32 +149,41 @@ export default function App() {
   }, []);
 
   const fetchCatalogAndCategories = useCallback(async () => {
+    setLoadingLibros(true);
+    setCatalogError(null);
     try {
       const [lData, cData] = await Promise.all([
         apiClient.get<{ libros: Libro[] }>('/api/libros'),
         apiClient.get<{ categorias: Categoria[] }>('/api/categorias'),
       ]);
-      setLibros(lData.libros);
+      setLibros(lData.libros ?? []);
       setSelectedLibro((prev) =>
-        prev ? lData.libros.find((b) => b.id_libro === prev.id_libro) ?? null : null,
+        prev ? (lData.libros ?? []).find((b) => b.id_libro === prev.id_libro) ?? null : null,
       );
-      setCategorias(cData.categorias);
+      setCategorias(cData.categorias ?? []);
+    } catch (err) {
+      const msg =
+        err instanceof ApiRequestError
+          ? err.message
+          : 'No se pudo conectar con la API de biblioSmart.';
+      setCatalogError(msg);
+      notify('error', msg);
     } finally {
       setLoadingLibros(false);
     }
-  }, []);
+  }, [notify]);
 
   useEffect(() => {
     async function bootstrap() {
-      try {
-        const [meData] = await Promise.all([
-          apiClient.get<{ user: Usuario | null }>('/api/auth/me'),
-          fetchCatalogAndCategories(),
-        ]);
-        setUser(meData.user);
-      } catch {
-        setLoadingLibros(false);
-      }
+      const authPromise = apiClient
+        .get<{ user: Usuario | null }>('/api/auth/me')
+        .then((meData) => setUser(meData.user ?? null))
+        .catch(() => {
+          setUser(null);
+          setAuthToken(null);
+        });
+
+      await Promise.all([authPromise, fetchCatalogAndCategories()]);
     }
     bootstrap();
   }, [fetchCatalogAndCategories]);
@@ -218,6 +228,7 @@ export default function App() {
     } catch {
       // Clear local session state even if network call fails
     }
+    setAuthToken(null);
     setUser(null);
     setRoute('catalogo');
     setSelectedCategory('Todas');
@@ -314,9 +325,9 @@ export default function App() {
           className="min-h-[44px] flex items-center gap-2.5 font-sans text-base font-bold tracking-tight text-[#183B4E] dark:text-white cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#287A65] rounded-md"
         >
           <div className="w-8 h-8 rounded-lg bg-[#287A65] text-white flex items-center justify-center font-bold text-sm shadow-xs shrink-0">
-            S
+            b
           </div>
-          <span className="font-bold text-[#183B4E] dark:text-white">SGBI <span className="text-[#287A65] dark:text-[#38a58a] font-semibold">· Estudio IA</span></span>
+          <span className="font-bold text-[#183B4E] dark:text-white">biblioSmart <span className="text-[#287A65] dark:text-[#38a58a] font-semibold">· Estudio IA</span></span>
         </button>
         <button
           type="button"
@@ -597,10 +608,10 @@ export default function App() {
                 className="min-h-[44px] flex items-center gap-2 font-sans text-base font-bold tracking-tight text-[#183B4E] dark:text-white cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#287A65] rounded-md shrink-0 mr-1"
               >
                 <div className="w-7 h-7 rounded-lg bg-[#287A65] text-white flex items-center justify-center font-bold text-xs shadow-xs">
-                  S
+                  b
                 </div>
                 <span className="font-bold text-[#183B4E] dark:text-white hidden sm:inline">
-                  SGBI <span className="text-[#287A65] dark:text-[#38a58a] font-semibold">· Estudio IA</span>
+                  biblioSmart <span className="text-[#287A65] dark:text-[#38a58a] font-semibold">· Estudio IA</span>
                 </span>
               </button>
 
@@ -702,6 +713,23 @@ export default function App() {
 
           {/* Contenido de la Ruta Activa protegido con ErrorBoundary y Suspense */}
           <main id="main-content" tabIndex={-1} className="flex-1 max-w-[1200px] w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 focus:outline-none">
+            {catalogError && (
+              <div
+                role="alert"
+                className="mb-6 rounded-2xl border border-rose-300/70 dark:border-rose-800/70 bg-rose-50/80 dark:bg-rose-950/40 backdrop-blur-md px-5 py-4 flex flex-wrap items-center justify-between gap-4"
+              >
+                <div className="text-sm font-medium text-rose-800 dark:text-rose-200">
+                  <strong>Error de conexión:</strong> {catalogError}
+                </div>
+                <button
+                  type="button"
+                  onClick={fetchCatalogAndCategories}
+                  className="btn-outline-pill text-xs py-1.5 px-4 cursor-pointer"
+                >
+                  Reintentar carga
+                </button>
+              </div>
+            )}
             <ErrorBoundary onReset={goToMainScreen}>
               <Suspense
                 fallback={
@@ -751,6 +779,8 @@ export default function App() {
                       <SalasView
                         categorias={categorias}
                         libros={libros}
+                        user={user}
+                        onNotify={notify}
                         onExploreCategory={handleJumpToCategory}
                         onSelectLibro={setSelectedLibro}
                       />
@@ -794,7 +824,7 @@ export default function App() {
               <div className="flex items-center gap-2">
                 <div className="w-2.5 h-2.5 rounded-full bg-[#287A65] shrink-0" />
                 <span className="font-medium text-slate-700 dark:text-slate-300">
-                  SGBI · Sistema de Gestión Bibliotecaria y Estudio IA
+                  biblioSmart · Sistema de Gestión Bibliotecaria y Estudio IA
                 </span>
               </div>
               <div className="flex items-center gap-6">

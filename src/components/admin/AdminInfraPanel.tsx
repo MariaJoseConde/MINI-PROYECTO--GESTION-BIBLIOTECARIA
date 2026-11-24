@@ -21,10 +21,10 @@ export const AdminInfraPanel: React.FC<AdminInfraPanelProps> = ({
         <div className="flex flex-wrap items-center justify-between gap-4 pb-6 border-b border-[#d0d4e4]">
           <div>
             <h2 className="text-lg font-bold text-[#333333] tracking-tight">
-              Arquitectura, Caché y Respaldo SQLite
+              Arquitectura, Caché y Base de Datos
             </h2>
             <p className="text-xs text-[#535768] mt-0.5">
-              Monitoreo en tiempo real del servidor Express modular, caché LRU semántica, compresión gzip y base de datos WAL.
+              Monitoreo en tiempo real de biblioSmart: servidor PHP 8.2, caché semántica y motor relacional ({metrics?.database.engine === 'mysql' ? 'MySQL InnoDB' : 'SQLite WAL'}).
             </p>
           </div>
 
@@ -40,7 +40,7 @@ export const AdminInfraPanel: React.FC<AdminInfraPanelProps> = ({
             </button>
             <a
               href="/api/libros/exportar/csv"
-              download="sgbi-catalogo.csv"
+              download="bibliosmart-catalogo.csv"
               className="btn-outline-pill text-xs py-2 px-4 cursor-pointer gap-2"
             >
               <Download className="w-3.5 h-3.5" />
@@ -66,7 +66,7 @@ export const AdminInfraPanel: React.FC<AdminInfraPanelProps> = ({
                 </div>
                 <dl className="grid grid-cols-2 gap-2 text-xs">
                   <div>
-                    <dt className="text-[#808080]">Node.js</dt>
+                    <dt className="text-[#808080]">Entorno / Runtime</dt>
                     <dd className="font-mono font-semibold text-[#333333]">
                       {metrics.server.nodeVersion}
                     </dd>
@@ -96,7 +96,7 @@ export const AdminInfraPanel: React.FC<AdminInfraPanelProps> = ({
                 <div className="flex items-center justify-between gap-2 text-xs font-bold text-[#333333]">
                   <span className="inline-flex items-center gap-2">
                     <Database className="w-4 h-4 text-[#00854d]" />
-                    Motor SQLite WAL
+                    Motor {metrics.database.engine === 'mysql' ? 'MySQL InnoDB' : 'SQLite WAL'}
                   </span>
                   <span className="badge-monday bg-[#ffffff] text-[10px] text-[#535768] font-mono border border-[#d0d4e4]">
                     {metrics.database.schemaVersion}
