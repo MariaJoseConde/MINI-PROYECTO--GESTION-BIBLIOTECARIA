@@ -7,6 +7,7 @@ use Exception;
 class Database {
     private static ?PDO $instance = null;
     private static bool $envLoaded = false;
+    private static string $activeDriver = 'unknown';
 
     public static function loadEnv(): void {
         if (self::$envLoaded) {
@@ -33,6 +34,21 @@ class Database {
         }
     }
 
+    public static function getActiveDriver(): string {
+        if (self::$activeDriver === 'unknown') {
+            self::getConnection();
+        }
+        return self::$activeDriver;
+    }
+
+    public static function isMysql(): bool {
+        return self::getActiveDriver() === 'mysql';
+    }
+
+    public static function isSqlite(): bool {
+        return self::getActiveDriver() === 'sqlite';
+    }
+
     public static function getConnection(): PDO {
         if (self::$instance !== null) {
             return self::$instance;
@@ -57,9 +73,10 @@ class Database {
                     PDO::ATTR_EMULATE_PREPARES => false,
                     PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8mb4 COLLATE utf8mb4_unicode_ci",
                 ]);
+                self::$activeDriver = 'mysql';
                 return self::$instance;
             } catch (Exception $e) {
-                // Si MySQL no está disponible en 127.0.0.1:3306 (ej. servicio XAMPP detenido), respaldar en SQLite
+                // Si MySQL no está disponible en 127.0.0.1:3306 (ej. servicio XAMPP detenido o restricción de sandbox), respaldar en SQLite
                 error_log("[SGBI] Advertencia MySQL: " . $e->getMessage() . ". Usando base de datos SQLite de respaldo.");
                 $connectionType = 'sqlite';
             }
@@ -80,6 +97,7 @@ class Database {
         self::$instance->exec('PRAGMA foreign_keys = ON;');
         self::$instance->exec('PRAGMA journal_mode = WAL;');
         self::$instance->exec('PRAGMA busy_timeout = 5000;');
+        self::$activeDriver = 'sqlite';
 
         return self::$instance;
     }
@@ -98,7 +116,7 @@ class Database {
     public static function getStats(): array {
         self::loadEnv();
         $db = self::getConnection();
-        $driver = $db->getAttribute(PDO::ATTR_DRIVER_NAME);
+        $driver = self::$activeDriver;
 
         $fileSizeKb = 0;
         $indexesCount = 0;
@@ -150,7 +168,9 @@ class Database {
         };
 
         return [
-            'engine' => $connectionType,
+            'engine' => $driver,
+            'is_mysql' => $driver === 'mysql',
+            'is_fallback_sqlite' => $driver === 'sqlite',
             'journalMode' => $journalMode,
             'foreignKeys' => $foreignKeys,
             'integrityOk' => true,

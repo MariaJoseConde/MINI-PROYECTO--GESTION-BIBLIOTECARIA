@@ -1,0 +1,468 @@
+{
+  "info": {
+    "_postman_id": "sgbi-sprint2-collection-2026",
+    "name": "SGBI - Sistema de Gestión Bibliotecaria Inteligente (Sprint 2)",
+    "description": "Colección completa de pruebas para la API RESTful de SGBI. Incluye autenticación con JWT (RFC 7519), control de acceso basado en roles (RBAC: ADMIN, DOCENTE, LECTOR), operaciones CRUD completas y verificación de reglas de negocio para inventario y préstamos.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8000/api",
+      "type": "string"
+    },
+    {
+      "key": "jwt_token",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "01. Salud y Documentación",
+      "item": [
+        {
+          "name": "Health Check (Motor de BD & Estado)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/health",
+              "host": ["{{baseUrl}}"],
+              "path": ["health"]
+            },
+            "description": "Comprueba el estado del servidor, versión de PHP y si se está utilizando MySQL o SQLite."
+          }
+        },
+        {
+          "name": "OpenAPI Spec v3.0.3 (JSON)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/openapi.json",
+              "host": ["{{baseUrl}}"],
+              "path": ["openapi.json"]
+            },
+            "description": "Descarga la especificación completa OpenAPI 3.0.3 en formato JSON."
+          }
+        }
+      ]
+    },
+    {
+      "name": "02. Autenticación (JWT & RBAC)",
+      "item": [
+        {
+          "name": "Login Admin (Genera Token JWT)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "if (jsonData.token) {",
+                  "    pm.collectionVariables.set('jwt_token', jsonData.token);",
+                  "    console.log('Token JWT almacenado exitosamente:', jsonData.token);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@sgbi.edu\",\n  \"password\": \"sgbi2026\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "login"]
+            },
+            "description": "Inicia sesión como Administrador/Bibliotecario y guarda automáticamente el token JWT en la variable {{jwt_token}}."
+          }
+        },
+        {
+          "name": "Login Lector (Genera Token JWT)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "if (jsonData.token) {",
+                  "    pm.collectionVariables.set('jwt_token', jsonData.token);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"lector@sgbi.edu\",\n  \"password\": \"sgbi2026\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "login"]
+            },
+            "description": "Inicia sesión como Usuario/Lector regular para probar permisos limitados."
+          }
+        },
+        {
+          "name": "Registro de Nuevo Lector",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"numero_documento\": \"1098765432\",\n  \"nombre_completo\": \"Carlos Eduardo Ramírez\",\n  \"email\": \"carlos.ramirez@sgbi.edu\",\n  \"password\": \"Biblioteca2026*\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/register",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "register"]
+            },
+            "description": "Registra un nuevo usuario con rol LECTOR y retorna un token JWT válido."
+          }
+        },
+        {
+          "name": "Obtener Usuario Actual (GET /auth/me)",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{jwt_token}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/auth/me",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "me"]
+            },
+            "description": "Retorna los datos del usuario autenticado mediante el token JWT."
+          }
+        },
+        {
+          "name": "Cerrar Sesión (POST /auth/logout)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{jwt_token}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/auth/logout",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "logout"]
+            },
+            "description": "Cierra la sesión y destruye la cookie de sesión activa."
+          }
+        }
+      ]
+    },
+    {
+      "name": "03. Catálogo de Libros (CRUD)",
+      "item": [
+        {
+          "name": "Listar Libros (GET /libros)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/libros?categoria=Todas",
+              "host": ["{{baseUrl}}"],
+              "path": ["libros"],
+              "query": [
+                { "key": "categoria", "value": "Todas" },
+                { "key": "q", "value": "", "disabled": true }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Obtener Detalle de Libro (GET /libros/:id)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/libros/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["libros", "1"]
+            }
+          }
+        },
+        {
+          "name": "Crear Libro (POST /libros - ADMIN)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{jwt_token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"isbn\": \"978-0140449136\",\n  \"titulo\": \"La Odisea\",\n  \"sinopsis\": \"Poema épico atribuido a Homero sobre el regreso de Odiseo a Ítaca.\",\n  \"categoria\": \"Clásicos Universales\",\n  \"anio_publicacion\": 800,\n  \"editorial\": \"Penguin Classics\",\n  \"idioma\": \"Español\",\n  \"paginas\": 448,\n  \"copias_totales\": 5,\n  \"copias_disp\": 5,\n  \"autor_ids\": [1]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/libros",
+              "host": ["{{baseUrl}}"],
+              "path": ["libros"]
+            }
+          }
+        },
+        {
+          "name": "Actualizar Libro (PUT /libros/:id - ADMIN)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{jwt_token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"titulo\": \"1984 - Edición Anotada Especial\",\n  \"copias_totales\": 6,\n  \"copias_disp\": 5\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/libros/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["libros", "1"]
+            }
+          }
+        },
+        {
+          "name": "Eliminar Libro (DELETE /libros/:id - ADMIN)",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{jwt_token}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/libros/999",
+              "host": ["{{baseUrl}}"],
+              "path": ["libros", "999"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "04. Autores (CRUD)",
+      "item": [
+        {
+          "name": "Listar Autores (GET /autores)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/autores",
+              "host": ["{{baseUrl}}"],
+              "path": ["autores"]
+            }
+          }
+        },
+        {
+          "name": "Crear Autor (POST /autores - ADMIN)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{jwt_token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Homero\",\n  \"nacionalidad\": \"Griega\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/autores",
+              "host": ["{{baseUrl}}"],
+              "path": ["autores"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "05. Categorías (CRUD)",
+      "item": [
+        {
+          "name": "Listar Categorías (GET /categorias)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/categorias",
+              "host": ["{{baseUrl}}"],
+              "path": ["categorias"]
+            }
+          }
+        },
+        {
+          "name": "Crear Categoría (POST /categorias - ADMIN)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{jwt_token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Filosofía Antigua\",\n  \"codigo_archivo\": \"180.0\",\n  \"descripcion\": \"Pensamiento presocrático, platónico y aristotélico.\",\n  \"ubicacion_sala\": \"Sala Central · Estantería Noble\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/categorias",
+              "host": ["{{baseUrl}}"],
+              "path": ["categorias"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "06. Salas (CRUD)",
+      "item": [
+        {
+          "name": "Listar Salas (GET /salas)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/salas",
+              "host": ["{{baseUrl}}"],
+              "path": ["salas"]
+            }
+          }
+        },
+        {
+          "name": "Crear Sala (POST /salas - ADMIN)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{jwt_token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Sala E · Investigación Avanzada\",\n  \"descripcion\": \"Área silenciosa para estudiantes de posgrado y docentes.\",\n  \"capacidad\": 15\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/salas",
+              "host": ["{{baseUrl}}"],
+              "path": ["salas"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "07. Circulación y Préstamos (Reglas de Negocio)",
+      "item": [
+        {
+          "name": "Listar Préstamos (GET /prestamos)",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{jwt_token}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/prestamos",
+              "host": ["{{baseUrl}}"],
+              "path": ["prestamos"]
+            }
+          }
+        },
+        {
+          "name": "Crear Préstamo (POST /prestamos - ADMIN)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{jwt_token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id_libro\": 2,\n  \"id_usuario\": 3\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/prestamos",
+              "host": ["{{baseUrl}}"],
+              "path": ["prestamos"]
+            },
+            "description": "Crea un préstamo de libro y reduce automáticamente el stock disponible en la base de datos."
+          }
+        },
+        {
+          "name": "Devolver Préstamo (POST /prestamos/:id/devolver)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{jwt_token}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/prestamos/1/devolver",
+              "host": ["{{baseUrl}}"],
+              "path": ["prestamos", "1", "devolver"]
+            },
+            "description": "Registra la entrega física del libro, restaura el stock disponible e impone multa si hay días de retraso."
+          }
+        }
+      ]
+    },
+    {
+      "name": "08. Usuarios y Administración (RBAC)",
+      "item": [
+        {
+          "name": "Listar Usuarios (GET /usuarios - ADMIN)",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{jwt_token}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/usuarios",
+              "host": ["{{baseUrl}}"],
+              "path": ["usuarios"]
+            }
+          }
+        },
+        {
+          "name": "Métricas de Base de Datos (GET /admin/metricas - ADMIN)",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{jwt_token}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/metricas",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "metricas"]
+            }
+          }
+        },
+        {
+          "name": "Auditoría de Eventos (GET /admin/auditoria - ADMIN)",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{jwt_token}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/auditoria",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "auditoria"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

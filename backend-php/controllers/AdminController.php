@@ -148,11 +148,11 @@ class AdminController {
             Response::error('Usuario no encontrado.', 404, 'USER_NOT_FOUND');
         }
 
-        // Verify no active loans
-        $stmtLoans = $db->prepare("SELECT COUNT(*) FROM prestamos WHERE id_usuario = ? AND estado IN ('ACTIVO', 'MORA')");
+        // Verify no loans associated (relational integrity check)
+        $stmtLoans = $db->prepare("SELECT COUNT(*) FROM prestamos WHERE id_usuario = ?");
         $stmtLoans->execute([$id]);
         if ((int)$stmtLoans->fetchColumn() > 0) {
-            Response::error('No se puede eliminar el usuario porque tiene préstamos activos o en mora.', 409, 'USER_HAS_ACTIVE_LOANS');
+            Response::error('No se puede eliminar el usuario porque tiene historial de préstamos asociados en el sistema.', 409, 'USER_HAS_LOANS');
         }
 
         try {

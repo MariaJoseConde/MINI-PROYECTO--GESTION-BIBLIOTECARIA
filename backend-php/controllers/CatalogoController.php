@@ -295,13 +295,13 @@ class CatalogoController {
             Response::error('Libro no encontrado.', 404);
         }
 
-        // Verify no active loans
-        $stmtLoans = $db->prepare("SELECT COUNT(*) FROM prestamos WHERE id_libro = ? AND estado IN ('ACTIVO', 'MORA')");
+        // Verify no loans associated (relational integrity check)
+        $stmtLoans = $db->prepare("SELECT COUNT(*) FROM prestamos WHERE id_libro = ?");
         $stmtLoans->execute([$id]);
-        $activeLoans = (int)$stmtLoans->fetchColumn();
+        $totalLoans = (int)$stmtLoans->fetchColumn();
 
-        if ($activeLoans > 0) {
-            Response::error('No se puede eliminar el libro porque tiene préstamos en curso o en mora.', 409);
+        if ($totalLoans > 0) {
+            Response::error('No se puede eliminar el libro porque cuenta con un historial de préstamos asociado en el sistema.', 409, 'BOOK_HAS_LOANS');
         }
 
         $db->beginTransaction();

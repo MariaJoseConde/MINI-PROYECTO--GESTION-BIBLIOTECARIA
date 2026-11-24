@@ -104,12 +104,12 @@ $createdLibroId = $resCreateLibro['body']['libro']['id_libro'] ?? 0;
 echo "[8] POST /api/libros (Con Bearer Admin) -> Status: {$resCreateLibro['status']} (ID Libro: {$createdLibroId})\n";
 assert($resCreateLibro['status'] === 201, "Creación de libro autenticada falló");
 
-// 9. Operación protegida denegada por permisos: El nuevo Lector intenta crear libro -> 403 Forbidden
-$lectorId = (string)($resRegister['body']['user']['id_usuario'] ?? '3');
+// 9. Operación protegida denegada por permisos: El nuevo Lector intenta crear libro con su JWT -> 403 Forbidden
+$lectorToken = $resRegister['body']['token'] ?? '3';
 $resForbidden = httpRequest('POST', "{$baseUrl}/libros", [
     'isbn' => '978-FORBIDDEN-01',
     'titulo' => 'Intento No Autorizado',
-], ["Authorization: Bearer {$lectorId}"]);
+], ["Authorization: Bearer {$lectorToken}"]);
 echo "[9] POST /api/libros (Con Bearer Lector) -> Status: {$resForbidden['status']} (Esperado: 403 Forbidden)\n";
 assert($resForbidden['status'] === 403, "Se esperaba 403 para LECTOR intentando crear libros");
 

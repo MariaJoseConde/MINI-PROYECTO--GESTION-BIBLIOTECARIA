@@ -513,7 +513,18 @@ class DocsController {
                     'get' => [
                         'tags' => ['Administración y Auditoría'],
                         'summary' => 'Consultar los últimos 100 eventos de auditoría (Requiere ADMIN)',
+                        'security' => [['BearerAuth' => []]],
                         'responses' => ['200' => ['description' => 'Logs del sistema.']],
+                    ],
+                ],
+            ],
+            'components' => [
+                'securitySchemes' => [
+                    'BearerAuth' => [
+                        'type' => 'http',
+                        'scheme' => 'bearer',
+                        'bearerFormat' => 'JWT',
+                        'description' => 'Autenticación mediante token JWT en la cabecera: Authorization: Bearer <token>',
                     ],
                 ],
             ],

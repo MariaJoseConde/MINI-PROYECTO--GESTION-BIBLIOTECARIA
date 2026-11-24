@@ -21,6 +21,7 @@ spl_autoload_register(function ($class) {
 
 use Sgbi\Config\Database;
 use Sgbi\Config\Auth;
+use Sgbi\Config\Jwt;
 
 class Sprint2TestRunner {
     private int $passed = 0;
@@ -51,6 +52,7 @@ class Sprint2TestRunner {
 
         $this->testDatabaseSchemaAndIntegrity();
         $this->testAuthenticationAndSecurity();
+        $this->testJwtImplementation();
         $this->testRoleBasedAccessControl();
         $this->testCrudLibros();
         $this->testCrudAutores();
@@ -77,11 +79,14 @@ class Sprint2TestRunner {
     private function testDatabaseSchemaAndIntegrity(): void {
         echo "--- TAREA 1: Base de Datos Relacional y Esquema ---\n";
 
+        $driver = Database::getActiveDriver();
+        $this->assert(in_array($driver, ['mysql', 'sqlite'], true), "Motor de persistencia identificado claramente ('{$driver}').");
+
         // 1.1 Verificar existencia de tablas requeridas
         $requiredTables = ['libros', 'autores', 'libro_autor', 'usuarios', 'prestamos', 'categorias', 'salas', 'logs_sistema'];
-        $driver = $this->db->getAttribute(PDO::ATTR_DRIVER_NAME);
+        $pdoDriver = $this->db->getAttribute(PDO::ATTR_DRIVER_NAME);
 
-        if ($driver === 'sqlite') {
+        if ($pdoDriver === 'sqlite') {
             $tables = $this->db->query("SELECT name FROM sqlite_master WHERE type='table'")->fetchAll(PDO::FETCH_COLUMN);
         } else {
             $tables = $this->db->query("SHOW TABLES")->fetchAll(PDO::FETCH_COLUMN);
@@ -111,7 +116,7 @@ class Sprint2TestRunner {
         $testEmail = 'test.lector.' . uniqid() . '@sgbi.edu';
         $testPass = 'claveSegura123!';
 
-        // 3.1 Hash de contraseña seguro (BCRYPT / Argon2)
+        // 3.1 Hash de contraseña seguro (BCRYPT)
         $hash = Auth::hashPassword($testPass);
         $hashInfo = password_get_info($hash);
         $this->assert($hashInfo['algoName'] === 'bcrypt', "Contraseñas cifradas con algoritmo robusto BCRYPT ({$hashInfo['algoName']}).");
@@ -146,6 +151,36 @@ class Sprint2TestRunner {
 
         // Limpiar usuario de prueba
         $this->db->prepare('DELETE FROM usuarios WHERE id_usuario = ?')->execute([$newUserId]);
+        echo "\n";
+    }
+
+    // -------------------------------------------------------------------------
+    // TAREA 3 (JWT): Implementación y Validación de JSON Web Tokens
+    // -------------------------------------------------------------------------
+    private function testJwtImplementation(): void {
+        echo "--- TAREA 3 (JWT): Verificación de Firma y Validación de Tokens ---\n";
+
+        // Generar token JWT
+        $payload = [
+            'sub' => 1,
+            'email' => 'admin@sgbi.edu',
+            'rol' => 'ADMIN',
+            'nombre' => 'Clara Mendoza Vargas',
+        ];
+        $token = Jwt::generate($payload, 3600);
+        $this->assert(!empty($token) && substr_count($token, '.') === 2, "Generación de Token JWT estándar RFC 7519 con cabecera, payload y firma.");
+
+        // Verificar token válido
+        $decoded = Jwt::verify($token);
+        $this->assert($decoded !== null && $decoded['sub'] === 1 && $decoded['rol'] === 'ADMIN', "Verificación exitosa de firma HMAC-SHA256 y claims del JWT.");
+
+        // Verificar rechazo de token manipulado (tampered signature)
+        $tamperedToken = $token . 'x';
+        $this->assert(Jwt::verify($tamperedToken) === null, "Rechazo de Token JWT con firma alterada o no válida.");
+
+        // Verificar rechazo de token expirado
+        $expiredToken = Jwt::generate($payload, -10); // expirado hace 10 segundos
+        $this->assert(Jwt::verify($expiredToken) === null, "Rechazo estricto de Token JWT expirado (claim exp).");
         echo "\n";
     }
 
@@ -301,14 +336,17 @@ class Sprint2TestRunner {
         $idUsuario = (int)$usuario['id_usuario'];
         $stockInicial = (int)$libro['copias_disp'];
 
+        $fechaPrestamo = date('Y-m-d');
+        $fechaLimite = date('Y-m-d', strtotime('+8 days'));
+
         // CREATE Préstamo
         $this->db->beginTransaction();
         $this->db->prepare('UPDATE libros SET copias_disp = copias_disp - 1 WHERE id_libro = ?')->execute([$idLibro]);
         $stmtInsert = $this->db->prepare("
             INSERT INTO prestamos (id_libro, id_usuario, fecha_prestamo, fecha_limite, estado)
-            VALUES (?, ?, date('now'), date('now', '+8 days'), 'ACTIVO')
+            VALUES (?, ?, ?, ?, 'ACTIVO')
         ");
-        $stmtInsert->execute([$idLibro, $idUsuario]);
+        $stmtInsert->execute([$idLibro, $idUsuario, $fechaPrestamo, $fechaLimite]);
         $loanId = (int)$this->db->lastInsertId();
         $this->db->commit();
 
@@ -322,13 +360,17 @@ class Sprint2TestRunner {
         $this->assert($prestamo && $prestamo['estado'] === 'ACTIVO', "READ Préstamo: Consulta de folio de préstamo #{$loanId}.");
 
         // UPDATE Préstamo (Extensión de plazo)
-        $this->db->prepare("UPDATE prestamos SET fecha_limite = date('now', '+15 days') WHERE id_prestamo = ?")->execute([$loanId]);
+        $nuevoLimite = date('Y-m-d', strtotime('+15 days'));
+        $stmtExt = $this->db->prepare("UPDATE prestamos SET fecha_limite = ? WHERE id_prestamo = ?");
+        $stmtExt->execute([$nuevoLimite, $loanId]);
         $limiteNuevo = $this->db->query("SELECT fecha_limite FROM prestamos WHERE id_prestamo = {$loanId}")->fetchColumn();
-        $this->assert(!empty($limiteNuevo), "UPDATE Préstamo: Modificación y extensión de fecha límite.");
+        $this->assert($limiteNuevo === $nuevoLimite, "UPDATE Préstamo: Modificación y extensión de fecha límite.");
 
         // DEVOLUCIÓN (Restitución de stock)
+        $hoy = date('Y-m-d');
         $this->db->beginTransaction();
-        $this->db->prepare("UPDATE prestamos SET estado = 'DEVUELTO', fecha_entrega = date('now') WHERE id_prestamo = ?")->execute([$loanId]);
+        $stmtDev = $this->db->prepare("UPDATE prestamos SET estado = 'DEVUELTO', fecha_entrega = ? WHERE id_prestamo = ?");
+        $stmtDev->execute([$hoy, $loanId]);
         $this->db->prepare('UPDATE libros SET copias_disp = copias_disp + 1 WHERE id_libro = ?')->execute([$idLibro]);
         $this->db->commit();
 
@@ -360,6 +402,7 @@ class Sprint2TestRunner {
         $this->assert(isset($spec['paths']['/libros']), "Documentación de endpoint /libros presente.");
         $this->assert(isset($spec['paths']['/prestamos']), "Documentación de endpoint /prestamos presente.");
         $this->assert(isset($spec['paths']['/usuarios']), "Documentación de endpoint /usuarios presente.");
+        $this->assert(isset($spec['components']['securitySchemes']['BearerAuth']), "Esquema de seguridad JWT BearerAuth documentado en componentes.");
         echo "\n";
     }
 }

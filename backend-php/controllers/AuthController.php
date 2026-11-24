@@ -3,6 +3,7 @@ namespace Sgbi\Controllers;
 
 use Sgbi\Config\Database;
 use Sgbi\Config\Auth;
+use Sgbi\Config\Jwt;
 use Sgbi\Config\Response;
 
 class AuthController {
@@ -69,10 +70,20 @@ class AuthController {
         $newUser = $stmtUser->fetch();
         $newUser['id_usuario'] = (int)$newUser['id_usuario'];
 
+        // Generar Token JWT firmado según estándar RFC 7519
+        $jwtToken = Jwt::generate([
+            'sub' => $newId,
+            'email' => $newUser['email'],
+            'rol' => $newUser['rol'],
+            'nombre' => $newUser['nombre_completo'],
+        ]);
+
         Response::created([
             'mensaje' => 'Usuario registrado exitosamente en el sistema bibliotecario.',
             'user' => $newUser,
-            'token' => (string)$newId,
+            'token' => $jwtToken,
+            'token_type' => 'Bearer',
+            'expires_in' => 86400,
         ], "/api/usuarios/{$newId}");
     }
 
@@ -110,10 +121,20 @@ class AuthController {
         unset($row['password_hash']);
         $row['id_usuario'] = (int)$row['id_usuario'];
 
+        // Generar Token JWT firmado según estándar RFC 7519
+        $jwtToken = Jwt::generate([
+            'sub' => (int)$row['id_usuario'],
+            'email' => $row['email'],
+            'rol' => $row['rol'],
+            'nombre' => $row['nombre_completo'],
+        ]);
+
         Response::json([
             'mensaje' => 'Autenticación exitosa.',
             'user' => $row,
-            'token' => (string)$row['id_usuario'],
+            'token' => $jwtToken,
+            'token_type' => 'Bearer',
+            'expires_in' => 86400,
         ]);
     }
 
@@ -127,7 +148,6 @@ class AuthController {
             );
         }
         Auth::logout();
-        Response::json(['ok' => true]);
+        Response::json(['ok' => true, 'mensaje' => 'Sesión cerrada correctamente.']);
     }
 }
-

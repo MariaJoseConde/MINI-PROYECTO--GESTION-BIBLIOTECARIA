@@ -27,12 +27,26 @@ class Auth {
 
         $userId = $_SESSION['user_id'] ?? null;
 
-        // Support Authorization: Bearer <user_id> for API testing
-        if (!$userId && isset($_SERVER['HTTP_AUTHORIZATION'])) {
-            if (preg_match('/Bearer\s+(\S+)/i', $_SERVER['HTTP_AUTHORIZATION'], $matches)) {
-                $token = $matches[1];
-                if (is_numeric($token)) {
-                    $userId = (int)$token;
+        // Soporte de autenticación moderna mediante Header HTTP: Authorization: Bearer <jwt_token>
+        if (!$userId) {
+            $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? ($_SERVER['REDIRECT_HTTP_AUTHORIZATION'] ?? '');
+            if (empty($authHeader) && function_exists('apache_request_headers')) {
+                $headers = apache_request_headers();
+                $authHeader = $headers['Authorization'] ?? ($headers['authorization'] ?? '');
+            }
+
+            if (!empty($authHeader) && preg_match('/Bearer\s+(\S+)/i', $authHeader, $matches)) {
+                $rawToken = $matches[1];
+
+                // 1. Verificación de token JWT estándar RFC 7519 (formato header.payload.signature)
+                if (substr_count($rawToken, '.') === 2) {
+                    $payload = Jwt::verify($rawToken);
+                    if ($payload && !empty($payload['sub'])) {
+                        $userId = (int)$payload['sub'];
+                    }
+                } elseif (is_numeric($rawToken)) {
+                    // 2. Soporte retrospectivo para pruebas con identificador numérico
+                    $userId = (int)$rawToken;
                 }
             }
         }
@@ -76,7 +90,7 @@ class Auth {
     public static function requireAuth(): array {
         $user = self::user();
         if (!$user) {
-            Response::error('Acceso no autorizado. Debe iniciar sesión.', 401);
+            Response::error('Acceso no autorizado. Debe autenticarse con un token Bearer JWT válido o iniciar sesión.', 401, 'UNAUTHORIZED');
         }
         return $user;
     }
@@ -84,22 +98,22 @@ class Auth {
     public static function requireRole(string ...$roles): array {
         $user = self::requireAuth();
         if (!in_array($user['rol'], $roles, true)) {
-            Response::error('Permisos insuficientes para realizar esta acción.', 403);
+            Response::error("Acceso denegado. Se requiere uno de los siguientes roles: " . implode(', ', $roles) . ". Su rol actual es '{$user['rol']}'.", 403, 'FORBIDDEN');
         }
         return $user;
     }
 
     public static function hashPassword(string $password): string {
-        return password_hash($password, PASSWORD_BCRYPT);
+        return password_hash($password, PASSWORD_BCRYPT, ['cost' => 10]);
     }
 
     public static function verifyPassword(string $password, string $storedHash): bool {
-        // Native PHP password_verify (for bcrypt/argon2)
+        // Verificación nativa PHP para algoritmos bcrypt/argon2
         if (password_verify($password, $storedHash)) {
             return true;
         }
 
-        // Demo accounts fallback (all seeded demo accounts use 'sgbi2026')
+        // Cuentas demo semilla del entorno de desarrollo (contraseña por defecto 'sgbi2026')
         if ($password === 'sgbi2026') {
             return true;
         }
@@ -107,4 +121,3 @@ class Auth {
         return false;
     }
 }
-
