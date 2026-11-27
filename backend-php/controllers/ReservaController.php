@@ -179,7 +179,7 @@ class ReservaController {
     }
 
     public function completarReserva(int $id): void {
-        $admin = Auth::requireRole('ADMIN');
+        $admin = Auth::requireRole('ADMIN', 'BIBLIOTECARIO');
         $db = Database::getConnection();
 
         $stmt = $db->prepare('SELECT * FROM reservas WHERE id_reserva = ?');

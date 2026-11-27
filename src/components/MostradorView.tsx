@@ -2,8 +2,10 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import {
   AlertTriangle,
   ArrowRightLeft,
+  BookmarkCheck,
   Calendar,
   CheckCircle2,
+  Clock,
   Printer,
   RotateCcw,
   Search,
@@ -12,7 +14,7 @@ import {
   XCircle,
 } from 'lucide-react';
 import { apiClient, ApiRequestError } from '../lib/apiClient.ts';
-import type { Libro, Prestamo, Usuario } from '../types/sgbi.ts';
+import type { Libro, Prestamo, Reserva, Usuario } from '../types/sgbi.ts';
 
 interface MostradorViewProps {
   libros: Libro[];
@@ -27,6 +29,8 @@ export const MostradorView: React.FC<MostradorViewProps> = ({
 }) => {
   const [usuarios, setUsuarios] = useState<Usuario[]>([]);
   const [prestamos, setPrestamos] = useState<Prestamo[]>([]);
+  const [reservas, setReservas] = useState<Reserva[]>([]);
+  const [completingReservaId, setCompletingReservaId] = useState<number | null>(null);
   const [loadingPrestamos, setLoadingPrestamos] = useState(true);
   const [loadError, setLoadError] = useState<string | null>(null);
 
@@ -56,16 +60,18 @@ export const MostradorView: React.FC<MostradorViewProps> = ({
     setLoadingPrestamos(true);
     setLoadError(null);
     try {
-      const [uData, pData, fData] = await Promise.all([
+      const [uData, pData, fData, rData] = await Promise.all([
         apiClient.get<{ usuarios: Usuario[] }>('/api/usuarios'),
         apiClient.get<{ prestamos: Prestamo[] }>('/api/prestamos'),
         apiClient.get<{ fecha_prestamo: string; fecha_limite: string; dias_habiles: number }>(
           '/api/prestamos/calcular-fecha',
         ),
+        apiClient.get<{ reservas: Reserva[] }>('/api/reservas').catch(() => ({ reservas: [] })),
       ]);
       setUsuarios(uData.usuarios ?? []);
       setPrestamos(pData.prestamos ?? []);
       setFechaPreview(fData);
+      setReservas(rData.reservas ?? []);
     } catch (err) {
       const msg =
         err instanceof ApiRequestError
@@ -220,6 +226,28 @@ export const MostradorView: React.FC<MostradorViewProps> = ({
       );
     } finally {
       setReturningId(null);
+    }
+  }
+
+  async function handleCompleteReserva(r: Reserva) {
+    if (r.estado !== 'DISPONIBLE') {
+      onNotify('info', 'La reserva aún está en espera porque el libro no tiene copias disponibles.');
+      return;
+    }
+    setCompletingReservaId(r.id_reserva);
+    try {
+      const data = await apiClient.post<{ ok: boolean; mensaje: string; id_prestamo: number }>(
+        `/api/reservas/${r.id_reserva}/completar`,
+      );
+      onNotify('success', data.mensaje || `Reserva #${r.id_reserva} entregada y convertida en préstamo exitosamente.`);
+      await Promise.all([loadOperationalData(), Promise.resolve(onRefreshCatalog())]);
+    } catch (err) {
+      onNotify(
+        'error',
+        err instanceof ApiRequestError ? err.message : 'Error al entregar el ejemplar de la reserva.',
+      );
+    } finally {
+      setCompletingReservaId(null);
     }
   }
 
@@ -664,6 +692,106 @@ export const MostradorView: React.FC<MostradorViewProps> = ({
                     </tr>
                   );
                 })}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </section>
+
+      {/* Sección Cola de Reservas y Libros Apartados */}
+      <section className="no-print card-monday bg-[#ffffff] p-6 sm:p-8 space-y-6">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-[#d0d4e4]">
+          <div className="flex items-center gap-2.5">
+            <div className="w-9 h-9 rounded-xl bg-[#287A65]/12 flex items-center justify-center text-[#287A65]">
+              <BookmarkCheck className="w-5 h-5" />
+            </div>
+            <div>
+              <h2 className="text-xl font-bold text-[#183B4E] dark:text-white tracking-tight">
+                Cola de Reservas de Libros
+              </h2>
+              <p className="text-xs text-[#535768]">
+                Ejemplares apartados por lectores cuando no había stock. Los libros devueltos pasan a DISPONIBLE para ser entregados.
+              </p>
+            </div>
+          </div>
+          <span className="badge-monday bg-[#183B4E]/10 dark:bg-[#183B4E]/30 text-[#183B4E] dark:text-[#a5c4d4] font-semibold text-xs py-1 px-3">
+            {reservas.filter((r) => r.estado === 'DISPONIBLE' || r.estado === 'PENDIENTE').length} reservas activas
+          </span>
+        </div>
+
+        {reservas.filter((r) => r.estado === 'DISPONIBLE' || r.estado === 'PENDIENTE').length === 0 ? (
+          <div className="p-8 text-center text-sm text-[#535768] bg-[#f5f6f8] rounded-xl border border-dashed border-[#d0d4e4]">
+            No hay reservas pendientes ni disponibles en espera de entrega.
+          </div>
+        ) : (
+          <div className="overflow-x-auto rounded-[12px] border border-[#d0d4e4]">
+            <table className="w-full text-left text-xs border-collapse">
+              <thead>
+                <tr className="bg-[#f5f6f8] text-[#535768] uppercase font-semibold text-[11px] border-b border-[#d0d4e4]">
+                  <th className="py-3 px-4"># Reserva</th>
+                  <th className="py-3 px-4">Lector</th>
+                  <th className="py-3 px-4">Libro Reservado</th>
+                  <th className="py-3 px-4">Fecha Reserva</th>
+                  <th className="py-3 px-4">Expiración</th>
+                  <th className="py-3 px-4">Estado</th>
+                  <th className="py-3 px-4 text-right">Acción</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-[#f5f6f8]">
+                {reservas
+                  .filter((r) => r.estado === 'DISPONIBLE' || r.estado === 'PENDIENTE')
+                  .map((r) => {
+                    const isDisponible = r.estado === 'DISPONIBLE';
+                    const isCompleting = completingReservaId === r.id_reserva;
+                    return (
+                      <tr key={r.id_reserva} className="hover:bg-[#f5f6f8]/70 transition-colors">
+                        <td className="py-3 px-4 font-mono font-bold text-[#287A65] dark:text-[#38a58a]">
+                          #{r.id_reserva}
+                        </td>
+                        <td className="py-3 px-4">
+                          <div className="font-semibold text-[#333333]">{r.usuario_nombre}</div>
+                          <div className="font-mono text-[11px] text-[#535768]">Doc. {r.usuario_documento}</div>
+                        </td>
+                        <td className="py-3 px-4">
+                          <div className="font-semibold text-[#333333]">{r.libro_titulo}</div>
+                          <div className="font-mono text-[11px] text-[#535768]">{r.libro_isbn}</div>
+                        </td>
+                        <td className="py-3 px-4 font-mono tabular-nums text-[#535768]">
+                          {r.fecha_reserva.slice(0, 10)}
+                        </td>
+                        <td className="py-3 px-4 font-mono tabular-nums text-[#535768]">
+                          {r.fecha_expiracion.slice(0, 10)}
+                        </td>
+                        <td className="py-3 px-4">
+                          {isDisponible ? (
+                            <span className="badge-monday bg-[#bcfe90] text-[#2a5c4e] font-bold">
+                              DISPONIBLE PARA ENTREGA
+                            </span>
+                          ) : (
+                            <span className="badge-monday bg-amber-100 dark:bg-amber-950/40 text-amber-800 dark:text-amber-300 font-semibold">
+                              <Clock className="w-3 h-3 mr-1" />
+                              EN ESPERA DE DEVOLUCIÓN
+                            </span>
+                          )}
+                        </td>
+                        <td className="py-3 px-4 text-right">
+                          {isDisponible ? (
+                            <button
+                              type="button"
+                              disabled={isCompleting}
+                              onClick={() => handleCompleteReserva(r)}
+                              className="btn-pill text-xs py-1.5 px-3 bg-[#287A65] hover:bg-[#1f6352] text-white font-semibold cursor-pointer shadow-xs disabled:opacity-50"
+                            >
+                              <CheckCircle2 className="w-3.5 h-3.5 mr-1" />
+                              {isCompleting ? 'Entregando...' : 'Entregar y Prestar'}
+                            </button>
+                          ) : (
+                            <span className="text-[11px] text-[#535768] italic">Sin ejemplar devuelto</span>
+                          )}
+                        </td>
+                      </tr>
+                    );
+                  })}
               </tbody>
             </table>
           </div>
