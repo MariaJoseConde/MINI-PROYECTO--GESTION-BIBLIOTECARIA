@@ -485,8 +485,14 @@ html.dark .bg-\[\#f5f6f8\]\/80 {
 /* Títulos y textos principales en modo oscuro (WCAG AAA >= 10:1) */
 html.dark .text-\[\#333333\],
 html.dark .text-\[\#1e293b\],
-html.dark .text-\[\#0f172a\] {
+html.dark .text-\[\#0f172a\],
+html.dark .text-\[\#183B4E\] {
   color: #f8fafc !important;
+}
+
+/* Verde Esmeralda accesible sobre fondos oscuros (WCAG AA >= 7:1) */
+html.dark .text-\[\#287A65\] {
+  color: #52d1b2 !important;
 }
 
 /* Textos secundarios y metadatos en modo oscuro (WCAG AA >= 7:1) */

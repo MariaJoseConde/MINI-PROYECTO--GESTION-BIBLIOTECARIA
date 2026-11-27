@@ -126,8 +126,8 @@ export const MisPrestamosView: React.FC<MisPrestamosViewProps> = ({ user }) => {
           role="status"
           className={`rounded-2xl border px-5 py-3 text-xs font-medium ${
             actionNotice.type === 'success'
-              ? 'border-emerald-300/70 bg-emerald-50/80 text-emerald-900'
-              : 'border-rose-300/70 bg-rose-50/80 text-rose-900'
+              ? 'border-emerald-300/70 dark:border-emerald-700/60 bg-emerald-50/80 dark:bg-emerald-950/50 text-emerald-900 dark:text-emerald-200'
+              : 'border-rose-300/70 dark:border-rose-700/60 bg-rose-50/80 dark:bg-rose-950/50 text-rose-900 dark:text-rose-200'
           }`}
         >
           {actionNotice.text}
@@ -243,7 +243,7 @@ export const MisPrestamosView: React.FC<MisPrestamosViewProps> = ({ user }) => {
                   <div className="text-xs font-mono text-[#535768]">
                     Reserva #{r.id_reserva} · ISBN {r.libro_isbn} · Expira {r.fecha_expiracion}
                   </div>
-                  <div className="text-sm font-bold text-[#183B4E] mt-0.5">{r.libro_titulo}</div>
+                  <div className="text-sm font-bold text-[#183B4E] dark:text-white mt-0.5">{r.libro_titulo}</div>
                 </div>
                 <div className="flex items-center gap-3">
                   <span
@@ -251,10 +251,10 @@ export const MisPrestamosView: React.FC<MisPrestamosViewProps> = ({ user }) => {
                       r.estado === 'DISPONIBLE'
                         ? 'bg-[#bcfe90] text-[#14532d]'
                         : r.estado === 'PENDIENTE'
-                          ? 'bg-amber-100 text-amber-800'
+                          ? 'bg-amber-100 dark:bg-amber-900/40 text-amber-800 dark:text-amber-200'
                           : r.estado === 'COMPLETADA'
-                            ? 'bg-emerald-100 text-emerald-800'
-                            : 'bg-slate-200 text-slate-700'
+                            ? 'bg-emerald-100 dark:bg-emerald-900/40 text-emerald-800 dark:text-emerald-200'
+                            : 'bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200'
                     }`}
                   >
                     {r.estado}
@@ -264,7 +264,7 @@ export const MisPrestamosView: React.FC<MisPrestamosViewProps> = ({ user }) => {
                       type="button"
                       disabled={busyReservaId === r.id_reserva}
                       onClick={() => handleCancelReserva(r)}
-                      className="btn-outline-pill text-[11px] py-1 px-2.5 text-rose-700 cursor-pointer disabled:opacity-60"
+                      className="btn-outline-pill text-[11px] py-1 px-2.5 text-rose-700 dark:text-rose-300 cursor-pointer disabled:opacity-60"
                     >
                       <XCircle className="w-3 h-3" />
                       Cancelar

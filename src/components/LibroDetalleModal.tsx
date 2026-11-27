@@ -187,33 +187,33 @@ export const LibroDetalleModal: React.FC<LibroDetalleModalProps> = ({
                 </div>
 
                 {/* Tabla de metadatos bibliográficos ampliada */}
-                <dl className="grid grid-cols-2 sm:grid-cols-4 gap-4 border-y border-slate-200 py-4 text-sm">
+                <dl className="grid grid-cols-2 sm:grid-cols-4 gap-4 border-y border-slate-200 dark:border-slate-700/70 py-4 text-sm">
                   <div>
-                    <dt className="text-slate-600 font-medium">ISBN</dt>
-                    <dd className="mt-0.5 font-mono font-semibold text-slate-900 tabular-nums">
+                    <dt className="text-slate-600 dark:text-slate-400 font-medium">ISBN</dt>
+                    <dd className="mt-0.5 font-mono font-semibold text-slate-900 dark:text-slate-100 tabular-nums">
                       {libro.isbn}
                     </dd>
                   </div>
                   <div>
-                    <dt className="text-slate-600 font-medium">Año</dt>
-                    <dd className="mt-0.5 font-mono font-semibold text-slate-900 tabular-nums">
+                    <dt className="text-slate-600 dark:text-slate-400 font-medium">Año</dt>
+                    <dd className="mt-0.5 font-mono font-semibold text-slate-900 dark:text-slate-100 tabular-nums">
                       {libro.anio_publicacion ?? 'Sin dato'}
                     </dd>
                   </div>
                   <div>
-                    <dt className="text-slate-600 font-medium">Extensión</dt>
-                    <dd className="mt-0.5 font-mono font-semibold text-slate-900 tabular-nums">
+                    <dt className="text-slate-600 dark:text-slate-400 font-medium">Extensión</dt>
+                    <dd className="mt-0.5 font-mono font-semibold text-slate-900 dark:text-slate-100 tabular-nums">
                       {libro.paginas ? `${libro.paginas} págs.` : 'Sin dato'}
                     </dd>
                   </div>
                   <div>
-                    <dt className="text-slate-600 font-medium">Disponibilidad</dt>
+                    <dt className="text-slate-600 dark:text-slate-400 font-medium">Disponibilidad</dt>
                     <dd className="mt-0.5">
                       <span
                         className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-semibold tabular-nums border ${
                           libro.copias_disp === 0
-                            ? 'bg-rose-50 text-rose-800 border-rose-300'
-                            : 'bg-emerald-50 text-emerald-800 border-emerald-300'
+                            ? 'bg-rose-50 dark:bg-rose-950/60 text-rose-800 dark:text-rose-200 border-rose-300 dark:border-rose-700'
+                            : 'bg-emerald-50 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-200 border-emerald-300 dark:border-emerald-700'
                         }`}
                       >
                         {libro.copias_disp} / {libro.copias_totales} uds.
@@ -231,28 +231,28 @@ export const LibroDetalleModal: React.FC<LibroDetalleModalProps> = ({
                     </dd>
                   </div>
                   <div className="col-span-2">
-                    <dt className="text-slate-600 font-medium">Editorial / Colección</dt>
-                    <dd className="mt-0.5 font-medium text-slate-900">
+                    <dt className="text-slate-600 dark:text-slate-400 font-medium">Editorial / Colección</dt>
+                    <dd className="mt-0.5 font-medium text-slate-900 dark:text-slate-100">
                       {libro.editorial || 'Edición de catálogo'}
                     </dd>
                   </div>
                   <div>
-                    <dt className="text-slate-600 font-medium">Idioma</dt>
-                    <dd className="mt-0.5 font-medium text-slate-900">
+                    <dt className="text-slate-600 dark:text-slate-400 font-medium">Idioma</dt>
+                    <dd className="mt-0.5 font-medium text-slate-900 dark:text-slate-100">
                       {libro.idioma || 'Español'}
                     </dd>
                   </div>
                   <div>
-                    <dt className="text-slate-600 font-medium">Ubicación en sala</dt>
-                    <dd className="mt-0.5 font-mono font-semibold text-slate-900">
+                    <dt className="text-slate-600 dark:text-slate-400 font-medium">Ubicación en sala</dt>
+                    <dd className="mt-0.5 font-mono font-semibold text-slate-900 dark:text-slate-100">
                       {libro.ubicacion_estante || categoriaMeta?.ubicacion_sala || 'Sala General'}
                     </dd>
                   </div>
                 </dl>
 
                 {libro.temas_clave && (
-                  <div className="text-sm text-slate-700">
-                    <span className="font-semibold text-slate-900 uppercase tracking-wider mr-2 text-xs">
+                  <div className="text-sm text-slate-700 dark:text-slate-300">
+                    <span className="font-semibold text-slate-900 dark:text-white uppercase tracking-wider mr-2 text-xs">
                       Temas clave:
                     </span>
                     <span className="font-medium">{libro.temas_clave}</span>
@@ -260,7 +260,7 @@ export const LibroDetalleModal: React.FC<LibroDetalleModalProps> = ({
                 )}
 
                 <div>
-                  <h3 className="text-xs font-semibold uppercase tracking-wider text-slate-700 mb-1.5 text-left">
+                  <h3 className="text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5 text-left">
                     Sinopsis de la obra
                   </h3>
                   {hasSinopsis ? (
