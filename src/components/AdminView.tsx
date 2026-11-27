@@ -243,6 +243,22 @@ export const AdminView: React.FC<AdminViewProps> = ({
 
   async function handleSaveBook(e: React.FormEvent) {
     e.preventDefault();
+    if (isbn.trim().length < 5 || isbn.trim().length > 30) {
+      onNotify('error', 'El ISBN debe tener entre 5 y 30 caracteres.');
+      return;
+    }
+    if (!titulo.trim()) {
+      onNotify('error', 'El título del libro es obligatorio.');
+      return;
+    }
+    if (Number(copiasTotales) < 1) {
+      onNotify('error', 'Las copias totales deben ser al menos 1.');
+      return;
+    }
+    if (Number(copiasDisp) < 0 || Number(copiasDisp) > Number(copiasTotales)) {
+      onNotify('error', 'Las copias disponibles no pueden ser negativas ni superar las totales.');
+      return;
+    }
     setSavingBook(true);
     try {
       const url = editingBook ? `/api/libros/${editingBook.id_libro}` : '/api/libros';
@@ -363,6 +379,18 @@ export const AdminView: React.FC<AdminViewProps> = ({
 
   async function handleCreateUser(e: React.FormEvent) {
     e.preventDefault();
+    if (!newDoc.trim() || !newName.trim() || !newEmail.trim()) {
+      onNotify('error', 'Documento, nombre y correo son obligatorios.');
+      return;
+    }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(newEmail.trim())) {
+      onNotify('error', 'Ingrese un formato de correo electrónico válido.');
+      return;
+    }
+    if (newPass.length < 6) {
+      onNotify('error', 'La contraseña debe tener al menos 6 caracteres.');
+      return;
+    }
     setSavingUser(true);
     try {
       const data = await apiClient.post<{ usuario?: Usuario; error?: string }>('/api/usuarios', {

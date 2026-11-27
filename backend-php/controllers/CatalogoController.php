@@ -4,6 +4,7 @@ namespace Sgbi\Controllers;
 use Sgbi\Config\Database;
 use Sgbi\Config\Auth;
 use Sgbi\Config\Response;
+use Sgbi\Config\Validator;
 use PDO;
 use Exception;
 
@@ -148,15 +149,12 @@ class CatalogoController {
         $user = Auth::requireRole('ADMIN');
         $body = Response::getBody();
 
-        $isbn = trim($body['isbn'] ?? '');
-        $titulo = trim($body['titulo'] ?? '');
-        $categoria = trim($body['categoria'] ?? 'General');
-        $copiasTotales = max(1, (int)($body['copias_totales'] ?? 1));
-        $copiasDisp = isset($body['copias_disp']) ? max(0, (int)$body['copias_disp']) : $copiasTotales;
-
-        if (empty($isbn) || empty($titulo)) {
-            Response::error('El ISBN y el título son obligatorios.', 400);
-        }
+        $validated = Validator::validateLibroPayload($body);
+        $isbn = $validated['isbn'];
+        $titulo = $validated['titulo'];
+        $categoria = $validated['categoria'];
+        $copiasTotales = $validated['copias_totales'];
+        $copiasDisp = $validated['copias_disp'];
 
         $db = Database::getConnection();
 
@@ -164,7 +162,19 @@ class CatalogoController {
         $check = $db->prepare('SELECT id_libro FROM libros WHERE isbn = ?');
         $check->execute([$isbn]);
         if ($check->fetch()) {
-            Response::error("Ya existe un libro registrado con el ISBN {$isbn}.", 409);
+            Response::error("Ya existe un libro registrado con el ISBN {$isbn}.", 409, 'DUPLICATE_ISBN');
+        }
+
+        // Validate author IDs if provided
+        $autorIds = $body['autor_ids'] ?? ($body['id_autores'] ?? []);
+        if (!empty($autorIds) && is_array($autorIds)) {
+            $stmtCheckAutor = $db->prepare('SELECT id_autor FROM autores WHERE id_autor = ?');
+            foreach ($autorIds as $idAutor) {
+                $stmtCheckAutor->execute([(int)$idAutor]);
+                if (!$stmtCheckAutor->fetch()) {
+                    Response::error("El autor con ID {$idAutor} no existe.", 422, 'INVALID_AUTHOR_ID');
+                }
+            }
         }
 
         $db->beginTransaction();
@@ -178,10 +188,10 @@ class CatalogoController {
                 $titulo,
                 $body['sinopsis'] ?? null,
                 $categoria,
-                $body['anio_publicacion'] ?? null,
+                $validated['anio_publicacion'],
                 $body['editorial'] ?? null,
                 $body['idioma'] ?? 'Español',
-                $body['paginas'] ?? null,
+                $validated['paginas'],
                 $body['ubicacion_estante'] ?? null,
                 $body['temas_clave'] ?? null,
                 $copiasTotales,
@@ -190,10 +200,10 @@ class CatalogoController {
 
             $idLibro = (int)$db->lastInsertId();
 
-            if (!empty($body['autor_ids']) && is_array($body['autor_ids'])) {
+            if (!empty($autorIds) && is_array($autorIds)) {
                 $stmtLa = $db->prepare('INSERT INTO libro_autor (id_libro, id_autor) VALUES (?, ?)');
-                foreach ($body['autor_ids'] as $idAutor) {
-                    $stmtLa->execute([$idLibro, (int)$idAutor]);
+                foreach (array_unique(array_map('intval', $autorIds)) as $idAutor) {
+                    $stmtLa->execute([$idLibro, $idAutor]);
                 }
             }
 
@@ -220,11 +230,29 @@ class CatalogoController {
             Response::error('Libro no encontrado.', 404);
         }
 
-        $isbn = trim($body['isbn'] ?? $existing['isbn']);
-        $titulo = trim($body['titulo'] ?? $existing['titulo']);
+        $validated = Validator::validateLibroPayload($body, $existing);
+        $isbn = $validated['isbn'];
+        $titulo = $validated['titulo'];
 
-        if (empty($isbn) || empty($titulo)) {
-            Response::error('El ISBN y el título no pueden estar vacíos.', 400);
+        // Verificar unicidad de ISBN frente a otros libros
+        if ($isbn !== $existing['isbn']) {
+            $stmtIsbn = $db->prepare('SELECT id_libro FROM libros WHERE isbn = ? AND id_libro != ?');
+            $stmtIsbn->execute([$isbn, $id]);
+            if ($stmtIsbn->fetch()) {
+                Response::error("Ya existe otro libro registrado con el ISBN {$isbn}.", 409, 'DUPLICATE_ISBN');
+            }
+        }
+
+        // Validar autores si se incluyen
+        $autorIds = $body['autor_ids'] ?? ($body['id_autores'] ?? null);
+        if (is_array($autorIds)) {
+            $stmtCheckAutor = $db->prepare('SELECT id_autor FROM autores WHERE id_autor = ?');
+            foreach ($autorIds as $idAutor) {
+                $stmtCheckAutor->execute([(int)$idAutor]);
+                if (!$stmtCheckAutor->fetch()) {
+                    Response::error("El autor con ID {$idAutor} no existe.", 422, 'INVALID_AUTHOR_ID');
+                }
+            }
         }
 
         $db->beginTransaction();
@@ -246,30 +274,27 @@ class CatalogoController {
                 WHERE id_libro = ?
             ");
 
-            $copiasTotales = isset($body['copias_totales']) ? (int)$body['copias_totales'] : (int)$existing['copias_totales'];
-            $copiasDisp = isset($body['copias_disp']) ? (int)$body['copias_disp'] : (int)$existing['copias_disp'];
-
             $stmt->execute([
                 $isbn,
                 $titulo,
                 $body['sinopsis'] ?? $existing['sinopsis'],
-                $body['categoria'] ?? $existing['categoria'],
-                $body['anio_publicacion'] ?? $existing['anio_publicacion'],
+                $validated['categoria'],
+                $validated['anio_publicacion'],
                 $body['editorial'] ?? $existing['editorial'],
                 $body['idioma'] ?? $existing['idioma'],
-                $body['paginas'] ?? $existing['paginas'],
+                $validated['paginas'],
                 $body['ubicacion_estante'] ?? $existing['ubicacion_estante'],
                 $body['temas_clave'] ?? $existing['temas_clave'],
-                $copiasTotales,
-                $copiasDisp,
+                $validated['copias_totales'],
+                $validated['copias_disp'],
                 $id,
             ]);
 
-            if (isset($body['autor_ids']) && is_array($body['autor_ids'])) {
+            if (is_array($autorIds)) {
                 $db->prepare('DELETE FROM libro_autor WHERE id_libro = ?')->execute([$id]);
                 $stmtLa = $db->prepare('INSERT INTO libro_autor (id_libro, id_autor) VALUES (?, ?)');
-                foreach ($body['autor_ids'] as $idAutor) {
-                    $stmtLa->execute([$id, (int)$idAutor]);
+                foreach (array_unique(array_map('intval', $autorIds)) as $idAutor) {
+                    $stmtLa->execute([$id, $idAutor]);
                 }
             }
 
@@ -453,6 +478,10 @@ class CatalogoController {
         $sala = trim($body['ubicacion_sala'] ?? $existing['ubicacion_sala']);
         $publico = trim($body['publico_recomendado'] ?? $existing['publico_recomendado']);
         $enfoque = trim($body['enfoque_lector'] ?? $existing['enfoque_lector']);
+
+        if (empty($nombre) || mb_strlen($descripcion) < 5) {
+            Response::error('Nombre y descripción (mínimo 5 caracteres) son obligatorios.', 422, 'VALIDATION_ERROR');
+        }
 
         try {
             $stmtUp = $db->prepare('UPDATE categorias SET nombre = ?, codigo_archivo = ?, descripcion = ?, ubicacion_sala = ?, publico_recomendado = ?, enfoque_lector = ? WHERE id_categoria = ?');

@@ -4,6 +4,7 @@ namespace Sgbi\Controllers;
 use Sgbi\Config\Database;
 use Sgbi\Config\Auth;
 use Sgbi\Config\Response;
+use Sgbi\Config\Validator;
 use Exception;
 
 class AdminController {
@@ -47,17 +48,16 @@ class AdminController {
         $rol = trim($body['rol'] ?? 'LECTOR');
 
         if (empty($doc) || empty($nombre) || empty($email) || strlen($pass) < 6) {
-            Response::error('Todos los campos son obligatorios (contraseña mínimo 6 caracteres).', 400);
+            Response::error('Todos los campos son obligatorios (contraseña mínimo 6 caracteres).', 422, 'VALIDATION_ERROR');
         }
 
-        if (!in_array($rol, ['ADMIN', 'DOCENTE', 'LECTOR'], true)) {
-            $rol = 'LECTOR';
-        }
+        Validator::validateEmail($email);
+        Validator::validateUserRole($rol);
 
         $db = Database::getConnection();
 
         // Check unique email or doc
-        $stmtCheck = $db->prepare('SELECT id_usuario FROM usuarios WHERE email = ? OR numero_documento = ?');
+        $stmtCheck = $db->prepare('SELECT id_usuario FROM usuarios WHERE LOWER(email) = LOWER(?) OR numero_documento = ?');
         $stmtCheck->execute([$email, $doc]);
         if ($stmtCheck->fetch()) {
             Response::error('Ya existe un usuario con este correo o documento.', 409);
@@ -99,7 +99,25 @@ class AdminController {
         $rol = trim($body['rol'] ?? $existing['rol']);
         $estado = trim($body['estado'] ?? $existing['estado']);
 
+        if (empty($nombre) || empty($email)) {
+            Response::error('El nombre completo y correo electrónico son obligatorios.', 422, 'VALIDATION_ERROR');
+        }
+        Validator::validateEmail($email);
+        Validator::validateUserRole($rol);
+        Validator::validateUserStatus($estado);
+
+        if (strtolower($email) !== strtolower($existing['email'])) {
+            $stmtDup = $db->prepare('SELECT id_usuario FROM usuarios WHERE LOWER(email) = LOWER(?) AND id_usuario != ?');
+            $stmtDup->execute([$email, $id]);
+            if ($stmtDup->fetch()) {
+                Response::error("Ya existe otro usuario registrado con el correo '{$email}'.", 409, 'EMAIL_ALREADY_EXISTS');
+            }
+        }
+
         if (!empty($body['password'])) {
+            if (strlen((string)$body['password']) < 6) {
+                Response::error('La nueva contraseña debe tener un mínimo de 6 caracteres.', 422, 'PASSWORD_TOO_SHORT');
+            }
             $hash = Auth::hashPassword($body['password']);
             $stmt = $db->prepare("UPDATE usuarios SET nombre_completo = ?, email = ?, rol = ?, estado = ?, password_hash = ? WHERE id_usuario = ?");
             $stmt->execute([$nombre, $email, $rol, $estado, $hash, $id]);

@@ -105,6 +105,17 @@ try {
         }
     }
 
+    // Asegurar columna 'renovaciones' en prestamos de forma idempotente (MySQL)
+    $colCheck = $pdo->prepare("
+        SELECT COUNT(*) FROM information_schema.COLUMNS
+        WHERE TABLE_SCHEMA = ? AND TABLE_NAME = 'prestamos' AND COLUMN_NAME = 'renovaciones'
+    ");
+    $colCheck->execute([$database]);
+    if ((int)$colCheck->fetchColumn() === 0) {
+        $pdo->exec("ALTER TABLE `prestamos` ADD COLUMN `renovaciones` INT NOT NULL DEFAULT 0 AFTER `multa_calculada`");
+        echo "[OK] Columna 'renovaciones' añadida a 'prestamos' (MySQL).\n";
+    }
+
     // 6. Consulta de comprobación y verificación de integridad
     echo "--------------------------------------------------------\n";
     echo " Verificación del estado de tablas y conteo de datos:\n";
@@ -249,6 +260,19 @@ try {
           fecha_entrega TEXT NULL,
           estado TEXT NOT NULL DEFAULT 'ACTIVO' CHECK (estado IN ('ACTIVO', 'DEVUELTO', 'MORA')),
           multa_calculada REAL NOT NULL DEFAULT 0.0,
+          renovaciones INTEGER NOT NULL DEFAULT 0,
+          created_at TEXT NOT NULL DEFAULT (datetime('now')),
+          FOREIGN KEY (id_libro) REFERENCES libros (id_libro) ON DELETE RESTRICT,
+          FOREIGN KEY (id_usuario) REFERENCES usuarios (id_usuario) ON DELETE RESTRICT
+        );
+
+        CREATE TABLE IF NOT EXISTS reservas (
+          id_reserva INTEGER PRIMARY KEY AUTOINCREMENT,
+          id_libro INTEGER NOT NULL,
+          id_usuario INTEGER NOT NULL,
+          fecha_reserva TEXT NOT NULL,
+          fecha_expiracion TEXT NOT NULL,
+          estado TEXT NOT NULL DEFAULT 'PENDIENTE' CHECK (estado IN ('PENDIENTE', 'DISPONIBLE', 'COMPLETADA', 'CANCELADA')),
           created_at TEXT NOT NULL DEFAULT (datetime('now')),
           FOREIGN KEY (id_libro) REFERENCES libros (id_libro) ON DELETE RESTRICT,
           FOREIGN KEY (id_usuario) REFERENCES usuarios (id_usuario) ON DELETE RESTRICT
@@ -289,7 +313,20 @@ try {
         CREATE INDEX IF NOT EXISTS idx_usuarios_documento ON usuarios (numero_documento);
         CREATE INDEX IF NOT EXISTS idx_prestamos_usuario ON prestamos (id_usuario, estado);
         CREATE INDEX IF NOT EXISTS idx_prestamos_libro ON prestamos (id_libro);
+        CREATE INDEX IF NOT EXISTS idx_reservas_usuario ON reservas (id_usuario, estado);
+        CREATE INDEX IF NOT EXISTS idx_reservas_libro ON reservas (id_libro, estado);
     ");
+
+    // Asegurar columnas 'multa_calculada' y 'renovaciones' en bases SQLite existentes
+    $sqliteCols = $pdoSqlite->query("PRAGMA table_info(prestamos)")->fetchAll(PDO::FETCH_COLUMN, 1);
+    if (!in_array('multa_calculada', $sqliteCols, true)) {
+        $pdoSqlite->exec("ALTER TABLE prestamos ADD COLUMN multa_calculada REAL NOT NULL DEFAULT 0.0;");
+        echo "[OK] Columna 'multa_calculada' añadida a 'prestamos' (SQLite).\n";
+    }
+    if (!in_array('renovaciones', $sqliteCols, true)) {
+        $pdoSqlite->exec("ALTER TABLE prestamos ADD COLUMN renovaciones INTEGER NOT NULL DEFAULT 0;");
+        echo "[OK] Columna 'renovaciones' añadida a 'prestamos' (SQLite).\n";
+    }
 
     if ((int)$pdoSqlite->query('SELECT COUNT(*) FROM salas')->fetchColumn() === 0) {
         $pdoSqlite->exec("

@@ -25,6 +25,7 @@ use Sgbi\Config\Response;
 use Sgbi\Controllers\AuthController;
 use Sgbi\Controllers\CatalogoController;
 use Sgbi\Controllers\CirculacionController;
+use Sgbi\Controllers\ReservaController;
 use Sgbi\Controllers\AdminController;
 use Sgbi\Controllers\IaController;
 use Sgbi\Controllers\SalasController;
@@ -163,6 +164,23 @@ if (str_starts_with($uri, '/api')) {
     }
     if (preg_match('#^/prestamos/(\d+)/devolver$#', $path, $m) && $method === 'POST') {
         (new CirculacionController())->devolverPrestamo((int)$m[1]);
+    }
+    if (preg_match('#^/prestamos/(\d+)/renovar$#', $path, $m) && ($method === 'POST' || $method === 'PATCH')) {
+        (new CirculacionController())->renovarPrestamo((int)$m[1]);
+    }
+
+    // --- Reservas de Libros ---
+    if ($path === '/reservas' && $method === 'GET') {
+        (new ReservaController())->listReservas();
+    }
+    if ($path === '/reservas' && $method === 'POST') {
+        (new ReservaController())->createReserva();
+    }
+    if (preg_match('#^/reservas/(\d+)/cancelar$#', $path, $m) && ($method === 'POST' || $method === 'PATCH')) {
+        (new ReservaController())->cancelarReserva((int)$m[1]);
+    }
+    if (preg_match('#^/reservas/(\d+)/completar$#', $path, $m) && ($method === 'POST' || $method === 'PATCH')) {
+        (new ReservaController())->completarReserva((int)$m[1]);
     }
 
     // --- IA y Evaluaciones de Lectura ---

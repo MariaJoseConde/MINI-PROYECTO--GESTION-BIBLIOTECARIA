@@ -43,10 +43,14 @@ class SalasController {
 
         $nombre = trim($body['nombre'] ?? '');
         $descripcion = trim($body['descripcion'] ?? '') ?: null;
-        $capacidad = max(1, (int)($body['capacidad'] ?? 30));
+        $capacidadRaw = $body['capacidad'] ?? 30;
+        $capacidad = filter_var($capacidadRaw, FILTER_VALIDATE_INT);
 
         if (empty($nombre)) {
             Response::error('El nombre de la sala es obligatorio.', 422, 'VALIDATION_ERROR', ['nombre' => 'Campo requerido']);
+        }
+        if ($capacidad === false || $capacidad < 1 || $capacidad > 1000) {
+            Response::error('La capacidad de la sala debe estar entre 1 y 1000 personas.', 422, 'VALIDATION_ERROR', ['capacidad' => 'Rango permitido: 1 a 1000']);
         }
 
         $db = Database::getConnection();

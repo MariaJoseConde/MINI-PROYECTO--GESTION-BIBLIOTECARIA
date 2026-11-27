@@ -162,6 +162,27 @@ class CirculacionController {
             );
         }
 
+        // 2b. Check duplicate active loan for the same book & max concurrent loans (5)
+        $stmtSame = $db->prepare("SELECT COUNT(*) FROM prestamos WHERE id_usuario = ? AND id_libro = ? AND fecha_entrega IS NULL");
+        $stmtSame->execute([$idUsuario, $idLibro]);
+        if ((int)$stmtSame->fetchColumn() > 0) {
+            Response::error(
+                "El lector {$lector['nombre_completo']} ya tiene un préstamo vigente de este mismo título.",
+                409,
+                'DUPLICATE_ACTIVE_LOAN'
+            );
+        }
+
+        $stmtActiveCount = $db->prepare("SELECT COUNT(*) FROM prestamos WHERE id_usuario = ? AND fecha_entrega IS NULL");
+        $stmtActiveCount->execute([$idUsuario]);
+        if ((int)$stmtActiveCount->fetchColumn() >= 5) {
+            Response::error(
+                "El lector {$lector['nombre_completo']} alcanzó el límite máximo de 5 préstamos simultáneos.",
+                409,
+                'MAX_ACTIVE_LOANS_REACHED'
+            );
+        }
+
         // 3. Check book stock
         $stmtLibro = $db->prepare('SELECT id_libro, titulo, copias_disp FROM libros WHERE id_libro = ?');
         $stmtLibro->execute([$idLibro]);
@@ -281,6 +302,23 @@ class CirculacionController {
                 $db->prepare("UPDATE usuarios SET estado = 'ACTIVO' WHERE id_usuario = ? AND estado = 'SANCIONADO'")->execute([(int)$prestamo['id_usuario']]);
             }
 
+            // Si existe una reserva PENDIENTE para este libro, marcar la más antigua como DISPONIBLE
+            try {
+                $stmtResPend = $db->prepare("SELECT id_reserva, id_usuario FROM reservas WHERE id_libro = ? AND estado = 'PENDIENTE' ORDER BY id_reserva ASC LIMIT 1");
+                $stmtResPend->execute([(int)$prestamo['id_libro']]);
+                $nextReserva = $stmtResPend->fetch();
+                if ($nextReserva) {
+                    $db->prepare("UPDATE reservas SET estado = 'DISPONIBLE' WHERE id_reserva = ?")->execute([(int)$nextReserva['id_reserva']]);
+                    Database::logEvent(
+                        'RESERVA_DISPONIBLE',
+                        "Reserva #{$nextReserva['id_reserva']} pasó a DISPONIBLE tras devolución del préstamo #{$id}.",
+                        (int)$nextReserva['id_usuario']
+                    );
+                }
+            } catch (Exception) {
+                // Ignorar si la tabla reservas aún no existe en entornos legados
+            }
+
             Database::logEvent(
                 'DEVOLUCION_REGISTRADA',
                 "Devolución recibida para préstamo #{$id}. " . ($esMora ? "Mora: {$diasMora} días (Multa: \${$multa})." : "Entrega a tiempo."),
@@ -326,6 +364,14 @@ class CirculacionController {
             Response::error('Estado de préstamo inválido. Valores permitidos: ACTIVO, DEVUELTO, MORA.', 422, 'INVALID_STATUS');
         }
 
+        if ($multa < 0) {
+            Response::error('La multa calculada no puede ser negativa.', 422, 'INVALID_FINE');
+        }
+
+        if ($fechaLimite < $existing['fecha_prestamo']) {
+            Response::error('La fecha límite no puede ser anterior a la fecha de préstamo.', 422, 'INVALID_DATE_RANGE');
+        }
+
         $stmtUpdate = $db->prepare('UPDATE prestamos SET fecha_limite = ?, estado = ?, multa_calculada = ? WHERE id_prestamo = ?');
         $stmtUpdate->execute([$fechaLimite, $estado, $multa, $id]);
 
@@ -363,6 +409,67 @@ class CirculacionController {
             $db->rollBack();
             Response::error('Error al eliminar el préstamo: ' . $e->getMessage(), 500);
         }
+    }
+
+    /**
+     * Renueva un préstamo activo extendiendo su fecha límite 8 días hábiles.
+     * Reglas: solo dueño o ADMIN, máximo 2 renovaciones, sin mora ni reservas pendientes.
+     */
+    public function renovarPrestamo(int $id): void {
+        $user = Auth::requireAuth();
+        $db = Database::getConnection();
+
+        $stmt = $db->prepare('SELECT * FROM prestamos WHERE id_prestamo = ?');
+        $stmt->execute([$id]);
+        $prestamo = $stmt->fetch();
+
+        if (!$prestamo) {
+            Response::error('Préstamo no encontrado.', 404, 'LOAN_NOT_FOUND');
+        }
+
+        if ($user['rol'] !== 'ADMIN' && (int)$prestamo['id_usuario'] !== (int)$user['id_usuario']) {
+            Response::error('No tiene permisos para renovar este préstamo.', 403, 'FORBIDDEN');
+        }
+
+        if (!empty($prestamo['fecha_entrega']) || $prestamo['estado'] === 'DEVUELTO') {
+            Response::error('No se puede renovar un préstamo ya devuelto.', 409, 'LOAN_ALREADY_RETURNED');
+        }
+
+        $hoy = new DateTime();
+        $fechaLimiteActual = new DateTime($prestamo['fecha_limite']);
+        if ($prestamo['estado'] === 'MORA' || $hoy->format('Y-m-d') > $fechaLimiteActual->format('Y-m-d')) {
+            Response::error('No se puede renovar un préstamo vencido o en mora.', 409, 'LOAN_OVERDUE');
+        }
+
+        $renovacionesActuales = (int)($prestamo['renovaciones'] ?? 0);
+        if ($renovacionesActuales >= 2) {
+            Response::error('Se alcanzó el límite máximo de 2 renovaciones para este préstamo.', 409, 'MAX_RENEWALS_REACHED');
+        }
+
+        // Verificar que no haya reservas pendientes para este libro
+        try {
+            $stmtRes = $db->prepare("SELECT COUNT(*) FROM reservas WHERE id_libro = ? AND estado = 'PENDIENTE'");
+            $stmtRes->execute([(int)$prestamo['id_libro']]);
+            if ((int)$stmtRes->fetchColumn() > 0) {
+                Response::error('No es posible renovar porque existen reservas pendientes para este libro.', 409, 'BOOK_HAS_RESERVATIONS');
+            }
+        } catch (Exception) {
+            // Ignorar si tabla reservas no existe
+        }
+
+        $nuevaFechaLimite = self::calcularFechaLimite($fechaLimiteActual, 8);
+        $nuevasRenovaciones = $renovacionesActuales + 1;
+
+        $db->prepare('UPDATE prestamos SET fecha_limite = ?, renovaciones = ? WHERE id_prestamo = ?')
+            ->execute([$nuevaFechaLimite, $nuevasRenovaciones, $id]);
+
+        Database::logEvent(
+            'PRESTAMO_RENOVADO',
+            "Préstamo #{$id} renovado ({$nuevasRenovaciones}/2). Nueva fecha límite: {$nuevaFechaLimite}.",
+            (int)$user['id_usuario']
+        );
+
+        $this->getPrestamo($id);
     }
 }
 

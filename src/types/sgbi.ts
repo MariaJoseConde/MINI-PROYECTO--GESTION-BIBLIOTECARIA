@@ -1,6 +1,22 @@
 export type UserRole = 'ADMIN' | 'DOCENTE' | 'LECTOR';
 export type UserStatus = 'ACTIVO' | 'SANCIONADO' | 'INACTIVO';
 export type LoanStatus = 'ACTIVO' | 'DEVUELTO' | 'MORA';
+export type ReservationStatus = 'PENDIENTE' | 'DISPONIBLE' | 'COMPLETADA' | 'CANCELADA';
+
+export interface Reserva {
+  id_reserva: number;
+  id_libro: number;
+  id_usuario: number;
+  fecha_reserva: string;
+  fecha_expiracion: string;
+  estado: ReservationStatus;
+  created_at: string;
+  libro_titulo?: string;
+  libro_isbn?: string;
+  libro_copias_disp?: number;
+  usuario_nombre?: string;
+  usuario_documento?: string;
+}
 
 export interface Sala {
   id_sala: number;
@@ -68,6 +84,7 @@ export interface Prestamo {
   fecha_entrega: string | null;
   estado: LoanStatus;
   multa_calculada?: number;
+  renovaciones?: number;
   created_at: string;
   libro_titulo?: string;
   libro_isbn?: string;

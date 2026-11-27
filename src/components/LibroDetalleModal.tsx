@@ -34,6 +34,7 @@ export const LibroDetalleModal: React.FC<LibroDetalleModalProps> = ({
   const [pruebas, setPruebas] = useState<PruebaLectura[]>([]);
   const [loadingPruebas, setLoadingPruebas] = useState(false);
   const [generating, setGenerating] = useState(false);
+  const [reserving, setReserving] = useState(false);
   const [activePrueba, setActivePrueba] = useState<PruebaLectura | null>(null);
   const [viewMode, setViewMode] = useState<'estudiante' | 'docente'>('docente');
 
@@ -101,6 +102,29 @@ export const LibroDetalleModal: React.FC<LibroDetalleModalProps> = ({
       );
     } finally {
       setGenerating(false);
+    }
+  }
+
+  async function handleReserveBook() {
+    if (!libro || !user) return;
+    setReserving(true);
+    try {
+      const data = await apiClient.post<{ reserva?: { id_reserva: number } }>('/api/reservas', {
+        id_libro: libro.id_libro,
+      });
+      if (data.reserva) {
+        onNotify(
+          'success',
+          `Reserva #${data.reserva.id_reserva} registrada para "${libro.titulo}". Puedes verla en Mi Progreso y Préstamos.`,
+        );
+      }
+    } catch (err) {
+      onNotify(
+        'error',
+        err instanceof ApiRequestError ? err.message : 'No se pudo completar la reserva.',
+      );
+    } finally {
+      setReserving(false);
     }
   }
 
@@ -194,6 +218,16 @@ export const LibroDetalleModal: React.FC<LibroDetalleModalProps> = ({
                       >
                         {libro.copias_disp} / {libro.copias_totales} uds.
                       </span>
+                      {libro.copias_disp === 0 && user && (
+                        <button
+                          type="button"
+                          onClick={handleReserveBook}
+                          disabled={reserving}
+                          className="mt-1.5 inline-flex items-center gap-1 rounded-lg bg-[#287A65] hover:bg-[#1f6352] text-white px-2.5 py-1 text-[11px] font-semibold transition-colors cursor-pointer disabled:opacity-60"
+                        >
+                          {reserving ? 'Reservando...' : 'Reservar ejemplar'}
+                        </button>
+                      )}
                     </dd>
                   </div>
                   <div className="col-span-2">

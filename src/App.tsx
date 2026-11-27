@@ -587,132 +587,49 @@ export default function App() {
 
         {/* Área Principal */}
         <div className="flex-1 flex flex-col min-w-0">
-          {/* Header Sólido y Proporcionado (WCAG 2.1/2.2 AA) con Glassmorphism */}
-          <header className="no-print sticky top-0 z-30 min-h-16 h-16 glass-nav px-4 sm:px-6 lg:px-8 py-3 flex items-center justify-between gap-4">
-            <div className="flex items-center gap-3 sm:gap-4 min-w-0">
+          {/* Barra superior compacta SOLO para móvil (en escritorio la barra lateral unifica navegación, tema y sesión) */}
+          <header className="no-print lg:hidden sticky top-0 z-30 h-14 glass-nav px-4 flex items-center justify-between gap-3">
+            <div className="flex items-center gap-3 min-w-0">
               <button
                 type="button"
                 onClick={() => setMobileMenuOpen((prev) => !prev)}
                 aria-expanded={mobileMenuOpen}
                 aria-controls="mobile-nav-drawer"
-                className="lg:hidden min-h-[44px] min-w-[44px] flex items-center justify-center rounded-xl border border-slate-300/80 dark:border-slate-700/80 bg-white/60 dark:bg-slate-800/60 backdrop-blur-md text-slate-800 dark:text-slate-200 hover:bg-white/90 dark:hover:bg-slate-700 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#287A65] cursor-pointer shadow-2xs"
+                className="min-h-[40px] min-w-[40px] flex items-center justify-center rounded-xl border border-slate-300/80 dark:border-slate-700/80 bg-white/60 dark:bg-slate-800/60 backdrop-blur-md text-slate-800 dark:text-slate-200 hover:bg-white/90 dark:hover:bg-slate-700 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#287A65] cursor-pointer shadow-2xs"
                 aria-label="Abrir navegación lateral"
               >
                 <Menu className="w-5 h-5" />
               </button>
 
-              {/* Marca y Navegación Predecible (3 o 4 opciones esenciales) - Azul Petróleo & Verde Esmeralda */}
               <button
                 type="button"
                 onClick={goToMainScreen}
-                className="min-h-[44px] flex items-center gap-2 font-sans text-base font-bold tracking-tight text-[#183B4E] dark:text-white cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#287A65] rounded-md shrink-0 mr-1"
+                className="flex items-center gap-2 font-sans text-base font-bold tracking-tight text-[#183B4E] dark:text-white cursor-pointer rounded-md shrink-0"
               >
                 <div className="w-7 h-7 rounded-lg bg-[#287A65] text-white flex items-center justify-center font-bold text-xs shadow-xs">
                   b
                 </div>
-                <span className="font-bold text-[#183B4E] dark:text-white hidden sm:inline">
-                  biblioSmart <span className="text-[#287A65] dark:text-[#38a58a] font-semibold">· Estudio IA</span>
+                <span className="font-bold text-[#183B4E] dark:text-white">
+                  biblioSmart
                 </span>
               </button>
-
-              <nav aria-label="Navegación principal de estudio" className="hidden md:flex items-center gap-1.5">
-                <button
-                  type="button"
-                  onClick={() => navigateToRoute('catalogo')}
-                  className={`min-h-[44px] px-3.5 py-2 rounded-xl text-sm font-medium transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#287A65] ${
-                    route === 'catalogo'
-                      ? 'bg-[#287A65]/12 dark:bg-[#287A65]/25 text-[#287A65] dark:text-[#38a58a] font-semibold border border-[#287A65]/35 shadow-2xs'
-                      : 'text-slate-700 dark:text-slate-300 hover:bg-white/80 dark:hover:bg-slate-800/60 hover:text-[#183B4E] dark:hover:text-white'
-                  }`}
-                >
-                  Mis Temas
-                </button>
-                <button
-                  type="button"
-                  onClick={() => navigateToRoute('evaluaciones')}
-                  className={`min-h-[44px] px-3.5 py-2 rounded-xl text-sm font-medium transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#287A65] ${
-                    route === 'evaluaciones'
-                      ? 'bg-[#287A65]/12 dark:bg-[#287A65]/25 text-[#287A65] dark:text-[#38a58a] font-semibold border border-[#287A65]/35 shadow-2xs'
-                      : 'text-slate-700 dark:text-slate-300 hover:bg-white/80 dark:hover:bg-slate-800/60 hover:text-[#183B4E] dark:hover:text-white'
-                  }`}
-                >
-                  Práctica e IA
-                </button>
-                <button
-                  type="button"
-                  onClick={() => navigateToRoute('salas')}
-                  className={`min-h-[44px] px-3.5 py-2 rounded-xl text-sm font-medium transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#287A65] ${
-                    route === 'salas'
-                      ? 'bg-[#287A65]/12 dark:bg-[#287A65]/25 text-[#287A65] dark:text-[#38a58a] font-semibold border border-[#287A65]/35 shadow-2xs'
-                      : 'text-slate-700 dark:text-slate-300 hover:bg-white/80 dark:hover:bg-slate-800/60 hover:text-[#183B4E] dark:hover:text-white'
-                  }`}
-                >
-                  Salas
-                </button>
-                <button
-                  type="button"
-                  onClick={() => (user ? navigateToRoute('mis-prestamos') : navigateToRoute('categorias'))}
-                  className={`min-h-[44px] px-3.5 py-2 rounded-xl text-sm font-medium transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#287A65] ${
-                    route === 'mis-prestamos' || route === 'categorias'
-                      ? 'bg-[#287A65]/12 dark:bg-[#287A65]/25 text-[#287A65] dark:text-[#38a58a] font-semibold border border-[#287A65]/35 shadow-2xs'
-                      : 'text-slate-700 dark:text-slate-300 hover:bg-white/80 dark:hover:bg-slate-800/60 hover:text-[#183B4E] dark:hover:text-white'
-                  }`}
-                >
-                  {user ? 'Mi Progreso' : 'Colecciones'}
-                </button>
-              </nav>
             </div>
 
-            <div className="shrink-0 flex items-center gap-2 sm:gap-3">
-              {/* Ruta constante de migas de pan en header */}
-              <nav aria-label="Ubicación constante" className="hidden xl:flex items-center gap-2 text-xs font-medium text-slate-500 dark:text-slate-400 mr-1 sm:mr-2">
-                <span>{currentBreadcrumb.section}</span>
-                <ChevronRight className="w-3.5 h-3.5 text-slate-400 dark:text-slate-500" />
-                <span className="font-semibold text-[#183B4E] dark:text-slate-100">{currentBreadcrumb.label}</span>
-              </nav>
-
-              {/* Botón selector de tema Claro / Oscuro con icono de Sol (WCAG 2.1/2.2 AA) */}
-              <button
-                type="button"
-                onClick={toggleTheme}
-                aria-label={theme === 'dark' ? 'Cambiar a tema claro' : 'Cambiar a tema oscuro'}
-                title={theme === 'dark' ? 'Tema actual: Oscuro (Clic para cambiar a Claro)' : 'Tema actual: Claro (Clic para cambiar a Oscuro)'}
-                className={`min-h-[44px] min-w-[44px] px-3 rounded-xl border transition-all flex items-center justify-center gap-2 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#287A65] ${
-                  theme === 'dark'
-                    ? 'border-amber-500/40 bg-slate-800/60 backdrop-blur-md text-amber-400 hover:bg-slate-700/70 hover:border-amber-400/60 shadow-xs'
-                    : 'border-slate-300/80 bg-white/70 backdrop-blur-md text-amber-600 hover:bg-amber-50/80 hover:border-amber-300 shadow-xs'
-                }`}
-              >
-                <Sun className={`w-5 h-5 transition-transform duration-500 ${theme === 'dark' ? 'rotate-90 text-amber-400 fill-amber-400/20' : 'text-amber-500 fill-amber-500/20'}`} />
-                <span className="hidden sm:inline text-xs font-semibold text-slate-800 dark:text-slate-200">
-                  {theme === 'dark' ? 'Oscuro' : 'Claro'}
-                </span>
-              </button>
-
-              {user ? (
-                <button
-                  type="button"
-                  onClick={handleLogout}
-                  className="min-h-[44px] px-4 rounded-xl border border-slate-300/80 dark:border-slate-700/80 bg-white/60 dark:bg-slate-800/60 backdrop-blur-md text-slate-800 dark:text-slate-200 hover:bg-white/90 dark:hover:bg-slate-700 font-medium text-sm flex items-center gap-2 transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#287A65] focus-visible:ring-offset-2 shadow-2xs"
-                >
-                  <LogOut className="w-4 h-4" />
-                  <span>Salir</span>
-                </button>
-              ) : (
-                <button
-                  type="button"
-                  onClick={() => setLoginOpen(true)}
-                  className="min-h-[44px] px-5 rounded-xl bg-[#287A65] hover:bg-[#1f6352] text-white font-medium text-sm flex items-center gap-2 shadow-xs transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#287A65] focus-visible:ring-offset-2"
-                >
-                  <LogIn className="w-4 h-4" />
-                  <span>Iniciar Sesión</span>
-                </button>
-              )}
-            </div>
+            <span className="text-xs font-medium text-slate-600 dark:text-slate-300 truncate">
+              {currentBreadcrumb.label}
+            </span>
           </header>
 
           {/* Contenido de la Ruta Activa protegido con ErrorBoundary y Suspense */}
-          <main id="main-content" tabIndex={-1} className="flex-1 max-w-[1200px] w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 focus:outline-none">
+          <main id="main-content" tabIndex={-1} className="flex-1 max-w-[1200px] w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 lg:py-8 focus:outline-none">
+            {/* Migas de pan contextuales limpias sin barra duplicada */}
+            <nav aria-label="Ubicación actual" className="no-print hidden lg:flex items-center gap-2 text-xs font-medium text-slate-500 dark:text-slate-400 mb-5">
+              <span>biblioSmart</span>
+              <ChevronRight className="w-3.5 h-3.5 text-slate-400 dark:text-slate-500" />
+              <span>{currentBreadcrumb.section}</span>
+              <ChevronRight className="w-3.5 h-3.5 text-slate-400 dark:text-slate-500" />
+              <span className="font-semibold text-[#183B4E] dark:text-slate-100">{currentBreadcrumb.label}</span>
+            </nav>
             {catalogError && (
               <div
                 role="alert"

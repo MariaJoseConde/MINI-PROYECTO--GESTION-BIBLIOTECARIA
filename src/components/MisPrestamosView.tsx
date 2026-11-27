@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { AlertTriangle, BookCheck, CheckCircle2, Clock } from 'lucide-react';
+import { AlertTriangle, BookCheck, Bookmark, CheckCircle2, Clock, RotateCw, XCircle } from 'lucide-react';
 import { apiClient, ApiRequestError } from '../lib/apiClient.ts';
-import type { Prestamo, Usuario } from '../types/sgbi.ts';
+import type { Prestamo, Reserva, Usuario } from '../types/sgbi.ts';
 
 interface MisPrestamosViewProps {
   user: Usuario;
@@ -9,15 +9,23 @@ interface MisPrestamosViewProps {
 
 export const MisPrestamosView: React.FC<MisPrestamosViewProps> = ({ user }) => {
   const [prestamos, setPrestamos] = useState<Prestamo[]>([]);
+  const [reservas, setReservas] = useState<Reserva[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [actionNotice, setActionNotice] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
+  const [busyLoanId, setBusyLoanId] = useState<number | null>(null);
+  const [busyReservaId, setBusyReservaId] = useState<number | null>(null);
 
   const loadPrestamos = useCallback(async () => {
     setLoading(true);
     setError(null);
     try {
-      const data = await apiClient.get<{ prestamos: Prestamo[] }>('/api/prestamos');
-      setPrestamos(data.prestamos ?? []);
+      const [pData, rData] = await Promise.all([
+        apiClient.get<{ prestamos: Prestamo[] }>('/api/prestamos'),
+        apiClient.get<{ reservas: Reserva[] }>('/api/reservas').catch(() => ({ reservas: [] as Reserva[] })),
+      ]);
+      setPrestamos(pData.prestamos ?? []);
+      setReservas(rData.reservas ?? []);
     } catch (err) {
       setError(
         err instanceof ApiRequestError
@@ -32,6 +40,52 @@ export const MisPrestamosView: React.FC<MisPrestamosViewProps> = ({ user }) => {
   useEffect(() => {
     loadPrestamos();
   }, [user.id_usuario, loadPrestamos]);
+
+  async function handleRenewLoan(p: Prestamo) {
+    setBusyLoanId(p.id_prestamo);
+    setActionNotice(null);
+    try {
+      const data = await apiClient.post<{ prestamo?: Prestamo }>(`/api/prestamos/${p.id_prestamo}/renovar`);
+      if (data.prestamo) {
+        setPrestamos((prev) =>
+          prev.map((item) => (item.id_prestamo === p.id_prestamo ? data.prestamo! : item)),
+        );
+        setActionNotice({
+          type: 'success',
+          text: `Préstamo #${p.id_prestamo} renovado. Nueva fecha límite: ${data.prestamo.fecha_limite}.`,
+        });
+      }
+    } catch (err) {
+      setActionNotice({
+        type: 'error',
+        text: err instanceof ApiRequestError ? err.message : 'No se pudo renovar el préstamo.',
+      });
+    } finally {
+      setBusyLoanId(null);
+    }
+  }
+
+  async function handleCancelReserva(r: Reserva) {
+    setBusyReservaId(r.id_reserva);
+    setActionNotice(null);
+    try {
+      await apiClient.post(`/api/reservas/${r.id_reserva}/cancelar`);
+      setReservas((prev) =>
+        prev.map((item) => (item.id_reserva === r.id_reserva ? { ...item, estado: 'CANCELADA' } : item)),
+      );
+      setActionNotice({
+        type: 'success',
+        text: `Reserva #${r.id_reserva} cancelada correctamente.`,
+      });
+    } catch (err) {
+      setActionNotice({
+        type: 'error',
+        text: err instanceof ApiRequestError ? err.message : 'No se pudo cancelar la reserva.',
+      });
+    } finally {
+      setBusyReservaId(null);
+    }
+  }
 
   const activos = prestamos.filter((p) => p.fecha_entrega === null);
   const historial = prestamos.filter((p) => p.fecha_entrega !== null);
@@ -66,6 +120,19 @@ export const MisPrestamosView: React.FC<MisPrestamosViewProps> = ({ user }) => {
           )}
         </div>
       </div>
+
+      {actionNotice && (
+        <div
+          role="status"
+          className={`rounded-2xl border px-5 py-3 text-xs font-medium ${
+            actionNotice.type === 'success'
+              ? 'border-emerald-300/70 bg-emerald-50/80 text-emerald-900'
+              : 'border-rose-300/70 bg-rose-50/80 text-rose-900'
+          }`}
+        >
+          {actionNotice.text}
+        </div>
+      )}
 
       <section className="card-monday bg-[#ffffff] overflow-hidden">
         <div className="px-6 py-4 border-b border-[#d0d4e4] bg-[#f5f6f8]">
@@ -127,12 +194,82 @@ export const MisPrestamosView: React.FC<MisPrestamosViewProps> = ({ user }) => {
                         EN MORA
                       </span>
                     ) : (
-                      <span className="badge-monday bg-[#bcfe90] text-[#2a5c4e] font-semibold">
-                        <Clock className="w-3.5 h-3.5 mr-1" />
-                        ACTIVO
-                      </span>
+                      <div className="flex items-center gap-2.5">
+                        <span className="badge-monday bg-[#bcfe90] text-[#2a5c4e] font-semibold">
+                          <Clock className="w-3.5 h-3.5 mr-1" />
+                          ACTIVO ({p.renovaciones ?? 0}/2 ren.)
+                        </span>
+                        {(p.renovaciones ?? 0) < 2 && (
+                          <button
+                            type="button"
+                            disabled={busyLoanId === p.id_prestamo}
+                            onClick={() => handleRenewLoan(p)}
+                            className="btn-outline-pill text-[11px] py-1 px-2.5 cursor-pointer disabled:opacity-60"
+                          >
+                            <RotateCw className={`w-3 h-3 ${busyLoanId === p.id_prestamo ? 'animate-spin' : ''}`} />
+                            Renovar (+8 días)
+                          </button>
+                        )}
+                      </div>
                     )}
                   </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </section>
+
+      {/* Mis Reservas */}
+      <section className="card-monday bg-[#ffffff] overflow-hidden">
+        <div className="px-6 py-4 border-b border-[#d0d4e4] bg-[#f5f6f8] flex items-center justify-between">
+          <h2 className="text-xl font-bold text-[#333333] tracking-tight inline-flex items-center gap-2">
+            <Bookmark className="w-5 h-5 text-[#287A65]" />
+            Mis Reservas ({reservas.length})
+          </h2>
+        </div>
+        {reservas.length === 0 ? (
+          <div className="p-8 text-center text-xs text-[#535768]">
+            No tienes reservas registradas. Cuando un título esté agotado (0 copias disponibles), puedes reservarlo desde su ficha técnica.
+          </div>
+        ) : (
+          <div className="divide-y divide-[#f5f6f8]">
+            {reservas.map((r) => (
+              <div
+                key={r.id_reserva}
+                className="px-6 py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4"
+              >
+                <div>
+                  <div className="text-xs font-mono text-[#535768]">
+                    Reserva #{r.id_reserva} · ISBN {r.libro_isbn} · Expira {r.fecha_expiracion}
+                  </div>
+                  <div className="text-sm font-bold text-[#183B4E] mt-0.5">{r.libro_titulo}</div>
+                </div>
+                <div className="flex items-center gap-3">
+                  <span
+                    className={`badge-monday text-[11px] font-semibold ${
+                      r.estado === 'DISPONIBLE'
+                        ? 'bg-[#bcfe90] text-[#14532d]'
+                        : r.estado === 'PENDIENTE'
+                          ? 'bg-amber-100 text-amber-800'
+                          : r.estado === 'COMPLETADA'
+                            ? 'bg-emerald-100 text-emerald-800'
+                            : 'bg-slate-200 text-slate-700'
+                    }`}
+                  >
+                    {r.estado}
+                  </span>
+                  {(r.estado === 'PENDIENTE' || r.estado === 'DISPONIBLE') && (
+                    <button
+                      type="button"
+                      disabled={busyReservaId === r.id_reserva}
+                      onClick={() => handleCancelReserva(r)}
+                      className="btn-outline-pill text-[11px] py-1 px-2.5 text-rose-700 cursor-pointer disabled:opacity-60"
+                    >
+                      <XCircle className="w-3 h-3" />
+                      Cancelar
+                    </button>
+                  )}
                 </div>
               </div>
             ))}
