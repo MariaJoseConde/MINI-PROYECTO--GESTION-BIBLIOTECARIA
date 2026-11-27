@@ -536,7 +536,7 @@ export default function App() {
         Saltar al contenido principal
       </a>
 
-      <div className={`min-h-screen flex ${theme === 'dark' ? 'dark bg-[#0b161e] text-slate-100' : 'bg-[#F3EBDD] text-slate-800'} font-sans relative`}>
+      <div className={`min-h-screen flex overflow-x-clip ${theme === 'dark' ? 'dark bg-[#0b161e] text-slate-100' : 'bg-[#F3EBDD] text-slate-800'} font-sans relative`}>
         {/* Fondo ambiental difuso con formas orgánicas para realzar el efecto Glassmorphism */}
         <div className="fixed inset-0 pointer-events-none -z-10 overflow-hidden" aria-hidden="true">
           {/* Orbe 1: Superior derecha (Azul petróleo suave) */}
@@ -615,13 +615,30 @@ export default function App() {
               </button>
             </div>
 
-            <span className="text-xs font-medium text-slate-600 dark:text-slate-300 truncate">
-              {currentBreadcrumb.label}
-            </span>
+            <div className="flex items-center gap-2 shrink-0">
+              <button
+                type="button"
+                onClick={toggleTheme}
+                aria-label={theme === 'dark' ? 'Cambiar a tema claro' : 'Cambiar a tema oscuro'}
+                className="min-h-[40px] min-w-[40px] flex items-center justify-center rounded-xl border border-slate-300/70 dark:border-slate-700/70 bg-white/60 dark:bg-slate-800/60 text-amber-500 dark:text-amber-400 cursor-pointer"
+              >
+                <Sun className={`w-4 h-4 ${theme === 'dark' ? 'rotate-90' : ''}`} />
+              </button>
+              {!user && (
+                <button
+                  type="button"
+                  onClick={() => setLoginOpen(true)}
+                  className="min-h-[40px] px-3 rounded-xl bg-[#287A65] text-white text-xs font-semibold flex items-center gap-1.5 cursor-pointer"
+                >
+                  <LogIn className="w-3.5 h-3.5" />
+                  <span>Entrar</span>
+                </button>
+              )}
+            </div>
           </header>
 
           {/* Contenido de la Ruta Activa protegido con ErrorBoundary y Suspense */}
-          <main id="main-content" tabIndex={-1} className="flex-1 max-w-[1200px] w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 lg:py-8 focus:outline-none">
+          <main id="main-content" tabIndex={-1} className="flex-1 max-w-[1200px] w-full mx-auto px-3.5 sm:px-6 lg:px-8 py-5 pb-24 lg:py-8 lg:pb-8 focus:outline-none">
             {/* Migas de pan contextuales limpias sin barra duplicada */}
             <nav aria-label="Ubicación actual" className="no-print hidden lg:flex items-center gap-2 text-xs font-medium text-slate-500 dark:text-slate-400 mb-5">
               <span>biblioSmart</span>
@@ -736,7 +753,7 @@ export default function App() {
           </main>
 
           {/* Pie de página accesible con estilo Glass */}
-          <footer className="no-print glass-nav !border-b-0 !border-t border-slate-200/70 dark:border-slate-800/60 py-6 px-4 sm:px-6 lg:px-8 mt-auto">
+          <footer className="no-print glass-nav !border-b-0 !border-t border-slate-200/70 dark:border-slate-800/60 py-6 pb-24 lg:pb-6 px-4 sm:px-6 lg:px-8 mt-auto">
             <div className="max-w-[1200px] mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-slate-600 dark:text-slate-400">
               <div className="flex items-center gap-2">
                 <div className="w-2.5 h-2.5 rounded-full bg-[#287A65] shrink-0" />
@@ -790,6 +807,62 @@ export default function App() {
         </Suspense>
 
         <ToastBanner toasts={toasts} onDismiss={dismissToast} />
+
+        {/* Barra de navegación inferior estilo aplicativo móvil */}
+        <nav
+          aria-label="Navegación rápida móvil"
+          className="no-print lg:hidden fixed bottom-0 inset-x-0 z-30 glass-nav !border-b-0 !border-t border-slate-200/70 dark:border-slate-800/70 px-2 py-1 grid grid-cols-4 gap-1"
+          style={{ paddingBottom: 'max(4px, env(safe-area-inset-bottom, 4px))' }}
+        >
+          <button
+            type="button"
+            onClick={goToMainScreen}
+            className={`min-h-[52px] flex flex-col items-center justify-center gap-0.5 rounded-xl text-[11px] font-medium transition-colors cursor-pointer ${
+              route === 'catalogo'
+                ? 'text-[#287A65] dark:text-[#52d1b2] font-semibold bg-[#287A65]/10'
+                : 'text-slate-600 dark:text-slate-300'
+            }`}
+          >
+            <BookOpen className="w-4 h-4" />
+            <span>Catálogo</span>
+          </button>
+          <button
+            type="button"
+            onClick={() => navigateToRoute('evaluaciones')}
+            className={`min-h-[52px] flex flex-col items-center justify-center gap-0.5 rounded-xl text-[11px] font-medium transition-colors cursor-pointer ${
+              route === 'evaluaciones'
+                ? 'text-[#287A65] dark:text-[#52d1b2] font-semibold bg-[#287A65]/10'
+                : 'text-slate-600 dark:text-slate-300'
+            }`}
+          >
+            <FileCheck2 className="w-4 h-4" />
+            <span>Tutoría IA</span>
+          </button>
+          <button
+            type="button"
+            onClick={() => navigateToRoute('salas')}
+            className={`min-h-[52px] flex flex-col items-center justify-center gap-0.5 rounded-xl text-[11px] font-medium transition-colors cursor-pointer ${
+              route === 'salas'
+                ? 'text-[#287A65] dark:text-[#52d1b2] font-semibold bg-[#287A65]/10'
+                : 'text-slate-600 dark:text-slate-300'
+            }`}
+          >
+            <MapIcon className="w-4 h-4" />
+            <span>Salas</span>
+          </button>
+          <button
+            type="button"
+            onClick={() => (user ? navigateToRoute('mis-prestamos') : setLoginOpen(true))}
+            className={`min-h-[52px] flex flex-col items-center justify-center gap-0.5 rounded-xl text-[11px] font-medium transition-colors cursor-pointer ${
+              route === 'mis-prestamos'
+                ? 'text-[#287A65] dark:text-[#52d1b2] font-semibold bg-[#287A65]/10'
+                : 'text-slate-600 dark:text-slate-300'
+            }`}
+          >
+            {user ? <BookmarkCheck className="w-4 h-4" /> : <LogIn className="w-4 h-4" />}
+            <span>{user ? 'Préstamos' : 'Acceder'}</span>
+          </button>
+        </nav>
 
         {/* Botón flotante accesible de configuración universal */}
         <AccessibilityMenu />

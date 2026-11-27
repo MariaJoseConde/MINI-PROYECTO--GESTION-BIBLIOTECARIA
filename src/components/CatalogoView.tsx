@@ -150,7 +150,7 @@ export const CatalogoView: React.FC<CatalogoViewProps> = ({
   return (
     <div className="space-y-10">
       {/* Hero Visual Glass Canvas con Búsqueda Integrada */}
-      <section className="relative overflow-hidden card-monday p-8 sm:p-10 lg:p-12">
+      <section className="relative overflow-hidden card-monday p-5 sm:p-8 lg:p-12">
         {/* Soft subtle ambient glow - Azul Petróleo y Verde Esmeralda */}
         <div
           className="absolute -top-24 -right-24 w-96 h-96 rounded-full bg-[#183B4E]/12 dark:bg-[#183B4E]/25 blur-3xl pointer-events-none"
@@ -168,17 +168,17 @@ export const CatalogoView: React.FC<CatalogoViewProps> = ({
                 <Sparkles className="w-3.5 h-3.5" />
                 <span>Acervo Bibliográfico Inteligente</span>
               </div>
-              <h1 className="font-bold text-3xl sm:text-4xl lg:text-[2.75rem] tracking-[-0.03em] leading-[1.15] text-[#183B4E] dark:text-white text-balance">
+              <h1 className="font-bold text-2xl sm:text-4xl lg:text-[2.75rem] tracking-[-0.03em] leading-[1.15] text-[#183B4E] dark:text-white text-balance">
                 Explora la colección con{' '}
                 <span className="text-[#287A65] dark:text-[#38a58a] font-bold">inteligencia artificial</span>
               </h1>
-              <p className="mt-3 text-base font-normal text-slate-700 dark:text-slate-300 leading-relaxed max-w-xl">
+              <p className="mt-3 text-sm sm:text-base font-normal text-slate-700 dark:text-slate-300 leading-relaxed max-w-xl">
                 Descubre obras por temática o lenguaje natural y consulta la disponibilidad física en sala al instante.
               </p>
             </div>
 
             {/* Metric counters glass pill style */}
-            <div className="flex items-center gap-3 sm:gap-4 shrink-0 flex-wrap">
+            <div className="grid grid-cols-3 sm:flex items-center gap-2 sm:gap-4 shrink-0">
               <div className="flex items-center gap-3 px-4 py-2.5 rounded-2xl bg-white/80 dark:bg-slate-800/50 backdrop-blur-md border border-[#183B4E]/15 dark:border-slate-700/60 shadow-2xs">
                 <div className="w-2.5 h-2.5 rounded-full bg-[#183B4E] shrink-0" />
                 <div>
@@ -213,7 +213,7 @@ export const CatalogoView: React.FC<CatalogoViewProps> = ({
 
           {/* AI Prompt Search Card */}
           <form onSubmit={handleFormSubmit} className="pt-2">
-            <div className="flex flex-col md:flex-row gap-2.5 rounded-[160px] bg-white/85 dark:bg-slate-800/60 backdrop-blur-md border border-[#183B4E]/18 dark:border-slate-700/70 p-2 shadow-xs focus-within:border-[#287A65] focus-within:ring-2 focus-within:ring-[#287A65]/20 transition-all">
+            <div className="flex flex-col md:flex-row gap-2.5 rounded-3xl md:rounded-[160px] bg-white/85 dark:bg-slate-800/60 backdrop-blur-md border border-[#183B4E]/18 dark:border-slate-700/70 p-2.5 md:p-2 shadow-xs focus-within:border-[#287A65] focus-within:ring-2 focus-within:ring-[#287A65]/20 transition-all">
               <div className="relative flex-1 flex items-center">
                 <Search className="w-4 h-4 text-slate-500 dark:text-slate-400 absolute left-4 pointer-events-none" />
                 <input

@@ -129,7 +129,7 @@ export const AccessibilityMenu: React.FC = () => {
 
   return (
     <aside
-      className="fixed bottom-5 right-5 z-40 no-print flex flex-col items-end pointer-events-auto"
+      className="fixed bottom-20 right-4 lg:bottom-5 lg:right-5 z-40 no-print flex flex-col items-end pointer-events-auto"
       style={{ paddingBottom: 'max(0px, env(safe-area-inset-bottom, 0px))' }}
       aria-label="Herramientas de accesibilidad"
     >
